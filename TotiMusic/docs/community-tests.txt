@@ -1,0 +1,23 @@
+Test Case '-[totiTests.CommunityWorkflowTests testPrivateNoteToSeparatePostAndInteractionsSurviveRelaunch]' passed (0.332 seconds).
+Test Case '-[totiTests.CommunityWorkflowTests testReportedPostDisappearsFromFeedSavedAndAuthorProfile]' passed (0.096 seconds).
+Test Case '-[totiTests.LibraryMigrationTests testExplicitDeletionOnlyClearsOwnedRoot]' passed (0.022 seconds).
+Test Case '-[totiTests.LibraryMigrationTests testFailedSaveDoesNotEraseExistingFile]' passed (0.013 seconds).
+Test Case '-[totiTests.LibraryMigrationTests testLegacySnapshotWithoutNewStatesPreservesPrivateRecords]' passed (0.039 seconds).
+Test Case '-[totiTests.LibraryMigrationTests testUnreadableLibraryIsNeverSilentlyReplaced]' passed (0.013 seconds).
+Test Case '-[totiTests.LoungeTests testCommentValidationAndPhotoBounds]' passed (0.005 seconds).
+Test Case '-[totiTests.LoungeTests testDraftDoesNotLeakIntoFeedAndPhotoRoundTrips]' passed (0.005 seconds).
+Test Case '-[totiTests.LoungeTests testPhotoImportDownsamplesAndRejectsInvalidBytes]' passed (0.234 seconds).
+Test Case '-[totiTests.LoungeTests testPostValidationAcceptsUnicodeAndCountsGraphemes]' passed (0.004 seconds).
+Test Case '-[totiTests.LoungeTests testSearchIncludesTopicAndAuthorAndIgnoresCase]' passed (0.004 seconds).
+Test Case '-[totiTests.LoungeTests testSeedIDsStableAndNoInventedInteractions]' passed (0.004 seconds).
+Test Case '-[totiTests.LoungeTests testVisibilityRemovesBlockedAndReportedPostsWithoutDeletingData]' passed (0.004 seconds).
+Test Case '-[totiTests.NotebookTests testDuplicateCopiesAllTextWithSeparateIdentityAndUnpinnedState]' passed (0.004 seconds).
+Test Case '-[totiTests.NotebookTests testEditPreservesIdentityAndCreationDateWithoutAppending]' passed (0.004 seconds).
+Test Case '-[totiTests.NotebookTests testInvalidSaveLeavesExistingStateUntouched]' passed (0.011 seconds).
+Test Case '-[totiTests.NotebookTests testPostConversionKeepsLongTextAndDoesNotModifyOriginal]' passed (0.004 seconds).
+Test Case '-[totiTests.NotebookTests testRoundTripPreservesPrivateNoteAndTimestamps]' passed (0.014 seconds).
+Test Case '-[totiTests.NotebookTests testSearchFiltersCategoryMoodAndBodyWithPinnedFirst]' passed (0.004 seconds).
+Test Case '-[totiTests.NotebookTests testUnicodeLimitsAllowFullDraftAndNeverTruncate]' passed (0.008 seconds).
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.823 (0.878) seconds
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.823 (0.881) seconds
+** TEST SUCCEEDED **

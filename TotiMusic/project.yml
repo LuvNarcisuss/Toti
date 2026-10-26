@@ -1,0 +1,178 @@
+name: Toti
+options:
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+    SUPPORTS_MACCATALYST: false
+targets:
+  toti:
+    type: application
+    platform: iOS
+    dependencies:
+      - sdk: StoreKit.framework
+    sources:
+      - path: Toti
+        excludes:
+          - Support/Info.plist
+          - Features/Live
+          - Features/Shorts/VideoFeedController.swift
+          - Features/Creation/CreationController.swift
+          - Resources
+      - path: $(DERIVED_FILE_DIR)/FlatAssets.xcassets
+        type: file
+        optional: true
+        buildPhase: resources
+      - path: ../Assets/TetoRhythm-Display.ttf
+        buildPhase: resources
+      - path: ../Assets/TetoRhythm-Text.ttf
+        buildPhase: resources
+      - path: ../Assets/MediaCredits.json
+        buildPhase: resources
+      - path: ../Assets/TermsOfService.html
+        buildPhase: resources
+      - path: ../Assets/PrivacyPolicy.html
+        buildPhase: resources
+    preBuildScripts:
+      - name: Prepare flat asset catalog
+        script: |
+          /usr/bin/python3 "$SRCROOT/scripts/prepare_asset_catalog.py" --output "$DERIVED_FILE_DIR/FlatAssets.xcassets"
+        basedOnDependencyAnalysis: false
+        outputFiles:
+          - $(DERIVED_FILE_DIR)/FlatAssets.xcassets
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        PRODUCT_NAME: toti
+        PRODUCT_BUNDLE_IDENTIFIER: com.toti.music
+        INFOPLIST_FILE: Toti/Support/Info.plist
+        GENERATE_INFOPLIST_FILE: false
+        INFOPLIST_KEY_UIRequiresFullScreen: YES
+        SWIFT_EMIT_LOC_STRINGS: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  totiTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: toti
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        PRODUCT_BUNDLE_IDENTIFIER: com.toti.music.tests
+        GENERATE_INFOPLIST_FILE: true
+  totiPaymentTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: PaymentTests
+      - path: Configuration/TotiDiamonds.storekit
+        buildPhase: resources
+    dependencies:
+      - target: toti
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        PRODUCT_BUNDLE_IDENTIFIER: com.toti.music.payment-tests
+        GENERATE_INFOPLIST_FILE: true
+  totiPurchaseUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: PurchaseUITests
+      - path: Configuration/TotiDiamonds.storekit
+        buildPhase: resources
+    dependencies:
+      - target: toti
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        PRODUCT_BUNDLE_IDENTIFIER: com.toti.music.purchase-uitests
+        GENERATE_INFOPLIST_FILE: true
+        TEST_TARGET_NAME: toti
+  totiUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: toti
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        PRODUCT_BUNDLE_IDENTIFIER: com.toti.music.uitests
+        GENERATE_INFOPLIST_FILE: true
+        TEST_TARGET_NAME: toti
+schemes:
+  toti:
+    build:
+      targets:
+        toti: all
+    run:
+      config: Debug
+      storeKitConfiguration: Configuration/TotiDiamonds.storekit
+    test:
+      config: Debug
+      targets:
+        - totiTests
+    archive:
+      config: Release
+  totiAppStore:
+    build:
+      targets:
+        toti: all
+    run:
+      config: Debug
+  totiPurchases:
+    build:
+      targets:
+        toti: all
+    test:
+      config: Debug
+      targets:
+        - totiPurchaseUITests
+  totiPayments:
+    build:
+      targets:
+        toti: all
+    test:
+      config: Debug
+      environmentVariables:
+        TOTI_UI_TEST_LIBRARY: 507E1B43-CB27-419A-A0D9-48CC583ADDB1
+      targets:
+        - totiPaymentTests
+  totiUI:
+    build:
+      targets:
+        toti: all
+    test:
+      config: Debug
+      targets:
+        - totiUITests

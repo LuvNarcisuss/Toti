@@ -1,0 +1,12 @@
+.DS_Store
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+
+# Shared scheme must remain versionable even if global ignore excludes schemes.
+!*.xcscheme
+!**/*.xcscheme
+
+# Python resource preparation/test caches.
+__pycache__/

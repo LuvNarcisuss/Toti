@@ -1,0 +1,94 @@
+[
+  {
+    "attachments": [
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "8A89AAA5-DC92-4E6D-9590-4B90BFB68A2D.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Native sheet cancellation_0_9EC30B58-0E00-4782-B902-E005518446B3.png",
+        "timestamp": 1793006475.095,
+        "projectEvidenceFile": "native-cancellation.png"
+      },
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "67A05B9A-F437-494B-94A4-98A4A0924493.txt",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Native payment sheet hierarchy_0_148D1ED5-6189-43DB-BB0F-9B9A4063DB59.txt",
+        "timestamp": 1793006472.231,
+        "projectEvidenceFile": "native-sheet-hierarchy.txt"
+      },
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "9235731A-D33F-4416-9949-7B1C6FB3FED7.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Native StoreKit payment sheet_0_96884659-2C7B-4ECE-96C5-DDDB5B346C78.png",
+        "timestamp": 1793006470.707,
+        "projectEvidenceFile": "native-payment-sheet.png"
+      }
+    ],
+    "testIdentifier": "PurchaseUITests/testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit()",
+    "testIdentifierURL": "test://com.apple.xcode/Toti/totiPurchaseUITests/PurchaseUITests/testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit"
+  },
+  {
+    "attachments": [
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "C116315E-48D7-4B7F-9DFE-187AC69F249E.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Persisted balance and history after relaunch_0_AC4114E9-40D8-4C79-8704-9E097B741A48.png",
+        "timestamp": 1793006574.976,
+        "projectEvidenceFile": "relaunch-balance.png"
+      },
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "BB644AAE-6FC3-43F5-98A4-C509C5BAE496.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "StoreKit cancellation_0_12A88DF3-14BD-4B30-9FD5-39289BC579BD.png",
+        "timestamp": 1793006554.179,
+        "projectEvidenceFile": "storekit-cancellation.png"
+      },
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "96CB4FDF-6A70-47FA-84AB-DC8F2AAAB946.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Seven completed purchases_0_4C4E9389-54B3-4694-89D7-FFB999288EFE.png",
+        "timestamp": 1793006545.619,
+        "projectEvidenceFile": "seven-purchases.png"
+      },
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "709C9066-7108-47BE-937B-BDE13F004846.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Purchase confirmation_0_3481174B-06B8-4F2B-949B-A4951CA96F6A.png",
+        "timestamp": 1793006500.532,
+        "projectEvidenceFile": "purchase-confirmation.png"
+      },
+      {
+        "configurationName": "Test Scheme Action",
+        "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName": "Toti UI Acceptance",
+        "exportedFileName": "FE8E61C9-9333-4F23-8ABE-8EA6D7BF8FCF.png",
+        "isAssociatedWithFailure": false,
+        "suggestedHumanReadableName": "Seven loaded StoreKit offers_0_725C737B-B49F-425E-9A61-E010BAA54FA2.png",
+        "timestamp": 1793006498.254,
+        "projectEvidenceFile": "catalog.png"
+      }
+    ],
+    "testIdentifier": "PurchaseUITests/testSevenPurchasesPricesCancellationAndRelaunchHistory()",
+    "testIdentifierURL": "test://com.apple.xcode/Toti/totiPurchaseUITests/PurchaseUITests/testSevenPurchasesPricesCancellationAndRelaunchHistory"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-26",
+  "checks": {
+    "jsonFilesParsed": 235,
+    "sharedScheme": "toti",
+    "assetCatalogs": 209,
+    "iconCasesResolved": 61,
+    "exportedIconPadding": "All generated exported silhouettes have transparent padding",
+    "videoCount": 9,
+    "liveCount": 4,
+    "shortsCount": 5,
+    "silentRecordings": 9,
+    "photographyRecords": 82,
+    "newPhotographyRecords": 11,
+    "swiftFiles": 53,
+    "runtimeResourceBytes": 19766047,
+    "verificationScope": "Static source/resource/configuration inspection only; no build, typecheck, app execution or tests."
+  },
+  "issues": []
+}

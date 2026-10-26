@@ -1,0 +1,328 @@
+--- original/Teto/App/TetoApplication.swift
++++ template/Teto/App/TetoApplication.swift
+@@ -173,7 +173,7 @@
+     view.backgroundColor = .clear
+     view.clipsToBounds = false
+     let screens: [UIViewController] = [
+-      DanceDiscoveryController(store: store), PhraseListController(store: store),
++      DanceDiscoveryController(store: store),
+       PartyDiscoveryController(store: store), ChatsController(store: store), MeController(store: store),
+     ]
+     pages = screens.map {
+@@ -229,14 +229,14 @@
+     NSLayoutConstraint.activate([
+       selectedLeading!, bubble.topAnchor.constraint(equalTo: dock.topAnchor, constant: 5),
+       bubble.bottomAnchor.constraint(equalTo: dock.bottomAnchor, constant: -5),
+-      bubble.widthAnchor.constraint(equalTo: dock.widthAnchor, multiplier: 0.2, constant: -6),
++      bubble.widthAnchor.constraint(equalTo: dock.widthAnchor, multiplier: 0.25, constant: -6),
+     ])
+     buttons.axis = .horizontal
+     buttons.distribution = .fillEqually
+     dock.addSubview(buttons)
+     buttons.pin(to: dock, insets: UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3))
+     for (i, pair) in [
+-      (TetoIcon.live, "Live"), (.phrases, "Phrases"), (.voice, "Voice"), (.chats, "Chats"), (.me, "Me"),
++      (TetoIcon.live, "Live"), (.voice, "Voice"), (.chats, "Chats"), (.me, "Me"),
+     ]
+       .enumerated()
+     {
+@@ -251,9 +251,9 @@
+   @objc private func dragDock(_ gesture: UIPanGestureRecognizer) {
+     let width = dock.bounds.width
+     guard width > 0 else { return }
+-    let segment = width / 5
+-    let leading = min(5 + 4 * segment, max(5, gesture.location(in: dock).x - (segment - 6) / 2))
+-    let nearest = min(4, max(0, Int(((leading - 5) / segment).rounded())))
++    let segment = width / 4
++    let leading = min(5 + 3 * segment, max(5, gesture.location(in: dock).x - (segment - 6) / 2))
++    let nearest = min(3, max(0, Int(((leading - 5) / segment).rounded())))
+     switch gesture.state {
+     case .began, .changed:
+       draggingDock = true
+@@ -273,7 +273,7 @@
+     let previous = index
+     showPage(next)
+     guard dock.bounds.width > 0 else { return }
+-    let destination = 5 + CGFloat(index) * dock.bounds.width / 5
++    let destination = 5 + CGFloat(index) * dock.bounds.width / 4
+     bubbleMove += 1
+     let move = bubbleMove
+     let finish = {
+@@ -358,7 +358,7 @@
+       bubble.layer.cornerRadius = bubble.bounds.height / 2
+     }
+     guard !draggingDock, !movingBubble, dock.bounds.width > 0 else { return }
+-    selectedLeading?.constant = 5 + CGFloat(index) * dock.bounds.width / 5
++    selectedLeading?.constant = 5 + CGFloat(index) * dock.bounds.width / 4
+   }
+   /// Video stage stays under the dock; the ivory sheet is placed over Live / Voice / Chats / Me.
+   /// The comment panel is a child here because its view lives on this page.
+--- original/Teto/Features/Profile/ProfileControllers.swift
++++ template/Teto/Features/Profile/ProfileControllers.swift
+@@ -185,20 +185,6 @@
+     }
+     content.addArrangedSubview(
+       label("IP: " + (creator.ipRegion ?? "Not shared"), 12, TetoTheme.muted))
+-    let phrases = store.phrases(byAuthor: creator.id)
+-    if !phrases.isEmpty {
+-      heading("Phrases (\(phrases.count))")
+-      for phrase in phrases {
+-        let marks = store.learnedMarks(for: phrase.id)
+-        let learned = marks.filter { $0 }.count
+-        let progress = learned == 0 ? phrase.eightCountLabel : "\(learned) of \(marks.count) learned"
+-        content.addArrangedSubview(
+-          actionButton(phrase.title + "\n" + phrase.style.title + " · " + progress) { [weak self] in
+-            guard let self, self.store.phrase(id: phrase.id) != nil else { return }
+-            self.push(PhraseDetailController(store: self.store, phraseID: phrase.id))
+-          })
+-      }
+-    }
+     let videos = store.creatorWorks(for: creator.id)
+     heading("Works (\(videos.count))")
+     videoGrid(videos) { [weak self] video in
+@@ -629,7 +615,7 @@
+         return dancePartyCard(room, animated: false, stretches: true)
+       }
+     case .phrase:
+-      return phraseNote(item, store: store)
++      return commentRow(item) // Preserve removal of an older report without a retired feature route.
+     case .comment:
+       return commentRow(item)
+     }
+@@ -647,25 +633,6 @@
+       return DancePartyCatalog.room(from: draft)
+     }
+     return nil
+-  }
+-
+-  private static func phraseNote(_ item: ReportedContentItem, store: AppStore) -> UIView {
+-    let photo = roundPortrait(
+-      asset: DancerPortraits.asset(forName: item.creatorName), size: 44, personID: item.creatorName)
+-    let name = label(item.creatorName, 15, TetoTheme.emerald, title: true)
+-    name.numberOfLines = 1
+-    let title = label(item.title, 16, title: true)
+-    title.numberOfLines = 2
+-    var lines = [name, title]
+-    if let count = store.phraseRecord(id: item.contentID)?.eights.first?.first {
+-      let line = label(count, 15, TetoTheme.muted)
+-      line.numberOfLines = 2
+-      lines.append(line)
+-    }
+-    let text = stack(lines, spacing: 3)
+-    let row = stack([photo, text], axis: .horizontal, spacing: 12)
+-    row.alignment = .top
+-    return note(row)
+   }
+ 
+   private static func commentRow(_ item: ReportedContentItem) -> UIView {
+--- original/Teto/Features/Chats/ChatControllers.swift
++++ template/Teto/Features/Chats/ChatControllers.swift
+@@ -639,12 +639,6 @@
+       message.author + " · " + message.time + (message.isPending == true ? " · Pending" : ""), 10,
+       TetoTheme.muted)
+     let bubble = stack([meta, text], spacing: 5)
+-    if let phraseID = store.phraseID(in: message.text) {
+-      let open = actionButton("Open phrase", icon: .play, compact: true) { [weak self] in
+-        self?.openPhrase(phraseID)
+-      }
+-      bubble.addArrangedSubview(open)
+-    }
+     if let destination = sharedVideo(in: message.text) {
+       let open = actionButton(destination.live ? "Open live" : "Watch video", icon: .play, compact: true) {
+         [weak self] in self?.openSharedVideo(id: destination.id, live: destination.live)
+@@ -697,13 +691,6 @@
+     }
+     view.endEditing(true)
+     presentScreen(VideoFeedController(store: store, videos: [video], initial: id, live: live), full: true)
+-  }
+-  private func openPhrase(_ id: String) {
+-    guard store.phrase(id: id) != nil else {
+-      message("That phrase is not on this device.")
+-      return
+-    }
+-    push(PhraseDetailController(store: store, phraseID: id))
+   }
+   private func openProfile() {
+     let profile: CreatorProfile
+--- original/Teto/App/AppStore.swift
++++ template/Teto/App/AppStore.swift
+@@ -177,18 +177,6 @@
+     lastSaveError = nil
+   }
+ 
+-  /// Simulator gift checks start from 400 diamonds. Device builds omit this and keep the saved balance.
+-  private func prepareSimulatorGiftBalance(_ ledger: WalletLedger) -> WalletLedger {
+-    #if targetEnvironment(simulator)
+-      guard ledger.diamonds == 0, ledger.activity.isEmpty, ledger.creditedTransactionIDs.isEmpty else {
+-        return ledger
+-      }
+-      return WalletLedger(diamonds: 400, activity: [], creditedTransactionIDs: [])
+-    #else
+-      return ledger
+-    #endif
+-  }
+-
+   func load() async {
+     guard !isBusy, !isLoaded else { return }
+     busyMessage = "Opening your library…"
+@@ -198,11 +186,7 @@
+       library = try await repository.load()
+       try await shortsSocial.load()
+       let ledger = try await repository.loadWallet()
+-      let ready = prepareSimulatorGiftBalance(ledger)
+-      if ready.diamonds != ledger.diamonds {
+-        try await repository.saveWallet(ready)
+-      }
+-      wallet.adopt(ready)
++      wallet.adopt(ledger)
+       wallet.setPersist { [repository] ledger in
+         do {
+           try await repository.saveWallet(ledger)
+@@ -933,72 +917,6 @@
+   }
+ 
+   /// Copy new files first, commit their references atomically, then release unused app-owned copies.
+-  func persistPhrase(_ phrase: DancePhrase, updated: LocalLibrary, videoURL: URL?, coverData: Data?) async -> Bool {
+-    guard isLoaded, sessionActive, !isBusy else { return false }
+-    busyMessage = "Saving your phrase…"
+-    lastSaveError = nil
+-    defer { busyMessage = nil }
+-    let oldLesson = library.phraseBook?.phrases.first { $0.id == phrase.id }?.lesson
+-    var saved = phrase
+-    var imported: LocalVideo?
+-    var newCover: UUID?
+-    do {
+-      if let videoURL {
+-        var video = try await repository.importVideo(from: videoURL)
+-        imported = video
+-        video.title = phrase.title
+-        video.isDance = true // Author confirmation, not automatic classification.
+-        saved.lesson?.localVideo = video
+-        saved.lesson?.bundledAsset = nil
+-        saved.lesson?.duration = video.duration
+-      }
+-      if let coverData {
+-        let id = UUID()
+-        newCover = id
+-        try await repository.importSubmissionCover(coverData, id: id)
+-        saved.lesson?.coverID = id
+-      }
+-      if let video = saved.lesson?.localVideo,
+-         !FileManager.default.fileExists(atPath: self.videoURL(video).path) {
+-        lastSaveError = "This video is no longer on this device. Choose it again before saving."
+-        throw LocalLibraryError.invalidVideo
+-      }
+-      if let error = saved.lesson?.validationError(eights: saved.eights) {
+-        lastSaveError = error
+-        throw LocalLibraryError.invalidVideo
+-      }
+-      try Task.checkCancellation()
+-      var snapshot = updated
+-      guard let index = snapshot.phraseBook?.phrases.firstIndex(where: { $0.id == saved.id }) else {
+-        throw LocalLibraryError.storageUnavailable
+-      }
+-      snapshot.phraseBook?.phrases[index] = saved
+-      try await repository.save(snapshot)
+-      library = snapshot
+-      await releasePhraseMedia(oldLesson)
+-      return true
+-    } catch {
+-      if let imported { await repository.removeMedia(for: imported) }
+-      if let newCover { await repository.removeSubmissionCover(newCover) }
+-      if lastSaveError == nil { lastSaveError = message(for: error) }
+-      return false
+-    }
+-  }
+-
+-  func releasePhraseMedia(_ lesson: PhraseLesson?) async {
+-    guard let lesson else { return }
+-    let lessons = (library.phraseBook?.phrases ?? []).compactMap(\.lesson)
+-    if let video = lesson.localVideo,
+-       !lessons.contains(where: { $0.localVideo?.id == video.id }),
+-       !library.videos.contains(where: { $0.id == video.id }) {
+-      await repository.removeMedia(for: video)
+-    }
+-    if let id = lesson.coverID, !lessons.contains(where: { $0.coverID == id }),
+-       !(library.submissions ?? []).contains(where: { $0.id == id && $0.hasCover }) {
+-      await repository.removeSubmissionCover(id)
+-    }
+-  }
+-
+   func commit(_ updated: LocalLibrary, permitsEntry: Bool = false) async -> Bool {
+     guard isLoaded, !isBusy, sessionActive || permitsEntry else { return false }
+     lastSaveError = nil
+--- original/Teto/Domain/DanceVideoCatalog.swift
++++ template/Teto/Domain/DanceVideoCatalog.swift
+@@ -1,12 +1,11 @@
+ import Foundation
+ 
+ enum DanceSurface {
+-    case live, shorts, phrase
++    case live, shorts
+ }
+ 
+ /// Licensed dance films; the source archive is outside the runtime bundle.
+-/// Phrases also exposes each film's attribution and license in Film credits.
+-/// Each clip belongs to one surface: Live, Shorts, or Phrases.
++/// Each active clip belongs to one surface: Live or Shorts.
+ struct DanceVideo {
+     let id: UUID
+     let title: String
+@@ -155,26 +154,5 @@
+         DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000008249626")!,
+                    title: "Mosaic steps", creator: "RDNE Stock project", assetName: "dance-mosaic-steps", duration: 12.4, surface: .live,
+                    sourceURL: URL(string: "https://www.pexels.com/video/a-man-and-a-woman-dancing-beside-mosaic-artwork-8249626/")!, collectionGeneration: 3),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000026861347")!,
+-                   title: "Two-step flow", creator: "VincaniTV", assetName: "phrase-film-hiphop", duration: 336.669667, surface: .phrase,
+-                   sourceURL: URL(string: "https://www.youtube.com/watch?v=tODVnrFX9yM")!),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000008853874")!,
+-                   title: "Reach and turn", creator: "Jenny Coogan; Robin Jung", assetName: "phrase-film-reach", duration: 26.773292, surface: .phrase,
+-                   sourceURL: URL(string: "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2018.02371/full")!),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000008956001")!,
+-                   title: "Balboa basics", creator: "Lainey Silver", assetName: "phrase-film-rehearsal", duration: 202.919002, surface: .phrase,
+-                   sourceURL: URL(string: "https://www.youtube.com/watch?v=l-avoQVmi3g")!),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000008955994")!,
+-                   title: "Farmer footwork", creator: "Streetz Ahead", assetName: "phrase-film-groove", duration: 145.011000, surface: .phrase,
+-                   sourceURL: URL(string: "https://www.youtube.com/watch?v=jJXQ1Wj1ERY")!),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000032097114")!,
+-                   title: "Six-step circle", creator: "Neil Sweeney", assetName: "phrase-film-street", duration: 66.966900, surface: .phrase,
+-                   sourceURL: URL(string: "https://commons.wikimedia.org/wiki/File:Tutorial_breakdance_-_Six_Step.webm")!),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000007322798")!,
+-                   title: "Waltz walkthrough", creator: "Vina Castelli", assetName: "phrase-film-ballet", duration: 755.390998, surface: .phrase,
+-                   sourceURL: URL(string: "https://www.youtube.com/watch?v=zA7VcfzwAyI")!),
+-        DanceVideo(id: UUID(uuidString: "AC8365F1-44DC-4BF4-934D-000008955363")!,
+-                   title: "Solo Charleston", creator: "GoldMinka", assetName: "phrase-film-jazz", duration: 411.000000, surface: .phrase,
+-                   sourceURL: URL(string: "https://www.youtube.com/watch?v=_a_0IYm1weQ")!),
+     ]
+ }
+--- original/Teto/Domain/DancePhrase.swift
++++ template/Teto/Domain/DancePhrase.swift
+@@ -1,3 +1,4 @@
++// Compatibility data only. No practice feature is exposed in this template.
+ import Foundation
+ 
+ enum PhraseStyle: String, Codable, CaseIterable {
+--- original/Teto/Domain/DancePhraseCatalog.swift
++++ template/Teto/Domain/DancePhraseCatalog.swift
+@@ -1,3 +1,4 @@
++// Compatibility data only. No practice feature is exposed in this template.
+ import Foundation
+ 
+ /// Seven built-in lessons. Counts follows source-time actions across each complete film.
+--- original/Teto/Domain/PhraseBook.swift
++++ template/Teto/Domain/PhraseBook.swift
+@@ -1,3 +1,4 @@
++// Compatibility data only. No practice feature is exposed in this template.
+ import Foundation
+ 
+ struct PhraseBookState: Codable, Equatable {
+--- original/project.yml
++++ template/project.yml
+@@ -11,7 +11,6 @@
+     CURRENT_PROJECT_VERSION: "1"
+     TARGETED_DEVICE_FAMILY: "1"
+     SUPPORTS_MACCATALYST: false
+-    DEVELOPMENT_TEAM: JPTS6M4T5B
+ targets:
+   teto:
+     type: application

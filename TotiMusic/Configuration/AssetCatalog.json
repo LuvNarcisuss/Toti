@@ -1,0 +1,1669 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "source": "AppIcon.png",
+      "path": "AppIcon.appiconset/AppIcon.png"
+    },
+    {
+      "source": "Catalog-AppIcon.json",
+      "path": "AppIcon.appiconset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar1.svg",
+      "path": "ChatAvatar1.imageset/ChatAvatar1.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar1.json",
+      "path": "ChatAvatar1.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar2.svg",
+      "path": "ChatAvatar2.imageset/ChatAvatar2.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar2.json",
+      "path": "ChatAvatar2.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar3.svg",
+      "path": "ChatAvatar3.imageset/ChatAvatar3.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar3.json",
+      "path": "ChatAvatar3.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar4.svg",
+      "path": "ChatAvatar4.imageset/ChatAvatar4.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar4.json",
+      "path": "ChatAvatar4.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar5.svg",
+      "path": "ChatAvatar5.imageset/ChatAvatar5.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar5.json",
+      "path": "ChatAvatar5.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar6.svg",
+      "path": "ChatAvatar6.imageset/ChatAvatar6.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar6.json",
+      "path": "ChatAvatar6.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar7.svg",
+      "path": "ChatAvatar7.imageset/ChatAvatar7.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar7.json",
+      "path": "ChatAvatar7.imageset/Contents.json"
+    },
+    {
+      "source": "ChatAvatar8.svg",
+      "path": "ChatAvatar8.imageset/ChatAvatar8.svg"
+    },
+    {
+      "source": "Catalog-ChatAvatar8.json",
+      "path": "ChatAvatar8.imageset/Contents.json"
+    },
+    {
+      "source": "ChatSpark.png",
+      "path": "ChatSpark.imageset/ChatSpark.png"
+    },
+    {
+      "source": "Catalog-ChatSpark.json",
+      "path": "ChatSpark.imageset/Contents.json"
+    },
+    {
+      "source": "Catalog-CoastalStory.json",
+      "path": "CoastalStory.imageset/Contents.json"
+    },
+    {
+      "source": "CoastalStory.png",
+      "path": "CoastalStory.imageset/coastal-story.png"
+    },
+    {
+      "source": "Catalog-Contents.json",
+      "path": "Contents.json"
+    },
+    {
+      "source": "Catalog-LifestyleDanceRehearsal.json",
+      "path": "LifestyleDanceRehearsal.imageset/Contents.json"
+    },
+    {
+      "source": "LifestyleDanceRehearsal.jpg",
+      "path": "LifestyleDanceRehearsal.imageset/LifestyleDanceRehearsal.jpg"
+    },
+    {
+      "source": "Catalog-LifestyleStudioPractice.json",
+      "path": "LifestyleStudioPractice.imageset/Contents.json"
+    },
+    {
+      "source": "LifestyleStudioPractice.jpg",
+      "path": "LifestyleStudioPractice.imageset/LifestyleStudioPractice.jpg"
+    },
+    {
+      "source": "Catalog-ListeningRoom.json",
+      "path": "ListeningRoom.imageset/Contents.json"
+    },
+    {
+      "source": "ListeningRoom.png",
+      "path": "ListeningRoom.imageset/listening-room.png"
+    },
+    {
+      "source": "Catalog-MusicPianoRoom.json",
+      "path": "MusicPianoRoom.imageset/Contents.json"
+    },
+    {
+      "source": "MusicPianoRoom.jpg",
+      "path": "MusicPianoRoom.imageset/MusicPianoRoom.jpg"
+    },
+    {
+      "source": "Catalog-MusicProductionRoom.json",
+      "path": "MusicProductionRoom.imageset/Contents.json"
+    },
+    {
+      "source": "MusicProductionRoom.jpg",
+      "path": "MusicProductionRoom.imageset/MusicProductionRoom.jpg"
+    },
+    {
+      "source": "Catalog-MusicStudioBackdrop.json",
+      "path": "MusicStudioBackdrop.imageset/Contents.json"
+    },
+    {
+      "source": "MusicStudioBackdrop.jpg",
+      "path": "MusicStudioBackdrop.imageset/MusicStudioBackdrop.jpg"
+    },
+    {
+      "source": "Catalog-PartyAvatar1.json",
+      "path": "PartyAvatar1.imageset/Contents.json"
+    },
+    {
+      "source": "PartyAvatar1.svg",
+      "path": "PartyAvatar1.imageset/PartyAvatar1.svg"
+    },
+    {
+      "source": "Catalog-PartyAvatar2.json",
+      "path": "PartyAvatar2.imageset/Contents.json"
+    },
+    {
+      "source": "PartyAvatar2.svg",
+      "path": "PartyAvatar2.imageset/PartyAvatar2.svg"
+    },
+    {
+      "source": "Catalog-PartyAvatar3.json",
+      "path": "PartyAvatar3.imageset/Contents.json"
+    },
+    {
+      "source": "PartyAvatar3.svg",
+      "path": "PartyAvatar3.imageset/PartyAvatar3.svg"
+    },
+    {
+      "source": "Catalog-PartyAvatar4.json",
+      "path": "PartyAvatar4.imageset/Contents.json"
+    },
+    {
+      "source": "PartyAvatar4.svg",
+      "path": "PartyAvatar4.imageset/PartyAvatar4.svg"
+    },
+    {
+      "source": "Catalog-PartyCategory-ballet.json",
+      "path": "PartyCategory-ballet.imageset/Contents.json"
+    },
+    {
+      "source": "PartyCategory-ballet.svg",
+      "path": "PartyCategory-ballet.imageset/PartyCategory-ballet.svg"
+    },
+    {
+      "source": "Catalog-PartyCategory-freestyle.json",
+      "path": "PartyCategory-freestyle.imageset/Contents.json"
+    },
+    {
+      "source": "PartyCategory-freestyle.svg",
+      "path": "PartyCategory-freestyle.imageset/PartyCategory-freestyle.svg"
+    },
+    {
+      "source": "Catalog-PartyCategory-hipHop.json",
+      "path": "PartyCategory-hipHop.imageset/Contents.json"
+    },
+    {
+      "source": "PartyCategory-hipHop.svg",
+      "path": "PartyCategory-hipHop.imageset/PartyCategory-hipHop.svg"
+    },
+    {
+      "source": "Catalog-PartyCategory-house.json",
+      "path": "PartyCategory-house.imageset/Contents.json"
+    },
+    {
+      "source": "PartyCategory-house.svg",
+      "path": "PartyCategory-house.imageset/PartyCategory-house.svg"
+    },
+    {
+      "source": "Catalog-PartyCategory-jazz.json",
+      "path": "PartyCategory-jazz.imageset/Contents.json"
+    },
+    {
+      "source": "PartyCategory-jazz.svg",
+      "path": "PartyCategory-jazz.imageset/PartyCategory-jazz.svg"
+    },
+    {
+      "source": "Catalog-PartyCategory-kPop.json",
+      "path": "PartyCategory-kPop.imageset/Contents.json"
+    },
+    {
+      "source": "PartyCategory-kPop.svg",
+      "path": "PartyCategory-kPop.imageset/PartyCategory-kPop.svg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorCassian.json",
+      "path": "PhraseAuthorCassian.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorCassian.jpg",
+      "path": "PhraseAuthorCassian.imageset/PhraseAuthorCassian.jpg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorIndigo.json",
+      "path": "PhraseAuthorIndigo.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorIndigo.jpg",
+      "path": "PhraseAuthorIndigo.imageset/PhraseAuthorIndigo.jpg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorJules.json",
+      "path": "PhraseAuthorJules.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorJules.jpg",
+      "path": "PhraseAuthorJules.imageset/PhraseAuthorJules.jpg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorMaren.json",
+      "path": "PhraseAuthorMaren.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorMaren.jpg",
+      "path": "PhraseAuthorMaren.imageset/PhraseAuthorMaren.jpg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorNia.json",
+      "path": "PhraseAuthorNia.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorNia.jpg",
+      "path": "PhraseAuthorNia.imageset/PhraseAuthorNia.jpg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorRowan.json",
+      "path": "PhraseAuthorRowan.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorRowan.jpg",
+      "path": "PhraseAuthorRowan.imageset/PhraseAuthorRowan.jpg"
+    },
+    {
+      "source": "Catalog-PhraseAuthorSable.json",
+      "path": "PhraseAuthorSable.imageset/Contents.json"
+    },
+    {
+      "source": "PhraseAuthorSable.jpg",
+      "path": "PhraseAuthorSable.imageset/PhraseAuthorSable.jpg"
+    },
+    {
+      "source": "Catalog-Portrait1.json",
+      "path": "Portrait1.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait1.jpg",
+      "path": "Portrait1.imageset/Portrait1.jpg"
+    },
+    {
+      "source": "Catalog-Portrait10.json",
+      "path": "Portrait10.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait10.jpg",
+      "path": "Portrait10.imageset/Portrait10.jpg"
+    },
+    {
+      "source": "Catalog-Portrait11.json",
+      "path": "Portrait11.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait11.jpg",
+      "path": "Portrait11.imageset/Portrait11.jpg"
+    },
+    {
+      "source": "Catalog-Portrait12.json",
+      "path": "Portrait12.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait12.jpg",
+      "path": "Portrait12.imageset/Portrait12.jpg"
+    },
+    {
+      "source": "Catalog-Portrait13.json",
+      "path": "Portrait13.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait13.jpg",
+      "path": "Portrait13.imageset/Portrait13.jpg"
+    },
+    {
+      "source": "Catalog-Portrait14.json",
+      "path": "Portrait14.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait14.jpg",
+      "path": "Portrait14.imageset/Portrait14.jpg"
+    },
+    {
+      "source": "Catalog-Portrait15.json",
+      "path": "Portrait15.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait15.jpg",
+      "path": "Portrait15.imageset/Portrait15.jpg"
+    },
+    {
+      "source": "Catalog-Portrait16.json",
+      "path": "Portrait16.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait16.jpg",
+      "path": "Portrait16.imageset/Portrait16.jpg"
+    },
+    {
+      "source": "Catalog-Portrait17.json",
+      "path": "Portrait17.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait17.jpg",
+      "path": "Portrait17.imageset/Portrait17.jpg"
+    },
+    {
+      "source": "Catalog-Portrait18.json",
+      "path": "Portrait18.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait18.jpg",
+      "path": "Portrait18.imageset/Portrait18.jpg"
+    },
+    {
+      "source": "Catalog-Portrait19.json",
+      "path": "Portrait19.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait19.jpg",
+      "path": "Portrait19.imageset/Portrait19.jpg"
+    },
+    {
+      "source": "Catalog-Portrait2.json",
+      "path": "Portrait2.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait2.jpg",
+      "path": "Portrait2.imageset/Portrait2.jpg"
+    },
+    {
+      "source": "Catalog-Portrait20.json",
+      "path": "Portrait20.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait20.jpg",
+      "path": "Portrait20.imageset/Portrait20.jpg"
+    },
+    {
+      "source": "Catalog-Portrait21.json",
+      "path": "Portrait21.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait21.jpg",
+      "path": "Portrait21.imageset/Portrait21.jpg"
+    },
+    {
+      "source": "Catalog-Portrait22.json",
+      "path": "Portrait22.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait22.jpg",
+      "path": "Portrait22.imageset/Portrait22.jpg"
+    },
+    {
+      "source": "Catalog-Portrait23.json",
+      "path": "Portrait23.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait23.jpg",
+      "path": "Portrait23.imageset/Portrait23.jpg"
+    },
+    {
+      "source": "Catalog-Portrait24.json",
+      "path": "Portrait24.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait24.jpg",
+      "path": "Portrait24.imageset/Portrait24.jpg"
+    },
+    {
+      "source": "Catalog-Portrait25.json",
+      "path": "Portrait25.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait25.jpg",
+      "path": "Portrait25.imageset/Portrait25.jpg"
+    },
+    {
+      "source": "Catalog-Portrait26.json",
+      "path": "Portrait26.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait26.jpg",
+      "path": "Portrait26.imageset/Portrait26.jpg"
+    },
+    {
+      "source": "Catalog-Portrait27.json",
+      "path": "Portrait27.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait27.jpg",
+      "path": "Portrait27.imageset/Portrait27.jpg"
+    },
+    {
+      "source": "Catalog-Portrait28.json",
+      "path": "Portrait28.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait28.jpg",
+      "path": "Portrait28.imageset/Portrait28.jpg"
+    },
+    {
+      "source": "Catalog-Portrait29.json",
+      "path": "Portrait29.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait29.jpg",
+      "path": "Portrait29.imageset/Portrait29.jpg"
+    },
+    {
+      "source": "Catalog-Portrait3.json",
+      "path": "Portrait3.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait3.jpg",
+      "path": "Portrait3.imageset/Portrait3.jpg"
+    },
+    {
+      "source": "Catalog-Portrait30.json",
+      "path": "Portrait30.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait30.jpg",
+      "path": "Portrait30.imageset/Portrait30.jpg"
+    },
+    {
+      "source": "Catalog-Portrait31.json",
+      "path": "Portrait31.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait31.jpg",
+      "path": "Portrait31.imageset/Portrait31.jpg"
+    },
+    {
+      "source": "Catalog-Portrait32.json",
+      "path": "Portrait32.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait32.jpg",
+      "path": "Portrait32.imageset/Portrait32.jpg"
+    },
+    {
+      "source": "Catalog-Portrait33.json",
+      "path": "Portrait33.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait33.jpg",
+      "path": "Portrait33.imageset/Portrait33.jpg"
+    },
+    {
+      "source": "Catalog-Portrait34.json",
+      "path": "Portrait34.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait34.jpg",
+      "path": "Portrait34.imageset/Portrait34.jpg"
+    },
+    {
+      "source": "Catalog-Portrait35.json",
+      "path": "Portrait35.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait35.jpg",
+      "path": "Portrait35.imageset/Portrait35.jpg"
+    },
+    {
+      "source": "Catalog-Portrait36.json",
+      "path": "Portrait36.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait36.jpg",
+      "path": "Portrait36.imageset/Portrait36.jpg"
+    },
+    {
+      "source": "Catalog-Portrait37.json",
+      "path": "Portrait37.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait37.jpg",
+      "path": "Portrait37.imageset/Portrait37.jpg"
+    },
+    {
+      "source": "Catalog-Portrait38.json",
+      "path": "Portrait38.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait38.jpg",
+      "path": "Portrait38.imageset/Portrait38.jpg"
+    },
+    {
+      "source": "Catalog-Portrait39.json",
+      "path": "Portrait39.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait39.jpg",
+      "path": "Portrait39.imageset/Portrait39.jpg"
+    },
+    {
+      "source": "Catalog-Portrait4.json",
+      "path": "Portrait4.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait4.jpg",
+      "path": "Portrait4.imageset/Portrait4.jpg"
+    },
+    {
+      "source": "Catalog-Portrait40.json",
+      "path": "Portrait40.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait40.jpg",
+      "path": "Portrait40.imageset/Portrait40.jpg"
+    },
+    {
+      "source": "Catalog-Portrait41.json",
+      "path": "Portrait41.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait41.jpg",
+      "path": "Portrait41.imageset/Portrait41.jpg"
+    },
+    {
+      "source": "Catalog-Portrait42.json",
+      "path": "Portrait42.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait42.jpg",
+      "path": "Portrait42.imageset/Portrait42.jpg"
+    },
+    {
+      "source": "Catalog-Portrait43.json",
+      "path": "Portrait43.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait43.jpg",
+      "path": "Portrait43.imageset/Portrait43.jpg"
+    },
+    {
+      "source": "Catalog-Portrait44.json",
+      "path": "Portrait44.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait44.jpg",
+      "path": "Portrait44.imageset/Portrait44.jpg"
+    },
+    {
+      "source": "Catalog-Portrait45.json",
+      "path": "Portrait45.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait45.jpg",
+      "path": "Portrait45.imageset/Portrait45.jpg"
+    },
+    {
+      "source": "Catalog-Portrait46.json",
+      "path": "Portrait46.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait46.jpg",
+      "path": "Portrait46.imageset/Portrait46.jpg"
+    },
+    {
+      "source": "Catalog-Portrait47.json",
+      "path": "Portrait47.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait47.jpg",
+      "path": "Portrait47.imageset/Portrait47.jpg"
+    },
+    {
+      "source": "Catalog-Portrait48.json",
+      "path": "Portrait48.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait48.jpg",
+      "path": "Portrait48.imageset/Portrait48.jpg"
+    },
+    {
+      "source": "Catalog-Portrait49.json",
+      "path": "Portrait49.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait49.jpg",
+      "path": "Portrait49.imageset/Portrait49.jpg"
+    },
+    {
+      "source": "Catalog-Portrait5.json",
+      "path": "Portrait5.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait5.jpg",
+      "path": "Portrait5.imageset/Portrait5.jpg"
+    },
+    {
+      "source": "Catalog-Portrait50.json",
+      "path": "Portrait50.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait50.jpg",
+      "path": "Portrait50.imageset/Portrait50.jpg"
+    },
+    {
+      "source": "Catalog-Portrait51.json",
+      "path": "Portrait51.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait51.jpg",
+      "path": "Portrait51.imageset/Portrait51.jpg"
+    },
+    {
+      "source": "Catalog-Portrait52.json",
+      "path": "Portrait52.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait52.jpg",
+      "path": "Portrait52.imageset/Portrait52.jpg"
+    },
+    {
+      "source": "Catalog-Portrait53.json",
+      "path": "Portrait53.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait53.jpg",
+      "path": "Portrait53.imageset/Portrait53.jpg"
+    },
+    {
+      "source": "Catalog-Portrait54.json",
+      "path": "Portrait54.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait54.jpg",
+      "path": "Portrait54.imageset/Portrait54.jpg"
+    },
+    {
+      "source": "Catalog-Portrait55.json",
+      "path": "Portrait55.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait55.jpg",
+      "path": "Portrait55.imageset/Portrait55.jpg"
+    },
+    {
+      "source": "Catalog-Portrait56.json",
+      "path": "Portrait56.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait56.jpg",
+      "path": "Portrait56.imageset/Portrait56.jpg"
+    },
+    {
+      "source": "Catalog-Portrait57.json",
+      "path": "Portrait57.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait57.jpg",
+      "path": "Portrait57.imageset/Portrait57.jpg"
+    },
+    {
+      "source": "Catalog-Portrait58.json",
+      "path": "Portrait58.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait58.jpg",
+      "path": "Portrait58.imageset/Portrait58.jpg"
+    },
+    {
+      "source": "Catalog-Portrait59.json",
+      "path": "Portrait59.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait59.jpg",
+      "path": "Portrait59.imageset/Portrait59.jpg"
+    },
+    {
+      "source": "Catalog-Portrait6.json",
+      "path": "Portrait6.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait6.jpg",
+      "path": "Portrait6.imageset/Portrait6.jpg"
+    },
+    {
+      "source": "Catalog-Portrait60.json",
+      "path": "Portrait60.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait60.jpg",
+      "path": "Portrait60.imageset/Portrait60.jpg"
+    },
+    {
+      "source": "Catalog-Portrait61.json",
+      "path": "Portrait61.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait61.jpg",
+      "path": "Portrait61.imageset/Portrait61.jpg"
+    },
+    {
+      "source": "Catalog-Portrait62.json",
+      "path": "Portrait62.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait62.jpg",
+      "path": "Portrait62.imageset/Portrait62.jpg"
+    },
+    {
+      "source": "Catalog-Portrait63.json",
+      "path": "Portrait63.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait63.jpg",
+      "path": "Portrait63.imageset/Portrait63.jpg"
+    },
+    {
+      "source": "Catalog-Portrait64.json",
+      "path": "Portrait64.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait64.jpg",
+      "path": "Portrait64.imageset/Portrait64.jpg"
+    },
+    {
+      "source": "Catalog-Portrait65.json",
+      "path": "Portrait65.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait65.jpg",
+      "path": "Portrait65.imageset/Portrait65.jpg"
+    },
+    {
+      "source": "Catalog-Portrait66.json",
+      "path": "Portrait66.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait66.jpg",
+      "path": "Portrait66.imageset/Portrait66.jpg"
+    },
+    {
+      "source": "Catalog-Portrait67.json",
+      "path": "Portrait67.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait67.jpg",
+      "path": "Portrait67.imageset/Portrait67.jpg"
+    },
+    {
+      "source": "Catalog-Portrait68.json",
+      "path": "Portrait68.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait68.jpg",
+      "path": "Portrait68.imageset/Portrait68.jpg"
+    },
+    {
+      "source": "Catalog-Portrait69.json",
+      "path": "Portrait69.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait69.jpg",
+      "path": "Portrait69.imageset/Portrait69.jpg"
+    },
+    {
+      "source": "Catalog-Portrait7.json",
+      "path": "Portrait7.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait7.jpg",
+      "path": "Portrait7.imageset/Portrait7.jpg"
+    },
+    {
+      "source": "Catalog-Portrait70.json",
+      "path": "Portrait70.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait70.jpg",
+      "path": "Portrait70.imageset/Portrait70.jpg"
+    },
+    {
+      "source": "Catalog-Portrait71.json",
+      "path": "Portrait71.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait71.jpg",
+      "path": "Portrait71.imageset/Portrait71.jpg"
+    },
+    {
+      "source": "Catalog-Portrait72.json",
+      "path": "Portrait72.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait72.jpg",
+      "path": "Portrait72.imageset/Portrait72.jpg"
+    },
+    {
+      "source": "Catalog-Portrait73.json",
+      "path": "Portrait73.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait73.jpg",
+      "path": "Portrait73.imageset/Portrait73.jpg"
+    },
+    {
+      "source": "Catalog-Portrait74.json",
+      "path": "Portrait74.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait74.jpg",
+      "path": "Portrait74.imageset/Portrait74.jpg"
+    },
+    {
+      "source": "Catalog-Portrait75.json",
+      "path": "Portrait75.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait75.jpg",
+      "path": "Portrait75.imageset/Portrait75.jpg"
+    },
+    {
+      "source": "Catalog-Portrait76.json",
+      "path": "Portrait76.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait76.jpg",
+      "path": "Portrait76.imageset/Portrait76.jpg"
+    },
+    {
+      "source": "Catalog-Portrait77.json",
+      "path": "Portrait77.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait77.jpg",
+      "path": "Portrait77.imageset/Portrait77.jpg"
+    },
+    {
+      "source": "Catalog-Portrait78.json",
+      "path": "Portrait78.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait78.jpg",
+      "path": "Portrait78.imageset/Portrait78.jpg"
+    },
+    {
+      "source": "Catalog-Portrait8.json",
+      "path": "Portrait8.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait8.jpg",
+      "path": "Portrait8.imageset/Portrait8.jpg"
+    },
+    {
+      "source": "Catalog-Portrait9.json",
+      "path": "Portrait9.imageset/Contents.json"
+    },
+    {
+      "source": "Portrait9.jpg",
+      "path": "Portrait9.imageset/Portrait9.jpg"
+    },
+    {
+      "source": "Catalog-PortraitLocal.json",
+      "path": "PortraitLocal.imageset/Contents.json"
+    },
+    {
+      "source": "PortraitLocal.jpg",
+      "path": "PortraitLocal.imageset/PortraitLocal.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverBallet.json",
+      "path": "RoomCoverBallet.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverBallet.jpg",
+      "path": "RoomCoverBallet.imageset/RoomCoverBallet.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverCamera.json",
+      "path": "RoomCoverCamera.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverCamera.jpg",
+      "path": "RoomCoverCamera.imageset/RoomCoverCamera.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverDraft1.json",
+      "path": "RoomCoverDraft1.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverDraft1.jpg",
+      "path": "RoomCoverDraft1.imageset/RoomCoverDraft1.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverDraft2.json",
+      "path": "RoomCoverDraft2.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverDraft2.jpg",
+      "path": "RoomCoverDraft2.imageset/RoomCoverDraft2.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverDraft3.json",
+      "path": "RoomCoverDraft3.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverDraft3.jpg",
+      "path": "RoomCoverDraft3.imageset/RoomCoverDraft3.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverDraft4.json",
+      "path": "RoomCoverDraft4.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverDraft4.jpg",
+      "path": "RoomCoverDraft4.imageset/RoomCoverDraft4.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverFreestyle.json",
+      "path": "RoomCoverFreestyle.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverFreestyle.jpg",
+      "path": "RoomCoverFreestyle.imageset/RoomCoverFreestyle.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverHipHop.json",
+      "path": "RoomCoverHipHop.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverHipHop.jpg",
+      "path": "RoomCoverHipHop.imageset/RoomCoverHipHop.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverHouse.json",
+      "path": "RoomCoverHouse.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverHouse.jpg",
+      "path": "RoomCoverHouse.imageset/RoomCoverHouse.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverJazz.json",
+      "path": "RoomCoverJazz.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverJazz.jpg",
+      "path": "RoomCoverJazz.imageset/RoomCoverJazz.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverKPop.json",
+      "path": "RoomCoverKPop.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverKPop.jpg",
+      "path": "RoomCoverKPop.imageset/RoomCoverKPop.jpg"
+    },
+    {
+      "source": "Catalog-RoomCoverPractice.json",
+      "path": "RoomCoverPractice.imageset/Contents.json"
+    },
+    {
+      "source": "RoomCoverPractice.jpg",
+      "path": "RoomCoverPractice.imageset/RoomCoverPractice.jpg"
+    },
+    {
+      "source": "Catalog-StudioAfro.json",
+      "path": "StudioAfro.imageset/Contents.json"
+    },
+    {
+      "source": "StudioAfro.png",
+      "path": "StudioAfro.imageset/image.png"
+    },
+    {
+      "source": "Catalog-StudioFreestyle.json",
+      "path": "StudioFreestyle.imageset/Contents.json"
+    },
+    {
+      "source": "StudioFreestyle.png",
+      "path": "StudioFreestyle.imageset/image.png"
+    },
+    {
+      "source": "Catalog-StudioHipHop.json",
+      "path": "StudioHipHop.imageset/Contents.json"
+    },
+    {
+      "source": "StudioHipHop.png",
+      "path": "StudioHipHop.imageset/image.png"
+    },
+    {
+      "source": "Catalog-StudioHouse.json",
+      "path": "StudioHouse.imageset/Contents.json"
+    },
+    {
+      "source": "StudioHouse.png",
+      "path": "StudioHouse.imageset/image.png"
+    },
+    {
+      "source": "Catalog-StudioKPop.json",
+      "path": "StudioKPop.imageset/Contents.json"
+    },
+    {
+      "source": "StudioKPop.png",
+      "path": "StudioKPop.imageset/image.png"
+    },
+    {
+      "source": "Catalog-StudioLatin.json",
+      "path": "StudioLatin.imageset/Contents.json"
+    },
+    {
+      "source": "StudioLatin.png",
+      "path": "StudioLatin.imageset/image.png"
+    },
+    {
+      "source": "Catalog-TabChats.json",
+      "path": "TabChats.imageset/Contents.json"
+    },
+    {
+      "source": "TabChats.png",
+      "path": "TabChats.imageset/TabChats.png"
+    },
+    {
+      "source": "Catalog-TabLive.json",
+      "path": "TabLive.imageset/Contents.json"
+    },
+    {
+      "source": "TabLive.png",
+      "path": "TabLive.imageset/TabLive.png"
+    },
+    {
+      "source": "Catalog-TabMe.json",
+      "path": "TabMe.imageset/Contents.json"
+    },
+    {
+      "source": "TabMe.png",
+      "path": "TabMe.imageset/TabMe.png"
+    },
+    {
+      "source": "Catalog-TabVoice.json",
+      "path": "TabVoice.imageset/Contents.json"
+    },
+    {
+      "source": "TabVoice.png",
+      "path": "TabVoice.imageset/TabVoice.png"
+    },
+    {
+      "source": "Catalog-TotiEntryMusic.json",
+      "path": "TotiEntryMusic.imageset/Contents.json"
+    },
+    {
+      "source": "TotiEntryMusic.png",
+      "path": "TotiEntryMusic.imageset/TotiEntryMusic.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-back.json",
+      "path": "TotiIcon-back.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-back.png",
+      "path": "TotiIcon-back.imageset/TotiIcon-back.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-balloon.json",
+      "path": "TotiIcon-balloon.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-balloon.png",
+      "path": "TotiIcon-balloon.imageset/TotiIcon-balloon.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-bellOff.json",
+      "path": "TotiIcon-bellOff.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-bellOff.png",
+      "path": "TotiIcon-bellOff.imageset/TotiIcon-bellOff.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-block.json",
+      "path": "TotiIcon-block.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-block.png",
+      "path": "TotiIcon-block.imageset/TotiIcon-block.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-bookmark.json",
+      "path": "TotiIcon-bookmark.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-bookmark.png",
+      "path": "TotiIcon-bookmark.imageset/TotiIcon-bookmark.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-chats.json",
+      "path": "TotiIcon-chats.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-chats.png",
+      "path": "TotiIcon-chats.imageset/TotiIcon-chats.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-check.json",
+      "path": "TotiIcon-check.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-check.png",
+      "path": "TotiIcon-check.imageset/TotiIcon-check.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-checkbox.json",
+      "path": "TotiIcon-checkbox.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-checkbox.png",
+      "path": "TotiIcon-checkbox.imageset/TotiIcon-checkbox.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-checkboxOn.json",
+      "path": "TotiIcon-checkboxOn.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-checkboxOn.png",
+      "path": "TotiIcon-checkboxOn.imageset/TotiIcon-checkboxOn.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-clef.json",
+      "path": "TotiIcon-clef.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-clef.png",
+      "path": "TotiIcon-clef.imageset/TotiIcon-clef.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-clock.json",
+      "path": "TotiIcon-clock.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-clock.png",
+      "path": "TotiIcon-clock.imageset/TotiIcon-clock.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-close.json",
+      "path": "TotiIcon-close.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-close.png",
+      "path": "TotiIcon-close.imageset/TotiIcon-close.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-comment.json",
+      "path": "TotiIcon-comment.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-comment.png",
+      "path": "TotiIcon-comment.imageset/TotiIcon-comment.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-crown.json",
+      "path": "TotiIcon-crown.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-crown.png",
+      "path": "TotiIcon-crown.imageset/TotiIcon-crown.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-diamond.json",
+      "path": "TotiIcon-diamond.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-diamond.png",
+      "path": "TotiIcon-diamond.imageset/TotiIcon-diamond.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-drum.json",
+      "path": "TotiIcon-drum.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-drum.png",
+      "path": "TotiIcon-drum.imageset/TotiIcon-drum.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-equalizer.json",
+      "path": "TotiIcon-equalizer.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-equalizer.png",
+      "path": "TotiIcon-equalizer.imageset/TotiIcon-equalizer.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-eye.json",
+      "path": "TotiIcon-eye.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-eye.png",
+      "path": "TotiIcon-eye.imageset/TotiIcon-eye.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-filter.json",
+      "path": "TotiIcon-filter.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-filter.png",
+      "path": "TotiIcon-filter.imageset/TotiIcon-filter.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-flag.json",
+      "path": "TotiIcon-flag.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-flag.png",
+      "path": "TotiIcon-flag.imageset/TotiIcon-flag.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-flip.json",
+      "path": "TotiIcon-flip.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-flip.png",
+      "path": "TotiIcon-flip.imageset/TotiIcon-flip.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-flower.json",
+      "path": "TotiIcon-flower.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-flower.png",
+      "path": "TotiIcon-flower.imageset/TotiIcon-flower.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-gift.json",
+      "path": "TotiIcon-gift.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-gift.png",
+      "path": "TotiIcon-gift.imageset/TotiIcon-gift.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-grid.json",
+      "path": "TotiIcon-grid.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-grid.png",
+      "path": "TotiIcon-grid.imageset/TotiIcon-grid.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-guitar.json",
+      "path": "TotiIcon-guitar.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-guitar.png",
+      "path": "TotiIcon-guitar.imageset/TotiIcon-guitar.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-handset.json",
+      "path": "TotiIcon-handset.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-handset.png",
+      "path": "TotiIcon-handset.imageset/TotiIcon-handset.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-heart.json",
+      "path": "TotiIcon-heart.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-heart.png",
+      "path": "TotiIcon-heart.imageset/TotiIcon-heart.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-heartFill.json",
+      "path": "TotiIcon-heartFill.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-heartFill.png",
+      "path": "TotiIcon-heartFill.imageset/TotiIcon-heartFill.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-heartOutline.json",
+      "path": "TotiIcon-heartOutline.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-heartOutline.png",
+      "path": "TotiIcon-heartOutline.imageset/TotiIcon-heartOutline.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-info.json",
+      "path": "TotiIcon-info.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-info.png",
+      "path": "TotiIcon-info.imageset/TotiIcon-info.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-live.json",
+      "path": "TotiIcon-live.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-live.png",
+      "path": "TotiIcon-live.imageset/TotiIcon-live.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-logout.json",
+      "path": "TotiIcon-logout.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-logout.png",
+      "path": "TotiIcon-logout.imageset/TotiIcon-logout.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-lounge.json",
+      "path": "TotiIcon-lounge.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-lounge.png",
+      "path": "TotiIcon-lounge.imageset/TotiIcon-lounge.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-me.json",
+      "path": "TotiIcon-me.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-me.png",
+      "path": "TotiIcon-me.imageset/TotiIcon-me.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-microphone.json",
+      "path": "TotiIcon-microphone.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-microphone.png",
+      "path": "TotiIcon-microphone.imageset/TotiIcon-microphone.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-microphoneIvory.json",
+      "path": "TotiIcon-microphoneIvory.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-microphoneIvory.png",
+      "path": "TotiIcon-microphoneIvory.imageset/TotiIcon-microphoneIvory.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-microphoneOff.json",
+      "path": "TotiIcon-microphoneOff.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-microphoneOff.png",
+      "path": "TotiIcon-microphoneOff.imageset/TotiIcon-microphoneOff.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-microphoneOffIvory.json",
+      "path": "TotiIcon-microphoneOffIvory.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-microphoneOffIvory.png",
+      "path": "TotiIcon-microphoneOffIvory.imageset/TotiIcon-microphoneOffIvory.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-more.json",
+      "path": "TotiIcon-more.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-more.png",
+      "path": "TotiIcon-more.imageset/TotiIcon-more.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-music.json",
+      "path": "TotiIcon-music.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-music.png",
+      "path": "TotiIcon-music.imageset/TotiIcon-music.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-muted.json",
+      "path": "TotiIcon-muted.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-muted.png",
+      "path": "TotiIcon-muted.imageset/TotiIcon-muted.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-mutedIvory.json",
+      "path": "TotiIcon-mutedIvory.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-mutedIvory.png",
+      "path": "TotiIcon-mutedIvory.imageset/TotiIcon-mutedIvory.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-notebook.json",
+      "path": "TotiIcon-notebook.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-notebook.png",
+      "path": "TotiIcon-notebook.imageset/TotiIcon-notebook.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-pause.json",
+      "path": "TotiIcon-pause.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-pause.png",
+      "path": "TotiIcon-pause.imageset/TotiIcon-pause.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-phone.json",
+      "path": "TotiIcon-phone.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-phone.png",
+      "path": "TotiIcon-phone.imageset/TotiIcon-phone.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-photo.json",
+      "path": "TotiIcon-photo.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-photo.png",
+      "path": "TotiIcon-photo.imageset/TotiIcon-photo.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-phrases.json",
+      "path": "TotiIcon-phrases.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-phrases.png",
+      "path": "TotiIcon-phrases.imageset/TotiIcon-phrases.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-piano.json",
+      "path": "TotiIcon-piano.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-piano.png",
+      "path": "TotiIcon-piano.imageset/TotiIcon-piano.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-play.json",
+      "path": "TotiIcon-play.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-play.png",
+      "path": "TotiIcon-play.imageset/TotiIcon-play.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-plus.json",
+      "path": "TotiIcon-plus.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-plus.png",
+      "path": "TotiIcon-plus.imageset/TotiIcon-plus.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-refresh.json",
+      "path": "TotiIcon-refresh.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-refresh.png",
+      "path": "TotiIcon-refresh.imageset/TotiIcon-refresh.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-search.json",
+      "path": "TotiIcon-search.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-search.png",
+      "path": "TotiIcon-search.imageset/TotiIcon-search.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-send.json",
+      "path": "TotiIcon-send.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-send.png",
+      "path": "TotiIcon-send.imageset/TotiIcon-send.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-settings.json",
+      "path": "TotiIcon-settings.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-settings.png",
+      "path": "TotiIcon-settings.imageset/TotiIcon-settings.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-share.json",
+      "path": "TotiIcon-share.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-share.png",
+      "path": "TotiIcon-share.imageset/TotiIcon-share.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-shorts.json",
+      "path": "TotiIcon-shorts.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-shorts.png",
+      "path": "TotiIcon-shorts.imageset/TotiIcon-shorts.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-sparkle.json",
+      "path": "TotiIcon-sparkle.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-sparkle.png",
+      "path": "TotiIcon-sparkle.imageset/TotiIcon-sparkle.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-speaker.json",
+      "path": "TotiIcon-speaker.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-speaker.png",
+      "path": "TotiIcon-speaker.imageset/TotiIcon-speaker.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-speakerIvory.json",
+      "path": "TotiIcon-speakerIvory.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-speakerIvory.png",
+      "path": "TotiIcon-speakerIvory.imageset/TotiIcon-speakerIvory.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-spotlight.json",
+      "path": "TotiIcon-spotlight.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-spotlight.png",
+      "path": "TotiIcon-spotlight.imageset/TotiIcon-spotlight.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-star.json",
+      "path": "TotiIcon-star.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-star.png",
+      "path": "TotiIcon-star.imageset/TotiIcon-star.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-starFill.json",
+      "path": "TotiIcon-starFill.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-starFill.png",
+      "path": "TotiIcon-starFill.imageset/TotiIcon-starFill.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-ticket.json",
+      "path": "TotiIcon-ticket.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-ticket.png",
+      "path": "TotiIcon-ticket.imageset/TotiIcon-ticket.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-trash.json",
+      "path": "TotiIcon-trash.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-trash.png",
+      "path": "TotiIcon-trash.imageset/TotiIcon-trash.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-unreadBadge.json",
+      "path": "TotiIcon-unreadBadge.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-unreadBadge.png",
+      "path": "TotiIcon-unreadBadge.imageset/TotiIcon-unreadBadge.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-video.json",
+      "path": "TotiIcon-video.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-video.png",
+      "path": "TotiIcon-video.imageset/TotiIcon-video.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-vinyl.json",
+      "path": "TotiIcon-vinyl.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-vinyl.png",
+      "path": "TotiIcon-vinyl.imageset/TotiIcon-vinyl.png"
+    },
+    {
+      "source": "Catalog-TotiIcon-voice.json",
+      "path": "TotiIcon-voice.imageset/Contents.json"
+    },
+    {
+      "source": "TotiIcon-voice.png",
+      "path": "TotiIcon-voice.imageset/TotiIcon-voice.png"
+    },
+    {
+      "source": "Catalog-TotiLaunchBackground.json",
+      "path": "TotiLaunchBackground.colorset/Contents.json"
+    },
+    {
+      "source": "Catalog-TotiMark.json",
+      "path": "TotiMark.imageset/Contents.json"
+    },
+    {
+      "source": "TotiMark.png",
+      "path": "TotiMark.imageset/TotiMark.png"
+    },
+    {
+      "source": "Catalog-TotiWordmark.json",
+      "path": "TotiWordmark.imageset/Contents.json"
+    },
+    {
+      "source": "TotiWordmark.png",
+      "path": "TotiWordmark.imageset/TotiWordmark.png"
+    },
+    {
+      "source": "Catalog-VoiceHeadphones.json",
+      "path": "VoiceHeadphones.imageset/Contents.json"
+    },
+    {
+      "source": "VoiceHeadphones.png",
+      "path": "VoiceHeadphones.imageset/VoiceHeadphones.png"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "bundleID": "com.toti.music",
+  "deviceFamily": [
+    1
+  ],
+  "configurations": {
+    "Debug": {
+      "TARGETED_DEVICE_FAMILY": "1",
+      "SUPPORTED_PLATFORMS": "iphoneos iphonesimulator",
+      "SUPPORTS_MACCATALYST": "NO",
+      "SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD": "NO",
+      "SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD": "NO",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.toti.music"
+    },
+    "Release": {
+      "TARGETED_DEVICE_FAMILY": "1",
+      "SUPPORTED_PLATFORMS": "iphoneos iphonesimulator",
+      "SUPPORTS_MACCATALYST": "NO",
+      "SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD": "NO",
+      "SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD": "NO",
+      "PRODUCT_BUNDLE_IDENTIFIER": "com.toti.music"
+    }
+  },
+  "storekitFixtureInApplication": false,
+  "debugDylibSHA256": "a47eb881758cc0892ab64939a786085954652ea0dcca1fa7810f2abb9b7598e4",
+  "finalBuild": "BUILD SUCCEEDED",
+  "log": "/private/tmp/toti-iphone-final-build.log",
+  "installedDylibSHA256": "a47eb881758cc0892ab64939a786085954652ea0dcca1fa7810f2abb9b7598e4",
+  "installedMatchesLatestBuild": true,
+  "finalLaunchPID": 61142,
+  "finalLaunchDevice": "Toti UI Acceptance",
+  "finalLaunchUDID": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+  "finalLaunchMode": "Direct simulator launch without local StoreKit configuration"
+}

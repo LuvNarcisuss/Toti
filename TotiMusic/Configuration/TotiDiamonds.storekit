@@ -1,0 +1,124 @@
+{
+  "identifier": "D419F7AF",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "1000",
+      "localizations": [
+        {
+          "description": "400 diamonds for voice room gifts",
+          "displayName": "400 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "jezvdjvpoifednhy",
+      "referenceName": "400 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "1001",
+      "localizations": [
+        {
+          "description": "800 diamonds for voice room gifts",
+          "displayName": "800 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "uylrrniaqxjtlaie",
+      "referenceName": "800 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "1002",
+      "localizations": [
+        {
+          "description": "2450 diamonds for voice room gifts",
+          "displayName": "2450 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "oqojxyitbbjeayzj",
+      "referenceName": "2450 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "1003",
+      "localizations": [
+        {
+          "description": "5150 diamonds for voice room gifts",
+          "displayName": "5150 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "skrseirtauvvrsol",
+      "referenceName": "5150 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "19.99",
+      "familyShareable": false,
+      "internalID": "1004",
+      "localizations": [
+        {
+          "description": "10800 diamonds for voice room gifts",
+          "displayName": "10800 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "bqrdrlkrlfpzjmod",
+      "referenceName": "10800 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "49.99",
+      "familyShareable": false,
+      "internalID": "1005",
+      "localizations": [
+        {
+          "description": "29400 diamonds for voice room gifts",
+          "displayName": "29400 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "psqtqagzmiiyhncr",
+      "referenceName": "29400 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "99.99",
+      "familyShareable": false,
+      "internalID": "1006",
+      "localizations": [
+        {
+          "description": "63700 diamonds for voice room gifts",
+          "displayName": "63700 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "bzwmucutltusfxpv",
+      "referenceName": "63700 Diamonds",
+      "type": "Consumable"
+    }
+  ],
+  "settings": {
+    "_applicationInternalID": "40617780",
+    "_developerTeamID": "",
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}

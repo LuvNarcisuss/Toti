@@ -1,0 +1,1249 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		034E251E5052983D7B9247F9 /* LiveRoomStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB6164DA60C5268E39CA94 /* LiveRoomStore.swift */; };
+		0407AA37CF433C2643B27122 /* MusicVideoCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4DBA7D56F4960B3415E860 /* MusicVideoCatalog.swift */; };
+		0502EB4DF90B6B8E75229816 /* TermsOfService.html in Resources */ = {isa = PBXBuildFile; fileRef = 4E831BB328192517EEE3C2BE /* TermsOfService.html */; };
+		0728EA25E28CE95ABE716FF6 /* NotebookControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06520A6039182D5CB93E0F7 /* NotebookControllers.swift */; };
+		07BAFF26EE83CB1D04ED6C3F /* TotiUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45F65B8DC40DC043E85BA89 /* TotiUIKit.swift */; };
+		0CB5ACE44CBE6F637D5A2905 /* LibraryMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229DE4874D2086DDDF45F31 /* LibraryMigrationTests.swift */; };
+		113C37A1DB7B036AC22E39F1 /* CommunityWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B3AF43847544139A22BC11 /* CommunityWorkflowTests.swift */; };
+		13A877155068AE1EB33DF4AD /* MediaCredits.json in Resources */ = {isa = PBXBuildFile; fileRef = A0C6630599A25983AA328133 /* MediaCredits.json */; };
+		1968086373B3FFB3E9DE184A /* StoreProductCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D612FD292FE77F211DD2D35A /* StoreProductCatalog.swift */; };
+		1E2B4B3C20FF46975AE48B4E /* CreatorProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD1876D1C7C04C96B03B8B4 /* CreatorProfile.swift */; };
+		1F41BA4E3647C29496580799 /* TotiApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11445A5D59D5372E6574B428 /* TotiApplication.swift */; };
+		20621C5E5DA4133A9B1AE321 /* LoungeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B51FDED142B4FE55D6F0233 /* LoungeModels.swift */; };
+		2220DECCD60105D11E391981 /* LoungeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649CA9398E72A45FAF4A3900 /* LoungeTests.swift */; };
+		236E4FAFAA39199A0F0CDCBB /* TetoRhythm-Text.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ABB3A0A548E0918086AA91BB /* TetoRhythm-Text.ttf */; };
+		247D47229D8078B96E9AA625 /* LiveRoomPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8968578D7DA253A89C9508C4 /* LiveRoomPlayback.swift */; };
+		283CD72DA1F041855F0E9ED7 /* BundledResourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2355F8D5C2ED9E301CA05460 /* BundledResourceTests.swift */; };
+		2C338DC9076736E4F5DC9C0C /* ShortsInteractionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F2FD83F4E4C0A48E2046DA /* ShortsInteractionRepository.swift */; };
+		2CC8ABAEAAD24486420A67BA /* MusicDiscussionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9761379045FFFFC5E9A8819B /* MusicDiscussionContent.swift */; };
+		2E4EA6A1FA587C0B71EF9E7C /* MusicEditorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E254045BF49E1D8A0276E8D /* MusicEditorial.swift */; };
+		2E75A26FAF58A0548AEF7FF9 /* PartyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA954B73891AD5530C9B055E /* PartyModels.swift */; };
+		328285A13B888ABB91841FC3 /* VideoRecommendations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF020A1DD98CA8A8E0F914A2 /* VideoRecommendations.swift */; };
+		343508896DFD81A5EE3DDB00 /* LoungeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70BF80300BE083EA52618DEB /* LoungeStore.swift */; };
+		3602D7B9C6D574CB9E1340FF /* MusicPhotography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAA7C884CEBF7D49122D424 /* MusicPhotography.swift */; };
+		37AF9D663E2F59C1F8DE9816 /* DancePhraseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F071D648386D871D9342C676 /* DancePhraseCatalog.swift */; };
+		38DF37B3571E1D690F49AB20 /* StoreKit1PaymentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE02699F76BE3575AB295564 /* StoreKit1PaymentTests.swift */; };
+		3D4DE63C654A1BFC73DE06CD /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB30867F689E89EDD3D584B6 /* ChatModels.swift */; };
+		3EBC7A70280C507A22BBC040 /* ChatControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC445283D50EA9338DE1F2E /* ChatControllers.swift */; };
+		3F7310A97F87061DFC789BF9 /* PurchaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C07C155A924B84CDBFDE015 /* PurchaseUITests.swift */; };
+		425EF68EECA736759ECBEEE2 /* WalletModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D6BF5F5DE590EE80DF1BF /* WalletModels.swift */; };
+		4F0F67476D9F238E8D49E4C2 /* FlatAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39CF89BC8868EF0DD3FFC31F /* FlatAssets.xcassets */; };
+		5DC81D93D426205A1856C093 /* NotebookModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E91E7598AFAF743B9C6684E /* NotebookModels.swift */; };
+		5E16830F160EDC31E097C2E5 /* CallCameraSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AD39EAC8A82A8A9D11B81C /* CallCameraSurface.swift */; };
+		64C92F7E882168CB5B8878A7 /* TotiDiamonds.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */; };
+		6640A9DEF0EB7B4F60CC661B /* VideoViewingHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E107568EED7F26D2509BAF2 /* VideoViewingHistory.swift */; };
+		6BF35B44B80C8E8090D5A97F /* ArtistPortraits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730F9DD14A34CF083493E08F /* ArtistPortraits.swift */; };
+		6BFE5194DAE138284E49AE3D /* LocalVideoPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EBFD63F8A9F69F79A89425 /* LocalVideoPlayback.swift */; };
+		6F3DC005EF80A12338A3B9C9 /* TetoRhythm-Display.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01E890854C072D53AB6128AD /* TetoRhythm-Display.ttf */; };
+		71D1EE7628EA5356B0436304 /* LocalLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3089CEF66776A104781231 /* LocalLibrary.swift */; };
+		742AB9E57E96B7E6D4D23690 /* ShortsPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = C755C9C34D042846531EDD80 /* ShortsPlayback.swift */; };
+		7845221816AB3B75213771A3 /* UserAgreement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB533471AD7D66ACC02CB05 /* UserAgreement.swift */; };
+		79D295ED824D83FBB588113C /* ShortsInteractionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A53738CCA199B1FF28947D /* ShortsInteractionStore.swift */; };
+		8147F4171D3EB3BDCB057210 /* NotebookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2072FADE0E1C6435F30E759C /* NotebookTests.swift */; };
+		8AEBE9F4FF9DDD0F76C3EE87 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6266C17E8A1C5AAAA4F8A46C /* StoreKit.framework */; };
+		94512D1CF342E318C0B1B723 /* PrivacyPolicy.html in Resources */ = {isa = PBXBuildFile; fileRef = 97C6F9D3279CC8810635E1FB /* PrivacyPolicy.html */; };
+		9E3345B4208DF6C7FEE1DE9F /* NotebookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B48C56FDE9B678C554CF2 /* NotebookStore.swift */; };
+		9E6CCC8771DC3F65D15B18B7 /* CallController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5090BEE1537E945C2D8FEED3 /* CallController.swift */; };
+		9E78DD4E994D176125CF8927 /* ProfileControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571B810EEBD06B851BAB9FF8 /* ProfileControllers.swift */; };
+		A01F081B14CE7CEC6E59E764 /* PhraseBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12926D1084C4DC34341C30E7 /* PhraseBook.swift */; };
+		A70B4853ABE90B0867CC5234 /* PartyDiscoveryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE4E1D777469BF02F8D8B30 /* PartyDiscoveryStore.swift */; };
+		A7299D319E0CC60A0C1EC7CE /* VoiceRoomDecoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131667E5066CF87EF05F86D7 /* VoiceRoomDecoration.swift */; };
+		A78C86284B1B141D1679D4BD /* DancePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADA0F5A91966597389D8A9D /* DancePhrase.swift */; };
+		ADDA201DAFCF5C3871C54903 /* WalletStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA85A41C124D9F7C2D69532 /* WalletStore.swift */; };
+		B09F3A97EB57712059F300A2 /* PartyControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97E6553C29D103DC214CE9 /* PartyControllers.swift */; };
+		B6EBC2A0913541E084AB7D77 /* TotiDiamonds.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */; };
+		BFF6D4D89BB9DDC310D9BED6 /* ContentSafety.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CFDA3C7CCE6103B997498C /* ContentSafety.swift */; };
+		CC88E49F408004E61AB42AE1 /* MediaCreditsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174BCB3958647A4C916153AE /* MediaCreditsController.swift */; };
+		CF4B1D11AC9763DBB35CD280 /* CallCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED273BA3DB85038DF8C49FF /* CallCameraController.swift */; };
+		D4ED09F3EE8EE1805491F583 /* LoungeControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D621B5DE84FF4A194A7EC0B /* LoungeControllers.swift */; };
+		D6C362A5C8442ECF7E88F572 /* LocalLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE839885181D295BE33AEF7 /* LocalLibraryRepository.swift */; };
+		D763D126091E1DAC00B535F3 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3812778EB5DBA7DF97D6FF /* AppStore.swift */; };
+		DE72B3F28B2B5A240AB628F7 /* CommunityControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E2B5B50516FB55FB09630A /* CommunityControllers.swift */; };
+		DF6B8E3DC6BABA5BAEEFE39C /* TotiIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D806ACE3E7C05D4D3BBBB880 /* TotiIcons.swift */; };
+		E2A358F8C2055D082CCF6E5D /* TotiIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DE0EC2CCB304EA16261C8D /* TotiIdentity.swift */; };
+		E5198EA1C526D3BC63B96954 /* CommunityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9BAD5ADF6B4D29BB8DDA4 /* CommunityUITests.swift */; };
+		EED9BC212A0D368F33D3762C /* CreationSubmission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3D8D87DC8655FD6407406F /* CreationSubmission.swift */; };
+		F0E7BB00BEDAD6792707627E /* VoiceRoomChatScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77960B7BA7B426AD0A96BDF /* VoiceRoomChatScript.swift */; };
+		F450BB2F1B056E6F85B476CF /* LiveRoomModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E055C1ADEB564432710A7F /* LiveRoomModels.swift */; };
+		F7733025F9D49D2251DF2CB4 /* StoreKit1Purchasing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEECB2A04DA2CE71D8151AF /* StoreKit1Purchasing.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0E9C34FA642A9D36A4693A0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BD98E1D406020DF9041193D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 107CAA000E0B0C27A0C1E9B0;
+			remoteInfo = toti;
+		};
+		287228054A1A95475B433978 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BD98E1D406020DF9041193D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 107CAA000E0B0C27A0C1E9B0;
+			remoteInfo = toti;
+		};
+		397D37023844119DABC8484C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BD98E1D406020DF9041193D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 107CAA000E0B0C27A0C1E9B0;
+			remoteInfo = toti;
+		};
+		565D2A4AB0C368B1906A4540 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BD98E1D406020DF9041193D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 107CAA000E0B0C27A0C1E9B0;
+			remoteInfo = toti;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		01E890854C072D53AB6128AD /* TetoRhythm-Display.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TetoRhythm-Display.ttf"; sourceTree = "<group>"; };
+		04B3AF43847544139A22BC11 /* CommunityWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityWorkflowTests.swift; sourceTree = "<group>"; };
+		07C24DC8B344EE07D3DBD4F9 /* totiUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B3812778EB5DBA7DF97D6FF /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		0E91E7598AFAF743B9C6684E /* NotebookModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookModels.swift; sourceTree = "<group>"; };
+		11445A5D59D5372E6574B428 /* TotiApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiApplication.swift; sourceTree = "<group>"; };
+		12926D1084C4DC34341C30E7 /* PhraseBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseBook.swift; sourceTree = "<group>"; };
+		131667E5066CF87EF05F86D7 /* VoiceRoomDecoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRoomDecoration.swift; sourceTree = "<group>"; };
+		174BCB3958647A4C916153AE /* MediaCreditsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCreditsController.swift; sourceTree = "<group>"; };
+		1EA85A41C124D9F7C2D69532 /* WalletStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStore.swift; sourceTree = "<group>"; };
+		2072FADE0E1C6435F30E759C /* NotebookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookTests.swift; sourceTree = "<group>"; };
+		22E055C1ADEB564432710A7F /* LiveRoomModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomModels.swift; sourceTree = "<group>"; };
+		2355F8D5C2ED9E301CA05460 /* BundledResourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledResourceTests.swift; sourceTree = "<group>"; };
+		3229DE4874D2086DDDF45F31 /* LibraryMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryMigrationTests.swift; sourceTree = "<group>"; };
+		34CB6164DA60C5268E39CA94 /* LiveRoomStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomStore.swift; sourceTree = "<group>"; };
+		34E2B5B50516FB55FB09630A /* CommunityControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityControllers.swift; sourceTree = "<group>"; };
+		39CF89BC8868EF0DD3FFC31F /* FlatAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FlatAssets.xcassets; sourceTree = "<group>"; };
+		3D621B5DE84FF4A194A7EC0B /* LoungeControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeControllers.swift; sourceTree = "<group>"; };
+		3E3089CEF66776A104781231 /* LocalLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLibrary.swift; sourceTree = "<group>"; };
+		49AD39EAC8A82A8A9D11B81C /* CallCameraSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCameraSurface.swift; sourceTree = "<group>"; };
+		4A9D6BF5F5DE590EE80DF1BF /* WalletModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModels.swift; sourceTree = "<group>"; };
+		4AAA7C884CEBF7D49122D424 /* MusicPhotography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPhotography.swift; sourceTree = "<group>"; };
+		4E254045BF49E1D8A0276E8D /* MusicEditorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicEditorial.swift; sourceTree = "<group>"; };
+		4E831BB328192517EEE3C2BE /* TermsOfService.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = TermsOfService.html; sourceTree = "<group>"; };
+		4ED273BA3DB85038DF8C49FF /* CallCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCameraController.swift; sourceTree = "<group>"; };
+		4FE1D750466FB83F47DFF88D /* totiPurchaseUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiPurchaseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5090BEE1537E945C2D8FEED3 /* CallController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallController.swift; sourceTree = "<group>"; };
+		571B810EEBD06B851BAB9FF8 /* ProfileControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileControllers.swift; sourceTree = "<group>"; };
+		5B4DBA7D56F4960B3415E860 /* MusicVideoCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicVideoCatalog.swift; sourceTree = "<group>"; };
+		60F2FD83F4E4C0A48E2046DA /* ShortsInteractionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsInteractionRepository.swift; sourceTree = "<group>"; };
+		6266C17E8A1C5AAAA4F8A46C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		649CA9398E72A45FAF4A3900 /* LoungeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeTests.swift; sourceTree = "<group>"; };
+		66CFDA3C7CCE6103B997498C /* ContentSafety.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSafety.swift; sourceTree = "<group>"; };
+		685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */ = {isa = PBXFileReference; path = TotiDiamonds.storekit; sourceTree = "<group>"; };
+		70BF80300BE083EA52618DEB /* LoungeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeStore.swift; sourceTree = "<group>"; };
+		730F9DD14A34CF083493E08F /* ArtistPortraits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistPortraits.swift; sourceTree = "<group>"; };
+		87314041598FDCFE4A099548 /* totiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		88B9A7BD55F941E3738C8933 /* toti.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = toti.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8968578D7DA253A89C9508C4 /* LiveRoomPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomPlayback.swift; sourceTree = "<group>"; };
+		8B3D8D87DC8655FD6407406F /* CreationSubmission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationSubmission.swift; sourceTree = "<group>"; };
+		8CB533471AD7D66ACC02CB05 /* UserAgreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgreement.swift; sourceTree = "<group>"; };
+		8E107568EED7F26D2509BAF2 /* VideoViewingHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewingHistory.swift; sourceTree = "<group>"; };
+		9761379045FFFFC5E9A8819B /* MusicDiscussionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicDiscussionContent.swift; sourceTree = "<group>"; };
+		97C6F9D3279CC8810635E1FB /* PrivacyPolicy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = PrivacyPolicy.html; sourceTree = "<group>"; };
+		9ADA0F5A91966597389D8A9D /* DancePhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DancePhrase.swift; sourceTree = "<group>"; };
+		9B51FDED142B4FE55D6F0233 /* LoungeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeModels.swift; sourceTree = "<group>"; };
+		9C07C155A924B84CDBFDE015 /* PurchaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseUITests.swift; sourceTree = "<group>"; };
+		A0C6630599A25983AA328133 /* MediaCredits.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MediaCredits.json; sourceTree = "<group>"; };
+		AA954B73891AD5530C9B055E /* PartyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyModels.swift; sourceTree = "<group>"; };
+		AB30867F689E89EDD3D584B6 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
+		ABB3A0A548E0918086AA91BB /* TetoRhythm-Text.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TetoRhythm-Text.ttf"; sourceTree = "<group>"; };
+		AEE839885181D295BE33AEF7 /* LocalLibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLibraryRepository.swift; sourceTree = "<group>"; };
+		B7D9BAD5ADF6B4D29BB8DDA4 /* CommunityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityUITests.swift; sourceTree = "<group>"; };
+		BF020A1DD98CA8A8E0F914A2 /* VideoRecommendations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRecommendations.swift; sourceTree = "<group>"; };
+		BFB727EB36CF3A5BAB90F763 /* totiPaymentTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiPaymentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFC445283D50EA9338DE1F2E /* ChatControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatControllers.swift; sourceTree = "<group>"; };
+		BFEECB2A04DA2CE71D8151AF /* StoreKit1Purchasing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKit1Purchasing.swift; sourceTree = "<group>"; };
+		C06520A6039182D5CB93E0F7 /* NotebookControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookControllers.swift; sourceTree = "<group>"; };
+		C67B48C56FDE9B678C554CF2 /* NotebookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookStore.swift; sourceTree = "<group>"; };
+		C755C9C34D042846531EDD80 /* ShortsPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsPlayback.swift; sourceTree = "<group>"; };
+		C9EBFD63F8A9F69F79A89425 /* LocalVideoPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVideoPlayback.swift; sourceTree = "<group>"; };
+		CC97E6553C29D103DC214CE9 /* PartyControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyControllers.swift; sourceTree = "<group>"; };
+		CFD1876D1C7C04C96B03B8B4 /* CreatorProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProfile.swift; sourceTree = "<group>"; };
+		D45F65B8DC40DC043E85BA89 /* TotiUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiUIKit.swift; sourceTree = "<group>"; };
+		D5A53738CCA199B1FF28947D /* ShortsInteractionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsInteractionStore.swift; sourceTree = "<group>"; };
+		D612FD292FE77F211DD2D35A /* StoreProductCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreProductCatalog.swift; sourceTree = "<group>"; };
+		D77960B7BA7B426AD0A96BDF /* VoiceRoomChatScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRoomChatScript.swift; sourceTree = "<group>"; };
+		D806ACE3E7C05D4D3BBBB880 /* TotiIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiIcons.swift; sourceTree = "<group>"; };
+		ECE4E1D777469BF02F8D8B30 /* PartyDiscoveryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyDiscoveryStore.swift; sourceTree = "<group>"; };
+		F071D648386D871D9342C676 /* DancePhraseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DancePhraseCatalog.swift; sourceTree = "<group>"; };
+		F2DE0EC2CCB304EA16261C8D /* TotiIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiIdentity.swift; sourceTree = "<group>"; };
+		FE02699F76BE3575AB295564 /* StoreKit1PaymentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKit1PaymentTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		70158E7D1637C0F0CA1125D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8AEBE9F4FF9DDD0F76C3EE87 /* StoreKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0834E17CCB6BA473375A1B7B /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				5EA9A57211CE85DAA1C3261E /* Authentication */,
+				693CD068AC4385AA8B6C82D6 /* Calls */,
+				F12A7B633892F75621CAE103 /* Chats */,
+				7A65177C9F47BF0DE51BA284 /* Community */,
+				C4C8A0E8ADA18182837F43A2 /* Creation */,
+				49CA566AFD55241A98EC3B18 /* Creators */,
+				3DB97FCF169A1EF88C3F4C85 /* LiveRoom */,
+				C43D8B31790E5E8DDA7D6895 /* Lounge */,
+				D424FEA136ACF05A4AB161F4 /* Notebook */,
+				F08469E2022A360B382BE71B /* Parties */,
+				DBE847E01F9A17EE8F96523C /* Profile */,
+				41942706CBB31BA188996453 /* Safety */,
+				694D17DF89CDF2D33C0CC357 /* Shorts */,
+				26EEFE15655093659E3F05A8 /* Wallet */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		187E0A497F037771CEA53C69 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				4AAA7C884CEBF7D49122D424 /* MusicPhotography.swift */,
+				D806ACE3E7C05D4D3BBBB880 /* TotiIcons.swift */,
+				D45F65B8DC40DC043E85BA89 /* TotiUIKit.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		226D253884321796980CCB83 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				A0C6630599A25983AA328133 /* MediaCredits.json */,
+				97C6F9D3279CC8810635E1FB /* PrivacyPolicy.html */,
+				4E831BB328192517EEE3C2BE /* TermsOfService.html */,
+				01E890854C072D53AB6128AD /* TetoRhythm-Display.ttf */,
+				ABB3A0A548E0918086AA91BB /* TetoRhythm-Text.ttf */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		26EEFE15655093659E3F05A8 /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				BFEECB2A04DA2CE71D8151AF /* StoreKit1Purchasing.swift */,
+				D612FD292FE77F211DD2D35A /* StoreProductCatalog.swift */,
+				4A9D6BF5F5DE590EE80DF1BF /* WalletModels.swift */,
+				1EA85A41C124D9F7C2D69532 /* WalletStore.swift */,
+			);
+			path = Wallet;
+			sourceTree = "<group>";
+		};
+		2B7E60D8493CBB52692D318B /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				CFB56D735524D2C93E45A0B4 /* Media */,
+			);
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		2DABB0442BEEDCDD3F787134 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				AEE839885181D295BE33AEF7 /* LocalLibraryRepository.swift */,
+				60F2FD83F4E4C0A48E2046DA /* ShortsInteractionRepository.swift */,
+				8E107568EED7F26D2509BAF2 /* VideoViewingHistory.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		30E79973651069FE86C61AD5 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				B7D9BAD5ADF6B4D29BB8DDA4 /* CommunityUITests.swift */,
+			);
+			path = UITests;
+			sourceTree = "<group>";
+		};
+		3DB97FCF169A1EF88C3F4C85 /* LiveRoom */ = {
+			isa = PBXGroup;
+			children = (
+				22E055C1ADEB564432710A7F /* LiveRoomModels.swift */,
+				34CB6164DA60C5268E39CA94 /* LiveRoomStore.swift */,
+			);
+			path = LiveRoom;
+			sourceTree = "<group>";
+		};
+		41942706CBB31BA188996453 /* Safety */ = {
+			isa = PBXGroup;
+			children = (
+				66CFDA3C7CCE6103B997498C /* ContentSafety.swift */,
+			);
+			path = Safety;
+			sourceTree = "<group>";
+		};
+		47957C3FCA171A50BDEB81B5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6266C17E8A1C5AAAA4F8A46C /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		49CA566AFD55241A98EC3B18 /* Creators */ = {
+			isa = PBXGroup;
+			children = (
+				CFD1876D1C7C04C96B03B8B4 /* CreatorProfile.swift */,
+			);
+			path = Creators;
+			sourceTree = "<group>";
+		};
+		5EA9A57211CE85DAA1C3261E /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				8CB533471AD7D66ACC02CB05 /* UserAgreement.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		663774F182880F0551A43395 /* Toti */ = {
+			isa = PBXGroup;
+			children = (
+				226D253884321796980CCB83 /* Assets */,
+			);
+			name = Toti;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		693CD068AC4385AA8B6C82D6 /* Calls */ = {
+			isa = PBXGroup;
+			children = (
+				4ED273BA3DB85038DF8C49FF /* CallCameraController.swift */,
+				49AD39EAC8A82A8A9D11B81C /* CallCameraSurface.swift */,
+				5090BEE1537E945C2D8FEED3 /* CallController.swift */,
+			);
+			path = Calls;
+			sourceTree = "<group>";
+		};
+		694D17DF89CDF2D33C0CC357 /* Shorts */ = {
+			isa = PBXGroup;
+			children = (
+				D5A53738CCA199B1FF28947D /* ShortsInteractionStore.swift */,
+			);
+			path = Shorts;
+			sourceTree = "<group>";
+		};
+		752264906830213F9C969421 /* Toti */ = {
+			isa = PBXGroup;
+			children = (
+				F32FCF410E6E86CF900A3085 /* App */,
+				2DABB0442BEEDCDD3F787134 /* Data */,
+				187E0A497F037771CEA53C69 /* DesignSystem */,
+				E3AC08F8047A66F02DB05672 /* Domain */,
+				0834E17CCB6BA473375A1B7B /* Features */,
+				2B7E60D8493CBB52692D318B /* Platform */,
+			);
+			path = Toti;
+			sourceTree = "<group>";
+		};
+		7683797C59DA36E5E3D7E2CA /* $(DERIVED_FILE_DIR) */ = {
+			isa = PBXGroup;
+			children = (
+				39CF89BC8868EF0DD3FFC31F /* FlatAssets.xcassets */,
+			);
+			path = "$(DERIVED_FILE_DIR)";
+			sourceTree = "<group>";
+		};
+		7A65177C9F47BF0DE51BA284 /* Community */ = {
+			isa = PBXGroup;
+			children = (
+				34E2B5B50516FB55FB09630A /* CommunityControllers.swift */,
+			);
+			path = Community;
+			sourceTree = "<group>";
+		};
+		861AE29753DB6D9FD146DEF7 /* PurchaseUITests */ = {
+			isa = PBXGroup;
+			children = (
+				9C07C155A924B84CDBFDE015 /* PurchaseUITests.swift */,
+			);
+			path = PurchaseUITests;
+			sourceTree = "<group>";
+		};
+		8A14B057C202E4CB37EF38D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88B9A7BD55F941E3738C8933 /* toti.app */,
+				BFB727EB36CF3A5BAB90F763 /* totiPaymentTests.xctest */,
+				4FE1D750466FB83F47DFF88D /* totiPurchaseUITests.xctest */,
+				87314041598FDCFE4A099548 /* totiTests.xctest */,
+				07C24DC8B344EE07D3DBD4F9 /* totiUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9DE804057351312CFF609A62 = {
+			isa = PBXGroup;
+			children = (
+				7683797C59DA36E5E3D7E2CA /* $(DERIVED_FILE_DIR) */,
+				DBCC2749CFFD7A94B86ED55E /* Configuration */,
+				C76DAFA6B13D17655878F225 /* PaymentTests */,
+				861AE29753DB6D9FD146DEF7 /* PurchaseUITests */,
+				D7D0341D8DC443FE2D93081D /* Tests */,
+				752264906830213F9C969421 /* Toti */,
+				663774F182880F0551A43395 /* Toti */,
+				30E79973651069FE86C61AD5 /* UITests */,
+				47957C3FCA171A50BDEB81B5 /* Frameworks */,
+				8A14B057C202E4CB37EF38D3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C43D8B31790E5E8DDA7D6895 /* Lounge */ = {
+			isa = PBXGroup;
+			children = (
+				3D621B5DE84FF4A194A7EC0B /* LoungeControllers.swift */,
+				9B51FDED142B4FE55D6F0233 /* LoungeModels.swift */,
+				70BF80300BE083EA52618DEB /* LoungeStore.swift */,
+			);
+			path = Lounge;
+			sourceTree = "<group>";
+		};
+		C4C8A0E8ADA18182837F43A2 /* Creation */ = {
+			isa = PBXGroup;
+			children = (
+				8B3D8D87DC8655FD6407406F /* CreationSubmission.swift */,
+			);
+			path = Creation;
+			sourceTree = "<group>";
+		};
+		C76DAFA6B13D17655878F225 /* PaymentTests */ = {
+			isa = PBXGroup;
+			children = (
+				FE02699F76BE3575AB295564 /* StoreKit1PaymentTests.swift */,
+			);
+			path = PaymentTests;
+			sourceTree = "<group>";
+		};
+		CFB56D735524D2C93E45A0B4 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				8968578D7DA253A89C9508C4 /* LiveRoomPlayback.swift */,
+				C9EBFD63F8A9F69F79A89425 /* LocalVideoPlayback.swift */,
+				C755C9C34D042846531EDD80 /* ShortsPlayback.swift */,
+			);
+			path = Media;
+			sourceTree = "<group>";
+		};
+		D424FEA136ACF05A4AB161F4 /* Notebook */ = {
+			isa = PBXGroup;
+			children = (
+				C06520A6039182D5CB93E0F7 /* NotebookControllers.swift */,
+				0E91E7598AFAF743B9C6684E /* NotebookModels.swift */,
+				C67B48C56FDE9B678C554CF2 /* NotebookStore.swift */,
+			);
+			path = Notebook;
+			sourceTree = "<group>";
+		};
+		D7D0341D8DC443FE2D93081D /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				2355F8D5C2ED9E301CA05460 /* BundledResourceTests.swift */,
+				04B3AF43847544139A22BC11 /* CommunityWorkflowTests.swift */,
+				3229DE4874D2086DDDF45F31 /* LibraryMigrationTests.swift */,
+				649CA9398E72A45FAF4A3900 /* LoungeTests.swift */,
+				2072FADE0E1C6435F30E759C /* NotebookTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		DBCC2749CFFD7A94B86ED55E /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		DBE847E01F9A17EE8F96523C /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				174BCB3958647A4C916153AE /* MediaCreditsController.swift */,
+				571B810EEBD06B851BAB9FF8 /* ProfileControllers.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		E3AC08F8047A66F02DB05672 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				730F9DD14A34CF083493E08F /* ArtistPortraits.swift */,
+				9ADA0F5A91966597389D8A9D /* DancePhrase.swift */,
+				F071D648386D871D9342C676 /* DancePhraseCatalog.swift */,
+				3E3089CEF66776A104781231 /* LocalLibrary.swift */,
+				9761379045FFFFC5E9A8819B /* MusicDiscussionContent.swift */,
+				4E254045BF49E1D8A0276E8D /* MusicEditorial.swift */,
+				5B4DBA7D56F4960B3415E860 /* MusicVideoCatalog.swift */,
+				12926D1084C4DC34341C30E7 /* PhraseBook.swift */,
+				BF020A1DD98CA8A8E0F914A2 /* VideoRecommendations.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		F08469E2022A360B382BE71B /* Parties */ = {
+			isa = PBXGroup;
+			children = (
+				CC97E6553C29D103DC214CE9 /* PartyControllers.swift */,
+				ECE4E1D777469BF02F8D8B30 /* PartyDiscoveryStore.swift */,
+				AA954B73891AD5530C9B055E /* PartyModels.swift */,
+				D77960B7BA7B426AD0A96BDF /* VoiceRoomChatScript.swift */,
+				131667E5066CF87EF05F86D7 /* VoiceRoomDecoration.swift */,
+			);
+			path = Parties;
+			sourceTree = "<group>";
+		};
+		F12A7B633892F75621CAE103 /* Chats */ = {
+			isa = PBXGroup;
+			children = (
+				BFC445283D50EA9338DE1F2E /* ChatControllers.swift */,
+				AB30867F689E89EDD3D584B6 /* ChatModels.swift */,
+			);
+			path = Chats;
+			sourceTree = "<group>";
+		};
+		F32FCF410E6E86CF900A3085 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				0B3812778EB5DBA7DF97D6FF /* AppStore.swift */,
+				11445A5D59D5372E6574B428 /* TotiApplication.swift */,
+				F2DE0EC2CCB304EA16261C8D /* TotiIdentity.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0C0D4BEA33C8402585A218D0 /* totiUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9C9C37559884287C4C78D08B /* Build configuration list for PBXNativeTarget "totiUITests" */;
+			buildPhases = (
+				EA8B0905EB077E222128BDF3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5B5DA1A55AE21377DB1258E1 /* PBXTargetDependency */,
+			);
+			name = totiUITests;
+			packageProductDependencies = (
+			);
+			productName = totiUITests;
+			productReference = 07C24DC8B344EE07D3DBD4F9 /* totiUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		107CAA000E0B0C27A0C1E9B0 /* toti */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE3E99D21B8A455BFDF1C301 /* Build configuration list for PBXNativeTarget "toti" */;
+			buildPhases = (
+				0DC443AACCF75025E585E81A /* Prepare flat asset catalog */,
+				2077F9DD562D9A731019F8E1 /* Sources */,
+				2281C19E8F6DB7F49D5A1C50 /* Resources */,
+				70158E7D1637C0F0CA1125D3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = toti;
+			packageProductDependencies = (
+			);
+			productName = toti;
+			productReference = 88B9A7BD55F941E3738C8933 /* toti.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6F9D730EA9CCF6991435C57F /* totiPurchaseUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A120656BDE92C596985377B4 /* Build configuration list for PBXNativeTarget "totiPurchaseUITests" */;
+			buildPhases = (
+				9D44EBC6BD3A91AA52500224 /* Sources */,
+				1337AC816661A9065508EEDE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6B83DD6DCF5177AAD0123F7 /* PBXTargetDependency */,
+			);
+			name = totiPurchaseUITests;
+			packageProductDependencies = (
+			);
+			productName = totiPurchaseUITests;
+			productReference = 4FE1D750466FB83F47DFF88D /* totiPurchaseUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		70E4A7CC018195D55612C45D /* totiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 733F811AFDD1F2EBCB0C94AA /* Build configuration list for PBXNativeTarget "totiTests" */;
+			buildPhases = (
+				CE35A21ED2AFCECC58D26EBB /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6625A0B71A1C6724639C7480 /* PBXTargetDependency */,
+			);
+			name = totiTests;
+			packageProductDependencies = (
+			);
+			productName = totiTests;
+			productReference = 87314041598FDCFE4A099548 /* totiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E4B3B6EC86894533601C58FE /* totiPaymentTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24191799AF966025D394796F /* Build configuration list for PBXNativeTarget "totiPaymentTests" */;
+			buildPhases = (
+				E8D76BCC3ADE0A2979CA68B4 /* Sources */,
+				D02D15DB66F0B9C03054D623 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4D3F6F05EE9D3E743D8667FC /* PBXTargetDependency */,
+			);
+			name = totiPaymentTests;
+			packageProductDependencies = (
+			);
+			productName = totiPaymentTests;
+			productReference = BFB727EB36CF3A5BAB90F763 /* totiPaymentTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8BD98E1D406020DF9041193D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0C0D4BEA33C8402585A218D0 = {
+						TestTargetID = 107CAA000E0B0C27A0C1E9B0;
+					};
+					6F9D730EA9CCF6991435C57F = {
+						TestTargetID = 107CAA000E0B0C27A0C1E9B0;
+					};
+				};
+			};
+			buildConfigurationList = 6BA029A8B930E7F3A2023B19 /* Build configuration list for PBXProject "Toti" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 9DE804057351312CFF609A62;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8A14B057C202E4CB37EF38D3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				107CAA000E0B0C27A0C1E9B0 /* toti */,
+				E4B3B6EC86894533601C58FE /* totiPaymentTests */,
+				6F9D730EA9CCF6991435C57F /* totiPurchaseUITests */,
+				70E4A7CC018195D55612C45D /* totiTests */,
+				0C0D4BEA33C8402585A218D0 /* totiUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1337AC816661A9065508EEDE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6EBC2A0913541E084AB7D77 /* TotiDiamonds.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2281C19E8F6DB7F49D5A1C50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F0F67476D9F238E8D49E4C2 /* FlatAssets.xcassets in Resources */,
+				13A877155068AE1EB33DF4AD /* MediaCredits.json in Resources */,
+				94512D1CF342E318C0B1B723 /* PrivacyPolicy.html in Resources */,
+				0502EB4DF90B6B8E75229816 /* TermsOfService.html in Resources */,
+				6F3DC005EF80A12338A3B9C9 /* TetoRhythm-Display.ttf in Resources */,
+				236E4FAFAA39199A0F0CDCBB /* TetoRhythm-Text.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D02D15DB66F0B9C03054D623 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64C92F7E882168CB5B8878A7 /* TotiDiamonds.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0DC443AACCF75025E585E81A /* Prepare flat asset catalog */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Prepare flat asset catalog";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/FlatAssets.xcassets",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/python3 \"$SRCROOT/scripts/prepare_asset_catalog.py\" --output \"$DERIVED_FILE_DIR/FlatAssets.xcassets\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2077F9DD562D9A731019F8E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D763D126091E1DAC00B535F3 /* AppStore.swift in Sources */,
+				6BF35B44B80C8E8090D5A97F /* ArtistPortraits.swift in Sources */,
+				CF4B1D11AC9763DBB35CD280 /* CallCameraController.swift in Sources */,
+				5E16830F160EDC31E097C2E5 /* CallCameraSurface.swift in Sources */,
+				9E6CCC8771DC3F65D15B18B7 /* CallController.swift in Sources */,
+				3EBC7A70280C507A22BBC040 /* ChatControllers.swift in Sources */,
+				3D4DE63C654A1BFC73DE06CD /* ChatModels.swift in Sources */,
+				DE72B3F28B2B5A240AB628F7 /* CommunityControllers.swift in Sources */,
+				BFF6D4D89BB9DDC310D9BED6 /* ContentSafety.swift in Sources */,
+				EED9BC212A0D368F33D3762C /* CreationSubmission.swift in Sources */,
+				1E2B4B3C20FF46975AE48B4E /* CreatorProfile.swift in Sources */,
+				A78C86284B1B141D1679D4BD /* DancePhrase.swift in Sources */,
+				37AF9D663E2F59C1F8DE9816 /* DancePhraseCatalog.swift in Sources */,
+				F450BB2F1B056E6F85B476CF /* LiveRoomModels.swift in Sources */,
+				247D47229D8078B96E9AA625 /* LiveRoomPlayback.swift in Sources */,
+				034E251E5052983D7B9247F9 /* LiveRoomStore.swift in Sources */,
+				71D1EE7628EA5356B0436304 /* LocalLibrary.swift in Sources */,
+				D6C362A5C8442ECF7E88F572 /* LocalLibraryRepository.swift in Sources */,
+				6BFE5194DAE138284E49AE3D /* LocalVideoPlayback.swift in Sources */,
+				D4ED09F3EE8EE1805491F583 /* LoungeControllers.swift in Sources */,
+				20621C5E5DA4133A9B1AE321 /* LoungeModels.swift in Sources */,
+				343508896DFD81A5EE3DDB00 /* LoungeStore.swift in Sources */,
+				CC88E49F408004E61AB42AE1 /* MediaCreditsController.swift in Sources */,
+				2CC8ABAEAAD24486420A67BA /* MusicDiscussionContent.swift in Sources */,
+				2E4EA6A1FA587C0B71EF9E7C /* MusicEditorial.swift in Sources */,
+				3602D7B9C6D574CB9E1340FF /* MusicPhotography.swift in Sources */,
+				0407AA37CF433C2643B27122 /* MusicVideoCatalog.swift in Sources */,
+				0728EA25E28CE95ABE716FF6 /* NotebookControllers.swift in Sources */,
+				5DC81D93D426205A1856C093 /* NotebookModels.swift in Sources */,
+				9E3345B4208DF6C7FEE1DE9F /* NotebookStore.swift in Sources */,
+				B09F3A97EB57712059F300A2 /* PartyControllers.swift in Sources */,
+				A70B4853ABE90B0867CC5234 /* PartyDiscoveryStore.swift in Sources */,
+				2E75A26FAF58A0548AEF7FF9 /* PartyModels.swift in Sources */,
+				A01F081B14CE7CEC6E59E764 /* PhraseBook.swift in Sources */,
+				9E78DD4E994D176125CF8927 /* ProfileControllers.swift in Sources */,
+				2C338DC9076736E4F5DC9C0C /* ShortsInteractionRepository.swift in Sources */,
+				79D295ED824D83FBB588113C /* ShortsInteractionStore.swift in Sources */,
+				742AB9E57E96B7E6D4D23690 /* ShortsPlayback.swift in Sources */,
+				F7733025F9D49D2251DF2CB4 /* StoreKit1Purchasing.swift in Sources */,
+				1968086373B3FFB3E9DE184A /* StoreProductCatalog.swift in Sources */,
+				1F41BA4E3647C29496580799 /* TotiApplication.swift in Sources */,
+				DF6B8E3DC6BABA5BAEEFE39C /* TotiIcons.swift in Sources */,
+				E2A358F8C2055D082CCF6E5D /* TotiIdentity.swift in Sources */,
+				07BAFF26EE83CB1D04ED6C3F /* TotiUIKit.swift in Sources */,
+				7845221816AB3B75213771A3 /* UserAgreement.swift in Sources */,
+				328285A13B888ABB91841FC3 /* VideoRecommendations.swift in Sources */,
+				6640A9DEF0EB7B4F60CC661B /* VideoViewingHistory.swift in Sources */,
+				F0E7BB00BEDAD6792707627E /* VoiceRoomChatScript.swift in Sources */,
+				A7299D319E0CC60A0C1EC7CE /* VoiceRoomDecoration.swift in Sources */,
+				425EF68EECA736759ECBEEE2 /* WalletModels.swift in Sources */,
+				ADDA201DAFCF5C3871C54903 /* WalletStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D44EBC6BD3A91AA52500224 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F7310A97F87061DFC789BF9 /* PurchaseUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE35A21ED2AFCECC58D26EBB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				283CD72DA1F041855F0E9ED7 /* BundledResourceTests.swift in Sources */,
+				113C37A1DB7B036AC22E39F1 /* CommunityWorkflowTests.swift in Sources */,
+				0CB5ACE44CBE6F637D5A2905 /* LibraryMigrationTests.swift in Sources */,
+				2220DECCD60105D11E391981 /* LoungeTests.swift in Sources */,
+				8147F4171D3EB3BDCB057210 /* NotebookTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E8D76BCC3ADE0A2979CA68B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38DF37B3571E1D690F49AB20 /* StoreKit1PaymentTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA8B0905EB077E222128BDF3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5198EA1C526D3BC63B96954 /* CommunityUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4D3F6F05EE9D3E743D8667FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 107CAA000E0B0C27A0C1E9B0 /* toti */;
+			targetProxy = 397D37023844119DABC8484C /* PBXContainerItemProxy */;
+		};
+		5B5DA1A55AE21377DB1258E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 107CAA000E0B0C27A0C1E9B0 /* toti */;
+			targetProxy = 0E9C34FA642A9D36A4693A0D /* PBXContainerItemProxy */;
+		};
+		6625A0B71A1C6724639C7480 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 107CAA000E0B0C27A0C1E9B0 /* toti */;
+			targetProxy = 287228054A1A95475B433978 /* PBXContainerItemProxy */;
+		};
+		A6B83DD6DCF5177AAD0123F7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 107CAA000E0B0C27A0C1E9B0 /* toti */;
+			targetProxy = 565D2A4AB0C368B1906A4540 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		5709134AB6BEA1C0753321BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.toti.music.payment-tests";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/toti.app/toti";
+			};
+			name = Debug;
+		};
+		7143AF8F13D4811629B11543 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.toti.music.tests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/toti.app/toti";
+			};
+			name = Debug;
+		};
+		871149AE2B01B99014E14D6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.toti.music.purchase-uitests";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = toti;
+			};
+			name = Debug;
+		};
+		A958F90A5E949EEEE80DC152 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.toti.music.tests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/toti.app/toti";
+			};
+			name = Release;
+		};
+		ACAAC7718E7875D56E4AC572 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.toti.music.uitests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = toti;
+			};
+			name = Release;
+		};
+		B243D17327B59EC27AC76E0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BD99E4F4EBE612128CC0941E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.toti.music.purchase-uitests";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = toti;
+			};
+			name = Release;
+		};
+		C5C02DE89D24CD8AB55E7214 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Toti/Support/Info.plist;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.toti.music;
+				PRODUCT_NAME = toti;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E526079C29CCF7B0F52A59C6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.toti.music.uitests;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = toti;
+			};
+			name = Debug;
+		};
+		EE4FA13017A7D2FF4F78C973 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Toti/Support/Info.plist;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.toti.music;
+				PRODUCT_NAME = toti;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		FD84FF87873E16613BF2ADCA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		FF3D16EA265C81E88F7DD4B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.toti.music.payment-tests";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/toti.app/toti";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		24191799AF966025D394796F /* Build configuration list for PBXNativeTarget "totiPaymentTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5709134AB6BEA1C0753321BE /* Debug */,
+				FF3D16EA265C81E88F7DD4B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6BA029A8B930E7F3A2023B19 /* Build configuration list for PBXProject "Toti" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B243D17327B59EC27AC76E0E /* Debug */,
+				FD84FF87873E16613BF2ADCA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		733F811AFDD1F2EBCB0C94AA /* Build configuration list for PBXNativeTarget "totiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7143AF8F13D4811629B11543 /* Debug */,
+				A958F90A5E949EEEE80DC152 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9C9C37559884287C4C78D08B /* Build configuration list for PBXNativeTarget "totiUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E526079C29CCF7B0F52A59C6 /* Debug */,
+				ACAAC7718E7875D56E4AC572 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A120656BDE92C596985377B4 /* Build configuration list for PBXNativeTarget "totiPurchaseUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				871149AE2B01B99014E14D6D /* Debug */,
+				BD99E4F4EBE612128CC0941E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DE3E99D21B8A455BFDF1C301 /* Build configuration list for PBXNativeTarget "toti" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5C02DE89D24CD8AB55E7214 /* Debug */,
+				EE4FA13017A7D2FF4F78C973 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8BD98E1D406020DF9041193D /* Project object */;
+}
