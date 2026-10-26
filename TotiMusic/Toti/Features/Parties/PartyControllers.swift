@@ -679,14 +679,10 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     push(CreatorController(store: store, creator: creator))
   }
   private func showGifts() {
-    let people = room.participants.map { GiftAudienceMember(id: $0.id, name: $0.name) }
-    let gifts = GiftsController(
-      store: store, roomID: room.id, recipients: people, picksRecipient: true)
-    gifts.onSent = { [weak self] gift, count in
-      guard let self else { return }
-      GiftBurst.show(gift: gift, quantity: count, in: self.view)
-    }
-    presentScreen(gifts)
+    let people = room.participants.filter { $0.id != "local-owner" && !store.isCreatorBlocked($0.id) }
+      .map { GiftRecipient(id: $0.id, name: $0.name) }
+    openGifts(GiftContext(surface: .voiceRoom, sourceID: room.id, sourceTitle: room.title,
+                          recipients: people), picksRecipient: true)
   }
   private func toggleSpeaker() {
     speakerOn.toggle()

@@ -237,6 +237,13 @@ final class LoungeDetailController: StackScreen, UITextViewDelegate {
                 }
             })
         } else {
+            let gift = actionButton("Give a gift", icon: .gift, tone: .coral) { [weak self] in
+                guard let self else { return }
+                self.openGifts(GiftContext(surface: .post, sourceID: post.id.uuidString,
+                    sourceTitle: "Lounge post", recipients: [GiftRecipient(id: post.author.id, name: post.author.name)]))
+            }
+            gift.accessibilityIdentifier = "gift.entry.post"
+            views.append(gift)
             views.append(actionButton("Report or block", icon: .flag) { [weak self] in
                 self?.showSafety(ContentSafetyTarget(id: post.id.uuidString, title: String(post.body.prefix(120)), kind: .post, creator: post.author))
             })

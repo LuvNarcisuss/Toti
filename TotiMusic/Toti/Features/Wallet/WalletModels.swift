@@ -67,6 +67,26 @@ struct MusicGift: Identifiable {
     ]
 }
 
+struct GiftRecipient: Codable, Equatable {
+    let id: String
+    let name: String
+}
+
+struct GiftContext: Codable, Equatable {
+    enum Surface: String, Codable { case post, voiceRoom }
+    let surface: Surface
+    let sourceID: String
+    let sourceTitle: String
+    var recipients: [GiftRecipient]
+
+    var recipientText: String { recipients.map(\.name).joined(separator: ", ") }
+    var isValid: Bool {
+        !sourceID.isEmpty && !sourceTitle.isEmpty && !recipients.isEmpty
+            && Set(recipients.map(\.id)).count == recipients.count
+            && recipients.allSatisfy { !$0.id.isEmpty && $0.id != "local-owner" && !$0.name.isEmpty }
+    }
+}
+
 struct WalletActivity: Codable, Identifiable {
     let id: String
     let title: String
@@ -75,6 +95,10 @@ struct WalletActivity: Codable, Identifiable {
     let date: Date
     /// "gift" is a local spend. A missing value is a diamond purchase.
     var kind: String? = nil
+    // Optional fields preserve previously saved purchases and gifts.
+    var giftContext: GiftContext? = nil
+    var giftID: String? = nil
+    var giftQuantity: Int? = nil
 }
 
 struct WalletSnapshot {
@@ -104,7 +128,13 @@ struct WalletLedger: Codable {
                 guard item.amount > 0, !item.id.isEmpty, !item.title.isEmpty, item.currency == .diamonds else {
                     return false
                 }
-                if item.kind == "gift" { return true }
+                if item.kind == "gift" {
+                    guard let context = item.giftContext else { return true }
+                    guard context.isValid, let quantity = item.giftQuantity,
+                          (1...99).contains(quantity),
+                          let gift = MusicGift.catalog.first(where: { $0.id == item.giftID }) else { return false }
+                    return item.amount == gift.diamonds * quantity
+                }
                 return (item.kind == nil || item.kind == "credit") && creditedTransactionIDs.contains(item.id)
             }
     }

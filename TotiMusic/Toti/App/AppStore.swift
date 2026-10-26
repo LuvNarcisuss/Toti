@@ -18,6 +18,32 @@ final class AppStore: ObservableObject {
   private var ownerAvatarCache: UIImage?
   private var ownerAvatarStamp: Date?
 
+  func giftUnavailableReason(_ context: GiftContext) -> String? {
+    guard isLoaded, sessionActive, !isBusy else { return "Please reopen the wallet before giving a gift." }
+    guard context.isValid, !context.recipients.contains(where: { isCreatorBlocked($0.id) }) else {
+      return "This recipient is unavailable. No diamonds were spent."
+    }
+    let ids = Set(context.recipients.map(\.id))
+    switch context.surface {
+    case .post:
+      guard let id = UUID(uuidString: context.sourceID), let post = loungePost(id),
+            !post.author.isLocalOwner, ids == [post.author.id] else {
+        return "This post is unavailable for gifts."
+      }
+    case .voiceRoom:
+      guard let room = loungeVoiceRooms.first(where: { $0.id == context.sourceID }),
+            ids.isSubset(of: Set(room.participants.map(\.id))) else {
+        return "This room or its selected members are unavailable."
+      }
+    }
+    return nil
+  }
+
+  func giveGift(_ gift: MusicGift, quantity: Int, context: GiftContext) async -> String? {
+    if let reason = giftUnavailableReason(context) { return reason }
+    return await wallet.send(gift, quantity: quantity, context: context)
+  }
+
   let wallet = WalletStore()
   let shortsSocial: ShortsInteractionStore
   private var socialObservation: AnyCancellable?

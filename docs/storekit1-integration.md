@@ -49,3 +49,14 @@ The StoreKit fixture is copied only into payment test bundles, not production ap
 - Receipt validation, server order confirmation, refund reconciliation and account-level balance synchronization are not implemented. Current fulfillment relies on StoreKit transaction callbacks and a device-local ledger. Deleting app data loses that local ledger.
 - The user subsequently authorized compilation, simulator execution and payment testing. See [payment verification](payment-verification/README.md) for actual nonzero test counts, observed failures and corrections.
 - A query without local StoreKit configuration returned zero products and all seven IDs as invalid on the tested simulator. This blocks an Apple sandbox purchase claim; it does not prove that products are absent in App Store Connect. Registered app identity, signing/provisioning, product metadata/availability and account agreements require owner-side verification.
+
+
+## Existing-surface gifts (2026-10-26)
+
+Lounge post details reuse the existing Voice gift catalog and picker. Profile and chat gifts are explicitly excluded by the user. No new currency, package, StoreKit product or feature module is added.
+
+Gift confirmation describes local effects and records only, not remote delivery or recipient earnings. Voice can select a member or Everyone; Everyone records the selected roster and creates one shared effect at the displayed total price, without multiplying the price by roster size. Own, blocked and unavailable targets are rejected. Post gifts record the post UUID and author ID. The wallet activity holds optional gift context, gift ID and quantity; older activities still decode.
+
+Gift debits and StoreKit credits share the same serialized persistence queue. The UI rejects overlapping spends and prevents session exit while a wallet action is in flight. Failed saves do not publish a new balance or effect. Gift confirmation uses a system alert for long recipient lists and accessibility text; the picker opens at the large sheet detent. Saving disables Close and interactive dismissal.
+
+The original concurrent-spend regression reproduced two successful calls yielding only one debit and one history entry. The repaired path preserves both debits; interleaved purchase credits are also covered by local StoreKit tests. See `gift-verification/README.md` for this change's final evidence and limits.

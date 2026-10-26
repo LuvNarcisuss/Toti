@@ -12,7 +12,7 @@ def note(condition,message):
  if not condition:issues.append(message)
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 note(not any(p.is_dir() for p in ASSETS.iterdir()),'Source Assets must contain files only')
-jsons=list(r.rglob('*.json'))+list((r.parent/'Assets').rglob('*.json'))
+jsons=list(r.rglob('*.json'))+list((r.parent/'Assets').rglob('*.json'))+list((r.parent/'docs').rglob('*.json'))
 for p in jsons:
  try:json.loads(p.read_text())
  except Exception as e:issues.append(str(p.relative_to(r.parent))+': '+str(e))
@@ -62,4 +62,4 @@ app=(src/'App/TotiApplication.swift').read_text();note(all(label in app for labe
 checks['swiftFiles']=len(list(src.rglob('*.swift')));checks['runtimeResourceBytes']=sum(p.stat().st_size for p in assets.rglob('*') if p.is_file()) + sum((ASSETS/name).stat().st_size for name in ['TetoRhythm-Display.ttf','TetoRhythm-Text.ttf','TermsOfService.html','PrivacyPolicy.html','MediaCredits.json'])
 checks['verificationScope']='Static source/resource/configuration inspection only; no build, typecheck, app execution or tests.'
 report={'date':'2026-10-26','checks':checks,'issues':issues}
-(r/'docs/static-audit.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2));raise SystemExit(bool(issues))
+(r.parent/'docs/static-audit.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2));raise SystemExit(bool(issues))

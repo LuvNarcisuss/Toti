@@ -79,6 +79,155 @@ final class StoreKit1PaymentTests: XCTestCase {
         guard condition() else { XCTFail(description); throw PaymentTestError.timeout }
     }
 
+    func testConcurrentGiftSpendsPreserveBothDebits() async throws {
+        let purchased = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(purchased)
+        let repository = repository!
+        purchasing.setPersist { next in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            do { try await repository.saveWallet(next); return true }
+            catch { return false }
+        }
+        let rose = MusicGift.catalog[0]
+        async let first = purchasing.spend(rose, quantity: 1)
+        async let second = purchasing.spend(rose, quantity: 1)
+        let results = await [first, second]
+        XCTAssertTrue(results.allSatisfy { $0 == nil })
+        XCTAssertEqual(ledger.diamonds, 380)
+        XCTAssertEqual(ledger.activity.filter { $0.kind == "gift" }.count, 2)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 380)
+    }
+
+    func testGiftContextPersistsAndLegacyActivityStillDecodes() async throws {
+        let purchased = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(purchased)
+        let post = LoungeState.editorialPosts[0]
+        let context = GiftContext(surface: .post, sourceID: post.id.uuidString, sourceTitle: "Lounge post",
+            recipients: [GiftRecipient(id: post.author.id, name: post.author.name)])
+        let result = await purchasing.spend(MusicGift.catalog[0], quantity: 5, context: context)
+        XCTAssertNil(result)
+        XCTAssertEqual(ledger.diamonds, 350)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.activity.first?.giftContext, context)
+        XCTAssertEqual(saved.activity.first?.giftID, "rose")
+        XCTAssertEqual(saved.activity.first?.giftQuantity, 5)
+        XCTAssertTrue(saved.isValid)
+        await purchasing.stop()
+        try await startService()
+        XCTAssertEqual(ledger.diamonds, 350)
+        XCTAssertEqual(ledger.activity.first?.giftContext, context)
+        var legacy = WalletLedger.empty
+        legacy.activity = [WalletActivity(id: "old-gift", title: "Sent Rose", currency: .diamonds,
+            amount: 10, date: Date(), kind: "gift")]
+        let data = try JSONEncoder().encode(legacy)
+        let decoded = try JSONDecoder().decode(WalletLedger.self, from: data)
+        XCTAssertTrue(decoded.isValid)
+        XCTAssertNil(decoded.activity[0].giftContext)
+    }
+
+    func testVoiceMemberAndEveryoneKeepRecipientMetadataWithoutMultiplyingPrice() async throws {
+        let purchased = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(purchased)
+        let room = MusicRoomCatalog.rooms[0]
+        let recipients = room.participants.map { GiftRecipient(id: $0.id, name: $0.name) }
+        var context = GiftContext(surface: .voiceRoom, sourceID: room.id, sourceTitle: room.title, recipients: [recipients[1]])
+        let single = await purchasing.spend(MusicGift.catalog[0], quantity: 5, context: context)
+        XCTAssertNil(single)
+        XCTAssertEqual(ledger.diamonds, 350)
+        XCTAssertEqual(ledger.activity.first?.giftContext?.recipients, [recipients[1]])
+        context.recipients = recipients
+        let everyone = await purchasing.spend(MusicGift.catalog[0], quantity: 5, context: context)
+        XCTAssertNil(everyone)
+        XCTAssertEqual(ledger.diamonds, 300)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.activity.first?.giftContext?.recipients, recipients)
+        XCTAssertEqual(saved.activity.first?.amount, 50)
+    }
+
+    func testGiftFailureInsufficientFundsAndInvalidTargetLeaveBalanceUnchanged() async throws {
+        let purchased = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(purchased)
+        let valid = GiftContext(surface: .voiceRoom, sourceID: "hip-hop-crew", sourceTitle: "The Pop Lounge",
+            recipients: [GiftRecipient(id: "dancer-0-0", name: "Maya")])
+        let insufficient = await purchasing.spend(MusicGift.catalog.last!, quantity: 1, context: valid)
+        XCTAssertNotNil(insufficient)
+        var invalid = valid
+        invalid.recipients = [GiftRecipient(id: "local-owner", name: "You")]
+        let selfGift = await purchasing.spend(MusicGift.catalog[0], quantity: 1, context: invalid)
+        XCTAssertNotNil(selfGift)
+        purchasing.setPersist { _ in false }
+        let failed = await purchasing.spend(MusicGift.catalog[0], quantity: 1, context: valid)
+        XCTAssertNotNil(failed)
+        XCTAssertEqual(ledger.diamonds, 400)
+        XCTAssertEqual(ledger.activity.count, 1)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 400)
+        enablePersistence()
+        await purchasing.stop()
+        let afterLogout = await purchasing.spend(MusicGift.catalog[0], quantity: 1, context: valid)
+        XCTAssertNotNil(afterLogout)
+        XCTAssertEqual(ledger.diamonds, 400)
+    }
+
+    func testPurchaseCreditDuringGiftSaveKeepsBothChanges() async throws {
+        let purchased = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(purchased)
+        let repository = repository!
+        let saving = expectation(description: "Gift persistence has started")
+        purchasing.setPersist { next in
+            if next.activity.first?.kind == "gift" {
+                saving.fulfill()
+                try? await Task.sleep(nanoseconds: 300_000_000)
+            }
+            do { try await repository.saveWallet(next); return true }
+            catch { return false }
+        }
+        let giftTask = Task { await purchasing.spend(MusicGift.catalog[0], quantity: 1) }
+        await fulfillment(of: [saving], timeout: 5)
+        let added = try await buy("uylrrniaqxjtlaie")
+        XCTAssertNil(added)
+        let giftResult = await giftTask.value
+        XCTAssertNil(giftResult)
+        try await eventually("Credit and gift both survive") { self.ledger.diamonds == 1190 }
+        XCTAssertEqual(ledger.activity.count, 3)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 1190)
+    }
+
+    func testPostAndVoiceEligibilityRejectsSelfBlockedAndMissingTargets() async throws {
+        await purchasing.stop()
+        let appRoot = root.appendingPathComponent("Eligibility")
+        let store = AppStore(storageRoot: appRoot)
+        await store.load()
+        let entered = await store.acceptUserAgreement()
+        XCTAssertTrue(entered)
+        let post = LoungeState.editorialPosts[0]
+        let target = GiftContext(surface: .post, sourceID: post.id.uuidString, sourceTitle: "Lounge post",
+            recipients: [GiftRecipient(id: post.author.id, name: post.author.name)])
+        XCTAssertNil(store.giftUnavailableReason(target))
+        var own = LoungePost(author: .signedIn(store.library.profile), body: "My music")
+        own.isDraft = false
+        let saved = await store.saveLoungePost(own, asDraft: false)
+        XCTAssertTrue(saved)
+        let selfTarget = GiftContext(surface: .post, sourceID: own.id.uuidString, sourceTitle: "My post",
+            recipients: [GiftRecipient(id: "local-owner", name: "You")])
+        XCTAssertNotNil(store.giftUnavailableReason(selfTarget))
+        let missing = GiftContext(surface: .post, sourceID: UUID().uuidString, sourceTitle: "Missing post", recipients: target.recipients)
+        XCTAssertNotNil(store.giftUnavailableReason(missing))
+        let room = MusicRoomCatalog.rooms[0]
+        let member = room.participants[0]
+        let voice = GiftContext(surface: .voiceRoom, sourceID: room.id, sourceTitle: room.title,
+            recipients: [GiftRecipient(id: member.id, name: member.name)])
+        XCTAssertNil(store.giftUnavailableReason(voice))
+        let blocked = await store.blockCreator(post.author)
+        XCTAssertTrue(blocked)
+        XCTAssertNotNil(store.giftUnavailableReason(target))
+        let exited = await store.logOut()
+        XCTAssertTrue(exited)
+        XCTAssertNotNil(store.giftUnavailableReason(voice))
+    }
+
     func testAllSevenPackagesCreditExactAmountsAndPersist() async throws {
         let expected: [(String, Int)] = [
             ("jezvdjvpoifednhy", 400), ("uylrrniaqxjtlaie", 800),

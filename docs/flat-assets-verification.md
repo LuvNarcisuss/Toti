@@ -14,7 +14,7 @@ The generated catalog is disposable. The preparation script runs each build, upd
 - Static audit: zero issues, including a flat-directory assertion, 209 catalog metadata records, 61 icon cases, 82 photography records and archived video/cover checks.
 - Actual app built from empty `/tmp/toti-flat-assets/DerivedData`; all 23 XCTest tests passed, including all 206 images, AppIcon/launch color, fonts, agreements and media credits.
 - Independent read-only review found no actionable defect: 550 source files map one-to-one without directory or filename collisions. Three metadata/docs files changed intentionally to update references; media bytes did not change.
-- Five-page UI verification: 1 scenario passed with zero failures in 56.369 seconds. Welcome/consent, Lounge, Voice, Notebook, Chats, Me, profile save, Wallet and Settings were exercised. The exported Lounge screenshot was visually checked. [Lounge screenshot](../../Assets/Screenshots__flat-assets__lounge.png).
+- Five-page UI verification: 1 scenario passed with zero failures in 56.369 seconds. Welcome/consent, Lounge, Voice, Notebook, Chats, Me, profile save, Wallet and Settings were exercised. The exported Lounge screenshot was visually checked. [Lounge screenshot](../Assets/Screenshots__flat-assets__lounge.png).
 
 Evidence: `/tmp/toti-flat-assets/unit-tests.xcresult`, `unit-tests.log`, `/tmp/toti-flat-assets/ui-tests.xcresult` and `AssetFlattening.json` in the workspace root. Current inventory and directory tree are also in the workspace root.
 

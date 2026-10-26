@@ -60,10 +60,13 @@ final class WalletStore: ObservableObject {
         return await purchasing.purchase(package)
     }
 
-    func send(_ gift: MusicGift, quantity: Int, roomID: String) async -> String? {
-        guard !roomID.isEmpty, (1...99).contains(quantity) else {
-            return "Please check the quantity and try again."
+    func send(_ gift: MusicGift, quantity: Int, context: GiftContext) async -> String? {
+        guard !isBusy else { return "Please wait for the current request to finish." }
+        guard context.isValid, (1...99).contains(quantity) else {
+            return "Please check the recipient and quantity. No diamonds were spent."
         }
-        return await purchasing.spend(gift, quantity: quantity)
+        isBusy = true
+        defer { isBusy = false }
+        return await purchasing.spend(gift, quantity: quantity, context: context)
     }
 }

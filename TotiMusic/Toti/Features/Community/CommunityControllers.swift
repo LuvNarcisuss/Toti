@@ -120,7 +120,7 @@ final class WalletController: StackScreen {
     balance.accessibilityValue = String(store.wallet.snapshot.diamonds)
     content.addArrangedSubview(
       label(
-        "Send a little appreciation. Diamonds are used for gifts in voice rooms. Messages and replies are free.",
+        "Send a little appreciation. Use diamonds for local gifts on posts and in voice rooms. Messages and replies are free.",
         15, TotiTheme.muted))
     if let status = store.wallet.catalog.message {
       let statusLabel = label(status, 14, TotiTheme.muted)
@@ -184,11 +184,6 @@ final class WalletController: StackScreen {
     #endif
   }
 }
-struct GiftAudienceMember {
-  let id: String
-  let name: String
-}
-
 func giftIcon(for gift: MusicGift) -> TotiIcon {
   switch gift.id {
   case "rose": return .flower
@@ -282,76 +277,140 @@ enum GiftBurst {
   }
 }
 
+extension TotiScreen {
+  func openGifts(_ context: GiftContext, picksRecipient: Bool = false) {
+    if let reason = store.giftUnavailableReason(context) { message(reason); return }
+    let gifts = GiftsController(store: store, context: context, picksRecipient: picksRecipient)
+    presentScreen(gifts)
+    gifts.navigationController?.sheetPresentationController?.detents = [.large()]
+  }
+}
+
 final class GiftsController: StackScreen {
   private var quantity = 1
   private var audienceIndex = 0
-  let roomID: String
-  let recipients: [GiftAudienceMember]
+  private var saving = false
+  private var outcome: String?
+  let context: GiftContext
   let picksRecipient: Bool
-  var onSent: ((MusicGift, Int) -> Void)?
-  init(
-    store: AppStore, roomID: String, recipients: [GiftAudienceMember] = [],
-    picksRecipient: Bool = false
-  ) {
-    self.roomID = roomID
-    self.recipients = recipients
+
+  init(store: AppStore, context: GiftContext, picksRecipient: Bool = false) {
+    self.context = context
     self.picksRecipient = picksRecipient
-    super.init(store: store, title: "Send a gift")
+    super.init(store: store, title: "Give a gift")
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+
+  override func build() {
+    super.build()
+    store.wallet.objectWillChange.receive(on: DispatchQueue.main).sink { [weak self] _ in
+      self?.refresh()
+    }.store(in: &tokens)
+  }
+
+  private var selection: GiftContext {
+    var selected = context
+    if picksRecipient, audienceIndex > 0, context.recipients.indices.contains(audienceIndex - 1) {
+      selected.recipients = [context.recipients[audienceIndex - 1]]
+    }
+    return selected
+  }
+
   override func refresh() {
     guard isViewLoaded else { return }
     clear()
+    heading(context.sourceTitle)
+    content.addArrangedSubview(label("Gifts create an effect and a record on this device. They are not delivered to another person or added to their balance.", 14, TotiTheme.muted))
     if picksRecipient {
-      content.addArrangedSubview(label("Send to", 15, TotiTheme.muted))
-      let names = ["Everyone"] + recipients.map(\.name)
-      let choice = StudioChoice(items: names, index: min(audienceIndex, names.count - 1))
-      choice.onChange = { [weak self] next in self?.audienceIndex = next }
+      content.addArrangedSubview(label("For", 15, TotiTheme.muted))
+      let names = ["Everyone"] + context.recipients.map(\.name)
+      let choice = StudioChoice(items: names, index: audienceIndex)
+      choice.onChange = { [weak self] next in self?.audienceIndex = next; self?.refresh() }
+      choice.isUserInteractionEnabled = !saving
       content.addArrangedSubview(choice)
+      content.addArrangedSubview(label("Everyone creates one shared gift effect at the displayed total price.", 12, TotiTheme.muted))
     }
-    content.addArrangedSubview(
-      actionButton("\(store.wallet.snapshot.diamonds) diamonds · Add more", icon: .diamond) {
-        [weak self] in
-        guard let self else { return }
-        self.push(WalletController(store: self.store))
-      })
-    let quantities = StudioChoice(
-      items: ["1 gift", "5 gifts", "10 gifts"], index: [1, 5, 10].firstIndex(of: quantity) ?? 0)
-    quantities.onChange = { [weak self] next in
-      self?.quantity = [1, 5, 10][next]
-      self?.refresh()
+    let recipient = label("For: " + selection.recipientText, 15)
+    recipient.accessibilityIdentifier = "gift.recipients"
+    content.addArrangedSubview(recipient)
+    let balance = label("\(store.wallet.snapshot.diamonds.formatted()) diamonds", 20)
+    balance.accessibilityIdentifier = "gift.balance"
+    balance.accessibilityValue = String(store.wallet.snapshot.diamonds)
+    content.addArrangedSubview(balance)
+    let topUp = actionButton("Add diamonds", icon: .diamond) { [weak self] in
+      guard let self else { return }; self.push(WalletController(store: self.store))
     }
+    topUp.isEnabled = !saving && !store.wallet.isBusy
+    content.addArrangedSubview(topUp)
+    if let outcome {
+      let status = label(outcome, 14, TotiTheme.muted)
+      status.accessibilityIdentifier = "gift.outcome"
+      content.addArrangedSubview(status)
+    }
+    let unavailable = store.giftUnavailableReason(selection)
+    if let unavailable { content.addArrangedSubview(label(unavailable, 14, TotiTheme.muted)) }
+    let quantities = StudioChoice(items: ["1 gift", "5 gifts", "10 gifts"], index: [1, 5, 10].firstIndex(of: quantity) ?? 0)
+    quantities.onChange = { [weak self] next in self?.quantity = [1, 5, 10][next]; self?.refresh() }
+    quantities.isUserInteractionEnabled = !saving
     content.addArrangedSubview(quantities)
     for i in stride(from: 0, to: MusicGift.catalog.count, by: 3) {
       let row = stack(axis: .horizontal, spacing: 8)
       row.distribution = .fillEqually
-      for j in i..<min(i + 3, MusicGift.catalog.count) {
-        let gift = MusicGift.catalog[j]
-        let b = actionButton(
-          "\(gift.name)\n\(gift.diamonds * quantity) diamonds", icon: giftIcon(for: gift),
-          axis: .vertical, iconSize: 44
-        ) { [weak self] in
-          guard let self else { return }
-          let count = self.quantity
-          Task {
-            if let error = await self.store.wallet.send(
-              gift, quantity: count, roomID: self.roomID)
-            {
-              self.message(error)
-            } else {
-              self.onSent?(gift, count)
-              let spent = gift.diamonds * count
-              let spentText = spent.formatted(.number.locale(Locale(identifier: "en_US")))
-              UIAccessibility.post(
-                notification: .announcement,
-                argument: "Sent \(gift.name). \(spentText) diamonds spent.")
-              self.refresh()
-            }
-          }
-        }
-        row.addArrangedSubview(b)
+      for gift in MusicGift.catalog[i..<min(i + 3, MusicGift.catalog.count)] {
+        let button = actionButton("\(gift.name)\n\(gift.diamonds * quantity) diamonds",
+          icon: giftIcon(for: gift), axis: .vertical, iconSize: 44) { [weak self] in self?.confirmGift(gift) }
+        button.accessibilityIdentifier = "gift.item." + gift.id
+        button.isEnabled = !saving && !store.wallet.isBusy && unavailable == nil
+        row.addArrangedSubview(button)
       }
       content.addArrangedSubview(row)
+    }
+  }
+
+  private func setSaving(_ value: Bool) {
+    saving = value
+    navigationController?.isModalInPresentation = value
+    navigationItem.leftBarButtonItem?.isEnabled = !value
+    navigationItem.leftBarButtonItem?.customView?.isUserInteractionEnabled = !value
+  }
+
+  private func confirmGiftAction(_ title: String, message: String, button: String, action: @escaping () -> Void) {
+    guard presentedViewController == nil else { return }
+    // UIKit keeps long recipient lists scrollable and the actions reachable at large text sizes.
+    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    alert.addAction(UIAlertAction(title: button, style: .default) { _ in action() })
+    present(alert, animated: true)
+  }
+
+  private func confirmGift(_ gift: MusicGift) {
+    guard !saving, !store.wallet.isBusy else { return }
+    let selected = selection
+    let count = quantity
+    let cost = gift.diamonds * count
+    if let reason = store.giftUnavailableReason(selected) { message(reason); return }
+    guard store.wallet.snapshot.diamonds >= cost else {
+      confirmGiftAction("Not enough diamonds", message: "This gift costs \(cost) diamonds. No diamonds have been spent.", button: "Add diamonds") { [weak self] in
+        guard let self else { return }; self.push(WalletController(store: self.store))
+      }
+      return
+    }
+    confirmGiftAction("Confirm gift", message: "\(count) × \(gift.name)\nFor: \(selected.recipientText)\nTotal: \(cost) diamonds\nBalance after: \(store.wallet.snapshot.diamonds - cost) diamonds\n\nThis spends diamonds for a local effect and record only. No gift or funds are delivered to the recipient.", button: "Spend \(cost) diamonds") { [weak self] in
+      guard let self, !self.saving else { return }
+      self.setSaving(true)
+      self.outcome = nil
+      self.refresh()
+      Task {
+        let error = await self.store.giveGift(gift, quantity: count, context: selected)
+        self.setSaving(false)
+        if let error { self.outcome = error }
+        else {
+          self.outcome = "Gift saved on this device · \(cost) diamonds spent."
+          GiftBurst.show(gift: gift, quantity: count, in: self.view)
+          UIAccessibility.post(notification: .announcement, argument: self.outcome)
+        }
+        self.refresh()
+      }
     }
   }
 }

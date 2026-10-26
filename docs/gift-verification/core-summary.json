@@ -1,0 +1,46 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "x86_64",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "modelName" : "iPhone 17 Pro",
+        "osBuildNumber" : "23A8464",
+        "osVersion" : "26.0.1",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 23,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "toti · Built with macOS 15.7.2",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1793009260.99,
+  "passedTests" : 23,
+  "result" : "Passed",
+  "skippedTests" : 0,
+  "startTime" : 1793009252.587,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - toti",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "37% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 0.24s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 23
+}

@@ -1,0 +1,14 @@
+{
+  "simulator": "Toti UI Acceptance",
+  "udid": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+  "bundleID": "com.toti.music",
+  "deviceFamily": [
+    1
+  ],
+  "builtApp": "/private/tmp/toti-iap-acceptance-build/Build/Products/Debug-iphonesimulator/toti.app",
+  "installedApp": "/Users/apple/Library/Developer/CoreSimulator/Devices/98658066-C6E0-45B3-A1E7-E8FBD950F0DB/data/Containers/Bundle/Application/6D3BBC32-0103-40AE-B11A-441C1033A69E/toti.app",
+  "builtBinarySHA256": "e66b43234bb594920d282680c8dbf067f339dafc284b3c68f158ddfcc811ac47",
+  "installedBinarySHA256": "e66b43234bb594920d282680c8dbf067f339dafc284b3c68f158ddfcc811ac47",
+  "launch": "com.toti.music: 73420",
+  "fixture": "Final direct launch has no local StoreKit configuration; Xcode toti Run enables the local fixture."
+}

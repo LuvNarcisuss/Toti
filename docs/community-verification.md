@@ -21,7 +21,7 @@ The invalid-image test deliberately supplies malformed bytes; ImageIO logs a thu
 
 ## Runtime
 
-Invoked Run in the Toti Xcode window with scheme toti and iPhone 17 Pro selected. The latest Xcode GUI build activity log (`C4103EB0-4071-480A-B067-F6E5A2234FD3.xcactivitylog`) contains Build succeeded and no compiler error records. Simulator launchctl confirms com.toti.music running (PID 47829 during verification). The simulator's actual framebuffer shows the welcome page: [screenshot](../../Assets/Screenshots__community-runtime__welcome.png).
+Invoked Run in the Toti Xcode window with scheme toti and iPhone 17 Pro selected. The latest Xcode GUI build activity log (`C4103EB0-4071-480A-B067-F6E5A2234FD3.xcactivitylog`) contains Build succeeded and no compiler error records. Simulator launchctl confirms com.toti.music running (PID 47829 during verification). The simulator's actual framebuffer shows the welcome page: [screenshot](../Assets/Screenshots__community-runtime__welcome.png).
 
 The installed bundle was checked independently of the command-line test bundle: both new controller symbols are present, photographic credits match the new version, and MP4 count was inspected. That initial run stopped before the service agreements. The subsequent user-authorized interactive pass below accepted them and exercised the five pages; exhaustive accessibility acceptance remains unverified. Previous runtime-verification.md and runtime/ screenshots describe the retired version.
 
@@ -51,7 +51,7 @@ Corrections made and rechecked:
 
 The final simulator build completed with BUILD SUCCEEDED and was installed/launched. Build evidence: `/tmp/toti-ui-fixes-build.log`; build output: `/tmp/TotiCommunityUI/Build/Products/Debug-iphonesimulator/toti.app`. No blocking overlap or clipped action area was observed on the inspected iPhone 17 Pro pages. Screen keyboard layouts were visually checked in Notebook and Chats. This does not claim coverage of every screen size, Dynamic Type setting, photo import, deletion, moderation or actual network/RTC/purchase behavior.
 
-Saved screenshots: [Lounge](../../Assets/Screenshots__community-runtime__interactive__lounge.png), [Notebook](../../Assets/Screenshots__community-runtime__interactive__notebook.png), [Me](../../Assets/Screenshots__community-runtime__interactive__me.png), [Voice fix](../../Assets/Screenshots__community-runtime__interactive__voice-fixed.png), [Chat fix](../../Assets/Screenshots__community-runtime__interactive__chat-fixed.png).
+Saved screenshots: [Lounge](../Assets/Screenshots__community-runtime__interactive__lounge.png), [Notebook](../Assets/Screenshots__community-runtime__interactive__notebook.png), [Me](../Assets/Screenshots__community-runtime__interactive__me.png), [Voice fix](../Assets/Screenshots__community-runtime__interactive__voice-fixed.png), [Chat fix](../Assets/Screenshots__community-runtime__interactive__chat-fixed.png).
 
 QA-only local content remains available for inspection: QA Rain melody note/post, QA Piano Room, QA piano reply and QA local melody check chat outbox message. No existing private content was deleted. The app was left running on Lounge.
 

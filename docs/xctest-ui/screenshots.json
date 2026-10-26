@@ -2,121 +2,121 @@
   {
     "test": "CommunityUITests/testChatKeyboardAndLocalOutbox()",
     "capture": "Final state",
-    "file": "../../../Assets/Screenshots__xctest-ui__testchatkeyboardandlocaloutbox-final-state.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testchatkeyboardandlocaloutbox-final-state.png",
     "resultBundle": "/tmp/TotiUI-ChatRecheck.xcresult"
   },
   {
     "test": "CommunityUITests/testChatKeyboardAndLocalOutbox()",
     "capture": "Local outbox",
-    "file": "../../../Assets/Screenshots__xctest-ui__testchatkeyboardandlocaloutbox-local-outbox.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testchatkeyboardandlocaloutbox-local-outbox.png",
     "resultBundle": "/tmp/TotiUI-ChatRecheck.xcresult"
   },
   {
     "test": "CommunityUITests/testChatKeyboardAndLocalOutbox()",
     "capture": "Chat keyboard",
-    "file": "../../../Assets/Screenshots__xctest-ui__testchatkeyboardandlocaloutbox-chat-keyboard.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testchatkeyboardandlocaloutbox-chat-keyboard.png",
     "resultBundle": "/tmp/TotiUI-ChatRecheck.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Final state",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-final-state.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-final-state.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Settings",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-settings.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-settings.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Wallet",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-wallet.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-wallet.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Me",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-me.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-me.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Chats",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-chats.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-chats.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Notebook",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-notebook.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-notebook.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Voice",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-voice.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-voice.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testFivePagesAndProfile()",
     "capture": "Lounge",
-    "file": "../../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-lounge.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testfivepagesandprofile-lounge.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testNotebookExitSavePinAndConversion()",
     "capture": "Final state",
-    "file": "../../../Assets/Screenshots__xctest-ui__testnotebookexitsavepinandconversion-final-state.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testnotebookexitsavepinandconversion-final-state.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testNotebookExitSavePinAndConversion()",
     "capture": "Pinned private note",
-    "file": "../../../Assets/Screenshots__xctest-ui__testnotebookexitsavepinandconversion-pinned-private-note.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testnotebookexitsavepinandconversion-pinned-private-note.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testNotebookExitSavePinAndConversion()",
     "capture": "Note keyboard",
-    "file": "../../../Assets/Screenshots__xctest-ui__testnotebookexitsavepinandconversion-note-keyboard.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testnotebookexitsavepinandconversion-note-keyboard.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testVoiceRoomCreationAndLocalMessage()",
     "capture": "Final state",
-    "file": "../../../Assets/Screenshots__xctest-ui__testvoiceroomcreationandlocalmessage-final-state.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testvoiceroomcreationandlocalmessage-final-state.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testVoiceRoomCreationAndLocalMessage()",
     "capture": "Created room",
-    "file": "../../../Assets/Screenshots__xctest-ui__testvoiceroomcreationandlocalmessage-created-room.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testvoiceroomcreationandlocalmessage-created-room.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testVoiceRoomCreationAndLocalMessage()",
     "capture": "Voice local message",
-    "file": "../../../Assets/Screenshots__xctest-ui__testvoiceroomcreationandlocalmessage-voice-local-message.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testvoiceroomcreationandlocalmessage-voice-local-message.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testLoungePostReplyAndPersistence()",
     "capture": "Final state",
-    "file": "../../../Assets/Screenshots__xctest-ui__testloungepostreplyandpersistence-final-state.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testloungepostreplyandpersistence-final-state.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testLoungePostReplyAndPersistence()",
     "capture": "Post and reply",
-    "file": "../../../Assets/Screenshots__xctest-ui__testloungepostreplyandpersistence-post-and-reply.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testloungepostreplyandpersistence-post-and-reply.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   },
   {
     "test": "CommunityUITests/testLoungePostReplyAndPersistence()",
     "capture": "Post keyboard",
-    "file": "../../../Assets/Screenshots__xctest-ui__testloungepostreplyandpersistence-post-keyboard.png",
+    "file": "../../Assets/Screenshots__xctest-ui__testloungepostreplyandpersistence-post-keyboard.png",
     "resultBundle": "/tmp/TotiUI-Isolated.xcresult"
   }
 ]
