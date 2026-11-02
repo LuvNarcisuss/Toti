@@ -295,7 +295,7 @@ final class LoungeDetailController: StackScreen, UITextViewDelegate {
             } else { views.append(label("Linked voice room is unavailable.", 14, TotiTheme.muted)) }
         }
         views.append(label(post.createdAt.formatted(date: .abbreviated, time: .shortened), 12, TotiTheme.muted))
-        views.append(label("\(store.loungeLikeCount(post.id)) likes · \(store.loungeSaveCount(post.id)) saves · \(store.loungeCommentCount(post.id)) replies", 13, TotiTheme.muted))
+        views.append(label(postDetailCounts(likes: store.loungeLikeCount(post.id), saves: store.loungeSaveCount(post.id), replies: store.loungeCommentCount(post.id)), 13, TotiTheme.muted))
         let liked = store.library.lounge?.likedPostIDs.contains(post.id) == true
         let saved = store.library.lounge?.savedPostIDs.contains(post.id) == true
         let actions = stack([

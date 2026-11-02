@@ -50,6 +50,31 @@ Fixture metadata is in `/private/tmp/toti-post-detail-fixtures.json`. Do not rem
 
 Current-source builds use Toti UI Acceptance, iPhone 17 Pro, iOS 26.0, device `98658066-C6E0-45B3-A1E7-E8FBD950F0DB`, Bundle ID `com.toti.music`, with simulator ad-hoc signing and the unchanged pinned Supabase dependency.
 
-The initial live service cases passed for reaction/request replay, save/read persistence, two-Guest comment visibility, foreign-delete denial, overlength rejection, partial-cursor rejection, own-delete visibility and genuine post save totals. The first UI pass validated genuine member detail and reached editorial like/save/comment/report form/share/forward/relaunch; its final inbox step failed because the test expected a Button rather than the actual UITableViewCell. That selector was corrected. Final current-source results are recorded below after completion.
+The initial live service cases passed for reaction/request replay, save/read persistence, two-Guest comment visibility, foreign-delete denial, overlength rejection, partial-cursor rejection, own-delete visibility and genuine post save totals. The first UI pass validated genuine member detail and reached editorial like/save/comment/report form/share/forward/relaunch; its final inbox step failed because the test expected a Button rather than the actual UITableViewCell. That selector was corrected. A subsequent UI pass exposed a real forwarding race: canSendChatMessage includes transient background refresh state, so the friend could disappear and confirmation could return without sending. The share list now uses stable mutual/group/block eligibility. Confirmed forwarding waits up to 20 seconds for an active refresh, resolves the current conversation, rechecks eligibility and shows explicit acknowledgement or failure. Account changes or leaving the sheet before sending abort the pending intent. Final results: three model/service cases passed (version-preserving profile caching, retained two-Guest server activity/ownership and safe bounded share references). The genuine-member detail UI case passed in 56.542 seconds. After the refresh-race correction, the editorial detail UI case passed in 142.287 seconds, including real acknowledged forwarding, relaunch/Saved persistence and opening the exact post from its received chat reference. The UI test uses an actual inbox cell selector rather than assuming a name-only Button. No false report or external share was published.
 
 Coverage limits: no real moderation report is filed, no external share is published, no OS deep-link registration is claimed, no 40+ comment pagination fixture/concurrent load is executed, and every Dynamic Type size/device is not covered. RTC, purchases, moderation staffing and production release acceptance are separate from these post-detail changes.
+
+Independent read-only code review found no blocking security/data/state issue in the SQL, activity adapter, Saved routes, versioned-profile cache protection or forwarding refresh correction. That review is static evidence, separate from the runtime results.
+
+## Final evidence
+
+- Final application/UI build: `/private/tmp/toti-post-detail-forward-build-1102.log`.
+- Model/service build/result: `/private/tmp/toti-post-detail-model-build-acceptance-1102.log`, `/private/tmp/toti-post-detail-service-acceptance-1102.xcresult` (3 passed).
+- Genuine-member detail result: `/private/tmp/toti-post-detail-ui-acceptance-1102.xcresult` (member case passed; that same earlier run exposed the forwarding race and is not an all-passing suite).
+- Final editorial result: `/private/tmp/toti-post-detail-forward-ui-1102.xcresult` (1 passed).
+- Read-only review: no blocking findings; versioned directory profiles remain authoritative over embedded snapshots. Future reopening of a dismissed pending share controller would need explicit pending-state restoration; current sheets are released on close.
+- The latest signed build was relaunched after acceptance on Toti UI Acceptance (PID 52783). Final accounts, notes, original draft, relationship state and retained new post/reply/message fixtures remain. `git diff --check` passed.
+
+![Editorial post opened from a real forwarded chat](backend/post-detail-evidence-20261102/editorial-from-forward.png)
+
+![Genuine member post with actions and reply author](backend/post-detail-evidence-20261102/member-detail.png)
+
+## Final visual layout check
+
+The last screenshot review found that the unconstrained Follow control could compress the author identity to the portrait alone. The normal-width header now constrains Follow to 110 points; accessibility sizes stack the header controls. A final latest-source build/install/launch and read-only UI case passed in 33.420 seconds, confirming the author control has more than half-screen width, does not overlap Follow, and the four interaction controls are present. The corrected header and action screenshots were visually checked. Count captions now use the correct singular/plural form.
+
+Final build: `/private/tmp/toti-post-detail-header-build-1102.log`. Layout result: `/private/tmp/toti-post-detail-header-ui-1102.xcresult`. Combined scoped evidence is three model/service cases, two full detail UI cases and this final read-only layout case. The final layout/caption-only revision did not change the server or forwarding behavior; their passing results are listed above. Latest build relaunched after all checks: PID 53590 on the designated device. Retained fixtures were not cleaned up.
+
+![Final author identity layout](backend/post-detail-evidence-20261102/editorial-header.png)
+
+![Final real counts and interaction controls](backend/post-detail-evidence-20261102/editorial-actions.png)

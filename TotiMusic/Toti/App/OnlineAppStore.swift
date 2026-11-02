@@ -195,6 +195,17 @@ extension AppStore {
         }
     }
 
+    func loadProfileReactionPage(kind: String, cursor: String? = nil) async throws -> (posts: [LoungePost], next: String?) {
+        let generation = TotiBackend.shared.generation
+        let page = try await TotiBackend.shared.profileReactions(kind: kind, cursor: cursor)
+        guard generation == TotiBackend.shared.generation else { throw TotiBackendError.accountChanged }
+        var indexed = Dictionary((onlineRecords["post"] ?? []).map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
+        page.records.forEach { indexed[$0.id] = $0 }
+        onlineRecords["post"] = Array(indexed.values)
+        try projectOnlineRecords()
+        return (page.records.compactMap { loungePost($0.id) }, page.next_cursor)
+    }
+
     private func projectOnlineRecords() throws {
         guard let account = TotiBackend.shared.accountID,
               onlineProjectedAccountID == account,

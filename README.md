@@ -4,6 +4,14 @@ Open **TotiMusic/Toti.xcodeproj**, scheme **toti**. UIKit, Swift 5, iOS 16+, iPh
 
 Signing uses the owner-selected team `JPTS6M4T5B` with Toti's Bundle ID `com.toti.music`. The team is now recorded in `TotiMusic/project.yml` as well as the generated project, matching Bibi's configuration pattern. Simulator ad-hoc signing is preserved. Apple agreement and provisioning access remain account-side requirements; see [signing configuration and verification scope](docs/signing-configuration.md).
 
+## Cover cards and automatic collections — 2026-11-02
+
+Lounge editorial cards now use two columns at approximately one-quarter of the former card area, with full-card photos, overlay text and equal-width author/plus controls. This latest size adjustment has static verification only. Me refreshes automatically and offers a first-post creation card when Works is empty. The specifically requested retained member post was deleted; its test account and other data remain. See [profile behavior](docs/profile-pages.md). Earlier acceptance results below predate this refinement.
+
+## My liked posts — 2026-11-02
+
+Me now offers Works / Liked / Saved / Drafts / About. Liked shows posts you liked; the profile Likes figure still counts likes received on your own works. Liked and Saved include both member and editorial posts and can load older reaction records independently of the discovery feed. See [behavior, retained test-post explanation and verification](docs/profile-liked-collection.md). Current-source builds and two focused service/UI cases passed on Toti UI Acceptance; test accounts and data remain retained.
+
 ## Full post details — 2026-11-02
 
 Editorial and member post detail now include author navigation, actual reaction/save/reply counts, discussion and sharing. Editorial likes, bookmarks and replies use authenticated Supabase records; bookmarks appear in Lounge Saved and Me Saved. Forwarded chat messages open the matching post. Bibi reference details, the deployed contract, retained test fixtures and exact validation scope are recorded in [post detail parity](docs/post-detail-bibi-parity.md).

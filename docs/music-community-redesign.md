@@ -77,3 +77,7 @@ Implementation was authorized by the user, including Xcode running and error rep
 ## Editorial profile figures — 2026-11-02
 
 The user explicitly requested plausible simulated data for the six material-author profiles. Approved scope: fixed, disclosed illustrative Likes/Saves/Following/Followers figures on those editorial profiles. This does not authorize fictional Auth identities, online activity, incoming follow relationships, message delivery, payments or modifications to real user statistics. Figures are presentation metadata and cannot enable Message. Values, provenance and validation are recorded in `lounge-editorial-authors.md`; genuine profiles keep their server-derived received counts.
+
+## Full online post detail — 2026-11-02
+
+Editorial publishing and author identities remain separate from member accounts, while their post details now support real Guest likes, saves, comments and private reports. Saved editorial posts appear in Lounge Saved and Me Saved; real chat forwards open the corresponding detail. This supersedes the earlier content-only/read-only interaction description. Device-only editorial follow/block remains unchanged. See [Bibi post-detail comparison, deployed contract and exact verification](post-detail-bibi-parity.md).

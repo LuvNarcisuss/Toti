@@ -1,5 +1,9 @@
 # Toti backend deployment and implementation record
 
+Authorized fixture deletion (2026-11-02): only member post `48c301f2-2dcc-4964-93bd-b2ea67e75bc4`, owned by retained Guest `d1ae68c2-d6eb-495c-bf2b-a1b4b430a629`, was soft-deleted using the existing deleted_at/version semantics. Exact owner/kind/body predicates scoped the update; readback confirmed removal. Accounts and unrelated fixtures remain.
+
+Profile reaction collections (2026-11-02): source 016 deployed as `toti_profile_reaction_collections`, version `20261102091252`. The authenticated reader pages only the caller's outgoing likes/saves and reuses the authorized post document. No tables, content, relationships or access grants were broadened. See [Me Liked/Saved behavior and verification](../profile-liked-collection.md).
+
 Post activity update (2026-11-02): ordered source 015 deployed as `toti_editorial_post_activity`, version `20261102074537`. Real Guest reactions/comments/reports and request receipts use four private RLS tables and an authenticated wrapper; account-deletion cascades and active-session/ownership checks apply. Member media projections retain review conditions while adding save_count. See [post detail parity and verification](../post-detail-bibi-parity.md).
 
 Voice portrait update (2026-11-02): ordered source 014 deployed as `toti_voice_music_portraits`, version `20261102061858`, changes only the six room materials' people artwork arrays. Eighteen unique music portraits, eighteen catalogs and updated credits passed anonymous public download checks. A current-source UI case passed for three room-seat-to-profile routes; all other routes share the same participant mapping. See [exact sources, verification and limits](../voice-room-music-portraits.md).

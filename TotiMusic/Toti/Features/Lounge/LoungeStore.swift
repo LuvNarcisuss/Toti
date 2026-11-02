@@ -29,6 +29,7 @@ extension AppStore {
         (library.lounge?.posts ?? []).filter { $0.isDraft && $0.author.isLocalOwner }.map(currentLoungeAuthor).sorted { $0.updatedAt > $1.updatedAt }
     }
 
+    var likedLoungePosts: [LoungePost] { loungePosts.filter { library.lounge?.likedPostIDs.contains($0.id) == true } }
     var savedLoungePosts: [LoungePost] { loungePosts.filter { library.lounge?.savedPostIDs.contains($0.id) == true } }
     func loungePosts(for authorID: String) -> [LoungePost] { loungePosts.filter { $0.author.id == authorID } }
     func loungePost(_ id: UUID) -> LoungePost? { loungePosts.first { $0.id == id } }

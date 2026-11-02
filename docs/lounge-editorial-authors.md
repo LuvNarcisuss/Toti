@@ -71,3 +71,7 @@ The final focused avatar/Works UI case passed: one test, zero failures, 65.210 s
 ![Latest Lounge with the new author avatar](backend/music-author-evidence-20261102/lounge-new-avatars.png)
 
 ![Uploaded public avatar resources](backend/music-author-evidence-20261102/supabase-upload.jpg)
+
+## Full online post detail — 2026-11-02
+
+Editorial publishing and author identities remain separate from member accounts, while their post details now support real Guest likes, saves, comments and private reports. Saved editorial posts appear in Lounge Saved and Me Saved; real chat forwards open the corresponding detail. This supersedes the earlier content-only/read-only interaction description. Device-only editorial follow/block remains unchanged. See [Bibi post-detail comparison, deployed contract and exact verification](post-detail-bibi-parity.md).

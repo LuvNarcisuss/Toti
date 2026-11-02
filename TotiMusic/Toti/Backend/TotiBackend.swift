@@ -249,6 +249,21 @@ final class TotiBackend: ObservableObject {
         return response
     }
 
+    func profileReactions(kind: String, cursor: String? = nil) async throws -> OnlinePage {
+        try requireRollout()
+        guard ["like", "save"].contains(kind) else { throw TotiBackendError.invalidResponse }
+        let (account, epoch) = try context()
+        await acquire()
+        defer { release() }
+        try check(epoch, account: account)
+        let parameters: [String: JSONValue] = ["p_kind": .string(kind), "p_cursor": cursor.map(JSONValue.string) ?? .null]
+        let page: OnlinePage = try await client.rpc("toti_profile_reactions", params: parameters).execute().value
+        try check(epoch, account: account)
+        guard page.records.count <= 30, Set(page.records.map(\.id)).count == page.records.count,
+              page.next_cursor == nil || page.next_cursor != cursor else { throw TotiBackendError.invalidResponse }
+        return page
+    }
+
     func editorialActivity(postID: UUID, action: String = "read", payload: [String: JSONValue] = [:],
                            requestID: UUID? = nil) async throws -> EditorialActivitySnapshot {
         try requireRollout()

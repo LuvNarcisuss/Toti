@@ -418,6 +418,10 @@ final class StudioChoice: UIView {
     restyle()
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+  func updateTitles(_ titles: [String]) {
+    guard titles.count == chips.count else { return }
+    for (chip, title) in zip(chips, titles) { chip.updateTitle(title) }
+  }
   private func select(_ next: Int) {
     guard chips.indices.contains(next) else { return }
     index = next
@@ -491,6 +495,12 @@ final class StudioChip: UIControl {
     accessibilityTraits = .button
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+  func updateTitle(_ title: String) {
+    if accessibilityIdentifier == nil { accessibilityIdentifier = caption.text }
+    caption.text = title
+    accessibilityLabel = title
+    invalidateIntrinsicContentSize()
+  }
   func apply(selected: Bool) {
     backgroundColor = selected ? TotiTheme.coral : UIColor.white.withAlphaComponent(0.86)
     caption.textColor = selected ? TotiTheme.ink : TotiTheme.muted

@@ -547,3 +547,47 @@ final class EditorialPostActivityAcceptanceTests: XCTestCase {
     XCTAssertNil(PostShareContent.reference(in: "toti://post/not-a-uuid"))
   }
 }
+
+@MainActor
+final class ProfileReactionCollectionAcceptanceTests: XCTestCase {
+  func testPrivateCollectionProjectionAndCursorValidation() async throws {
+    try XCTSkipUnless(ProcessInfo.processInfo.environment["TOTI_LIVE_GUEST_ACCEPTANCE"] == "1", "Requires retained Guest authorization.")
+    let backend = TotiBackend.shared
+    try await backend.restore()
+    let owner = try XCTUnwrap(backend.accountID)
+    XCTAssertEqual(owner.uuidString.lowercased(), "d1ae68c2-d6eb-495c-bf2b-a1b4b430a629")
+    guard owner.uuidString.lowercased() == "d1ae68c2-d6eb-495c-bf2b-a1b4b430a629" else { throw TotiBackendError.accountChanged }
+    for kind in ["like", "save"] {
+      let page = try await backend.profileReactions(kind: kind)
+      XCTAssertLessThanOrEqual(page.records.count, 30)
+      XCTAssertEqual(Set(page.records.map(\.id)).count, page.records.count)
+      for record in page.records {
+        XCTAssertEqual(record.kind, "post")
+        XCTAssertEqual(record.bool(kind == "like" ? "my_liked" : "my_saved"), true)
+        let exact = try await backend.page(kind: "post", parentID: record.id)
+        XCTAssertTrue(exact.records.contains { $0.id == record.id })
+      }
+    }
+    let run = try XCTUnwrap(ProcessInfo.processInfo.environment["TOTI_GUEST_ACCEPTANCE"])
+    let partner = TotiBackend(storageKey: "toti-notebook-partner-" + run,
+      journalRoot: URL.applicationSupportDirectory.appendingPathComponent("TotiOnline/Acceptance/" + run + "/Partner"))
+    try await partner.restore()
+    XCTAssertEqual(partner.accountID?.uuidString.lowercased(), "cded9cf8-1182-4802-ac9b-334c1c7d3040")
+    let retainedPost = try XCTUnwrap(UUID(uuidString: "48c301f2-2dcc-4964-93bd-b2ea67e75bc4"))
+    for kind in ["like", "save"] {
+      let page = try await partner.profileReactions(kind: kind)
+      XCTAssertFalse(page.records.contains { $0.id == retainedPost }, "Deleted posts must disappear from reaction collections")
+    }
+    let forged: [String: String] = ["kind":"like", "actor":"cded9cf8-1182-4802-ac9b-334c1c7d3040",
+      "at":"2026-11-02T00:00:00Z", "id":UUID().uuidString]
+    let cursor = try JSONEncoder().encode(forged).base64EncodedString()
+    do {
+      _ = try await backend.profileReactions(kind: "like", cursor: cursor)
+      XCTFail("A cursor from another account must not be accepted")
+    } catch { }
+    do {
+      _ = try await backend.profileReactions(kind: "save", cursor: "invalid")
+      XCTFail("A malformed cursor must not be accepted")
+    } catch { }
+  }
+}

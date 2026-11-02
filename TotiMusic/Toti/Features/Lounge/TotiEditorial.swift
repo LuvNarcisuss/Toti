@@ -40,6 +40,10 @@ struct EditorialActivitySnapshot: Decodable {
 }
 
 @MainActor extension AppStore {
+    var likedEditorialPosts: [OnlineEditorialPost] {
+        ((try? TotiEditorialPreferences.visiblePosts(onlineEditorialPosts)) ?? []).filter { $0.liked == true }
+    }
+
     var savedEditorialPosts: [OnlineEditorialPost] {
         ((try? TotiEditorialPreferences.visiblePosts(onlineEditorialPosts)) ?? []).filter { $0.saved == true }
     }
@@ -105,7 +109,7 @@ extension OnlineEditorialPost {
 
 @MainActor
 extension StackScreen {
-    func appendTotiEditorial(to target: UIStackView, showsHeading: Bool = true, authorID: String? = nil, workTiles: Bool = false, onlyFollowed: Bool = false, onlySaved: Bool = false, matching query: String = "", topic: String? = nil) {
+    func appendTotiEditorial(to target: UIStackView, showsHeading: Bool = true, authorID: String? = nil, workTiles: Bool = false, onlyFollowed: Bool = false, onlySaved: Bool = false, onlyLiked: Bool = false, matching query: String = "", topic: String? = nil) {
         guard store.isOnlineMode else { return }
         if let error = store.onlineEditorialError {
             appendOnlineRetry(to: target, error: "Toti editorial could not be loaded. " + error)
@@ -118,7 +122,7 @@ extension StackScreen {
             return
         }
         let posts = visible.filter {
-            (authorID == nil || $0.editorialAuthor.id == authorID) && (!onlySaved || $0.saved == true)
+            (authorID == nil || $0.editorialAuthor.id == authorID) && (!onlySaved || $0.saved == true) && (!onlyLiked || $0.liked == true)
                 && (topic == nil || $0.topic == topic)
                 && (query.isEmpty || ($0.title + " " + $0.body + " " + $0.editorialAuthor.name).localizedCaseInsensitiveContains(query))
         }
@@ -162,7 +166,7 @@ extension StackScreen {
                 }
             }
             views.append(excerpt)
-            views.append(label("\(post.like_count ?? 0) likes · \(post.save_count ?? 0) saves · \(post.comment_count ?? 0) replies", 12, TotiTheme.muted))
+            views.append(label(postDetailCounts(likes: post.like_count ?? 0, saves: post.save_count ?? 0, replies: post.comment_count ?? 0), 12, TotiTheme.muted))
             if workTiles {
                 let preview = totiCoverButton(stack(views, spacing: 10), label: "Read " + post.title,
                     identifier: "lounge.editorial.cover." + post.id.uuidString, action: openPost)
@@ -173,11 +177,13 @@ extension StackScreen {
                     self.presentScreen(LoungeComposerController(store: self.store, initialText: post.body), full: true)
                 })
             }
-            let portrait = TotiPhoto(asset: writer.portraitAsset, size: 36, round: true)
-            let identity = stack([portrait, stack([
-                label(writer.name, 15, TotiTheme.plum, title: true),
-                label("Editorial author", 12, TotiTheme.muted),
-            ], spacing: 3), UIView()], axis: .horizontal, spacing: 10)
+            let portrait = TotiPhoto(asset: writer.portraitAsset, size: workTiles ? 36 : 22, round: true)
+            let authorName = label(writer.name, workTiles ? 15 : 11, workTiles ? TotiTheme.plum : .white, title: true)
+            authorName.numberOfLines = 2
+            authorName.lineBreakMode = .byTruncatingTail
+            var authorCopy: [UIView] = [authorName]
+            if workTiles { authorCopy.append(label("Editorial author", 12, TotiTheme.muted)) }
+            let identity = stack([portrait, stack(authorCopy, spacing: 3)], axis: .horizontal, spacing: workTiles ? 10 : 5)
             identity.alignment = .center
             identity.isUserInteractionEnabled = false
             identity.accessibilityElementsHidden = true
@@ -197,6 +203,54 @@ extension StackScreen {
                     self.push(TotiEditorialProfileController(store: self.store, author: writer))
                 }
             }, for: .touchUpInside)
+            if !workTiles {
+                let card = UIView()
+                card.layer.cornerRadius = 16
+                card.layer.cornerCurve = .continuous
+                card.clipsToBounds = true
+                // Two half-width columns retain the former cover proportions at roughly one-quarter area.
+                card.translatesAutoresizingMaskIntoConstraints = false
+                card.heightAnchor.constraint(equalTo: card.widthAnchor, multiplier: 1.5).isActive = true
+                card.accessibilityIdentifier = "lounge.editorial.card." + post.id.uuidString
+                let asset = post.photo_asset.flatMap { allowedArtwork.contains($0) ? $0 : nil } ?? "MusicStudioBackdrop"
+                let background = TotiPhoto(asset: asset)
+                background.setContentHuggingPriority(UILayoutPriority(1), for: .vertical)
+                background.setContentCompressionResistancePriority(UILayoutPriority(1), for: .vertical)
+                background.setContentCompressionResistancePriority(UILayoutPriority(1), for: .horizontal)
+                card.addSubview(background)
+                background.pin(to: card)
+                let shade = UIView()
+                shade.backgroundColor = UIColor.black.withAlphaComponent(0.52)
+                shade.isUserInteractionEnabled = false
+                card.addSubview(shade)
+                shade.pin(to: card)
+                let space = UIView()
+                space.heightAnchor.constraint(greaterThanOrEqualToConstant: 0).isActive = true
+                let heading = label(post.title, 18, .white, title: true)
+                heading.numberOfLines = 2
+                let summary = label(post.body, 12, .white)
+                summary.numberOfLines = 2
+                let preview = totiCoverButton(stack([
+                    space,
+                    label("TOTI EDITORIAL", 9, .white),
+                    heading, summary,
+                    label(postDetailCounts(likes: post.like_count ?? 0, saves: post.save_count ?? 0, replies: post.comment_count ?? 0), 9, .white),
+                ], spacing: 6), label: "Read " + post.title,
+                    identifier: "lounge.editorial.cover." + post.id.uuidString, action: openPost)
+                let create = iconButton(.plus, "Write about this") { [weak self] in
+                    guard let self, self.isAccountContextCurrent, epoch == TotiBackend.shared.generation else { return }
+                    self.presentScreen(LoungeComposerController(store: self.store, initialText: post.body), full: true)
+                }
+                create.contentHorizontalAlignment = .right
+                let footer = stack([author, create], axis: .horizontal, spacing: 6)
+                footer.distribution = .fillEqually
+                footer.alignment = .center
+                let overlay = stack([preview, footer], spacing: 8)
+                card.addSubview(overlay)
+                overlay.pin(to: card, insets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
+                tiles.append(card)
+                continue
+            }
             views.append(author)
             let card = UIView()
             card.backgroundColor = UIColor.white.withAlphaComponent(0.9)
@@ -210,9 +264,7 @@ extension StackScreen {
             column.pin(to: card, insets: UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset))
             if workTiles { tiles.append(card) } else { target.addArrangedSubview(card) }
         }
-        if workTiles {
-            totiProfileGrid(tiles, to: target, singleColumn: traitCollection.preferredContentSizeCategory.isAccessibilityCategory)
-        }
+        totiProfileGrid(tiles, to: target, singleColumn: workTiles && traitCollection.preferredContentSizeCategory.isAccessibilityCategory)
     }
 }
 
@@ -517,7 +569,10 @@ final class TotiEditorialDetailController: StackScreen, UITextViewDelegate {
             }
         let follow = actionButton(preferences.followedAuthorIDs.contains(author.id) ? "Following" : "Follow", compact: true) { [weak self] in self?.toggleFollow() }
         follow.accessibilityIdentifier = "editorial.detail.follow"
-        let header = stack([openAuthor, follow], axis: .horizontal, spacing: 10); header.alignment = .center
+        let accessibleLayout = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+        let header = stack([openAuthor, follow], axis: accessibleLayout ? .vertical : .horizontal, spacing: 10)
+        header.alignment = accessibleLayout ? .fill : .center
+        if !accessibleLayout { follow.widthAnchor.constraint(equalToConstant: 110).isActive = true }
         article.addArrangedSubview(header)
         article.addArrangedSubview(label("TOTI EDITORIAL", 11, TotiTheme.plum))
         article.addArrangedSubview(label(post.topic.uppercased(), 12, TotiTheme.muted))
@@ -533,7 +588,7 @@ final class TotiEditorialDetailController: StackScreen, UITextViewDelegate {
             })
         }
         article.addArrangedSubview(label(post.body, 19))
-        let counts = label("\(post.like_count ?? 0) likes · \(post.save_count ?? 0) saves · \(post.comment_count ?? 0) replies", 13, TotiTheme.muted)
+        let counts = label(postDetailCounts(likes: post.like_count ?? 0, saves: post.save_count ?? 0, replies: post.comment_count ?? 0), 13, TotiTheme.muted)
         counts.accessibilityIdentifier = "editorial.detail.counts"; article.addArrangedSubview(counts)
         let like = actionButton(post.liked == true ? "Liked" : "Like", icon: post.liked == true ? .heartFill : .heartOutline,
                                 tone: post.liked == true ? .coral : .quiet, axis: .vertical, compact: true, iconSize: 20) { [weak self] in
@@ -881,4 +936,9 @@ final class PostShareController: StackScreen {
             push(LoungeDetailController(store: store, postID: id))
         }
     }
+}
+
+func postDetailCounts(likes: Int, saves: Int, replies: Int) -> String {
+    "\(likes) " + (likes == 1 ? "like" : "likes") + " · \(saves) " + (saves == 1 ? "save" : "saves")
+        + " · \(replies) " + (replies == 1 ? "reply" : "replies")
 }

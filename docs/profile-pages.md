@@ -4,7 +4,7 @@
 
 The user selected Bibi's user-profile structure, with Toti members' published Lounge posts as works. References read: `/Users/apple/Desktop/Bibi/BibiApp/Bibi/Features/Profile/ProfileControllers.swift`, including the Me/Creator controllers, pinned category implementation and profile post cards. Toti retains its cream/plum/coral theme, generated icons, sourced photography, account configuration and existing UIKit architecture.
 
-The Me page has a rounded identity/biography/statistics card, Edit profile and Wallet actions, and Works / Saved / Drafts / About categories. The category row uses a real scrolling slot initially and moves into a clipped overlay when pinned, following the Bibi approach. It remains one category control with a 44-point height, matching Toti's StudioChoice constraints.
+The Me page has a rounded identity/biography/statistics card, a Wallet action, and Works / Liked / Saved / Drafts / About categories. Edit profile is available only in Settings to avoid a duplicate entry on Me. The category row uses a real scrolling slot initially and moves into a clipped overlay when pinned, following the Bibi approach. It remains one category control with a 44-point height, matching Toti's StudioChoice constraints.
 
 Works shows the current owner's visible, non-draft Lounge posts, excluding editorial prompts. Saved uses the existing saved-post state. Drafts is owner-only and opens the existing composer for continuation. About contains the private Notebook shortcut and the existing owned Voice room/edit/create routes. Settings and the pending-avatar review preview remain available. No saved content, drafts, notes, relationships or wallet data are migrated, reset or deleted by this UI change.
 
@@ -36,7 +36,7 @@ The per-author change has static verification only: six stable post/author assig
 
 The user clarified that the requested home redesign means Me and user profiles, not the Lounge root. This update refers to Bibi's profile identity cards, statistic hierarchy, pinned collection controls and two-column saved-post tiles. It preserves Toti's UIKit architecture, English copy, cream/plum/coral theme and generated bitmap icons; Bibi's anime artwork, video features, cosmetics and configuration are not imported.
 
-Me, authenticated member profiles and editorial-author profiles now share `totiProfileIdentityCard`: an inset photographic avatar with a coral outline, a horizontal identity/name group, biography and the existing StudioCanvas atmosphere inside a rounded card. Authenticated profiles add separate value/caption statistic blocks. Unknown server statistics remain an em dash, and editorial identities gain no invented social totals. Edit profile, Wallet, Settings, avatar review, Follow, mutual Message and Block retain their existing routes and authorization checks.
+Me, authenticated member profiles and editorial-author profiles now share `totiProfileIdentityCard`: an inset photographic avatar with a coral outline, a horizontal identity/name group, biography and the existing StudioCanvas atmosphere inside a rounded card. Authenticated profiles add separate value/caption statistic blocks. Unknown server statistics remain an em dash, and editorial identities gain no invented social totals. Edit profile in Settings, Wallet, Settings, avatar review, Follow, mutual Message and Block retain their existing routes and authorization checks.
 
 Member Works, Saved and Drafts now show compact two-column photo/text tiles, with relative cover sizing, short excerpts and independent lower-left author controls. Odd rows keep a half-width final tile. Accessibility text sizes use a single column and stack the identity group vertically. Empty owner collections gain a generated icon, heading, descriptive copy and the existing creation action when relevant. Works / Saved / Drafts / About remain the same pinned categories; the private Notebook and owned Voice routes stay in About.
 
@@ -63,3 +63,30 @@ The current metric order is Likes / Saves / Following / Followers. Received save
 The six material-author profiles now have distinct fixed illustrative Likes/Saves/Following/Followers values, requested by the user after the real-count audit. This supersedes the earlier em-dash treatment for those six profiles only. The profile and accessibility hints disclose the figures as illustrative rather than live activity. Unknown real/member metadata and unconfigured editorial publishers still use an em dash. The shared native layout remains unchanged. No Supabase reaction, relationship, incoming follow or Auth record is generated; real users retain server-derived counts. In particular, displayed editorial followers never enable Message. See `lounge-editorial-authors.md` for exact figures and validation.
 
 The illustrative-figure update has current-source build/install evidence, four passing model tests and one passing profile UI case on Toti UI Acceptance. Actual Guest metrics and mutual Message remained intact, while the editorial numbers remained separate and did not expose Message. The latest app was relaunched with the existing retained test session. See the figure table and screenshot in `lounge-editorial-authors.md`.
+
+## Full online post detail — 2026-11-02
+
+Editorial publishing and author identities remain separate from member accounts, while their post details now support real Guest likes, saves, comments and private reports. Saved editorial posts appear in Lounge Saved and Me Saved; real chat forwards open the corresponding detail. This supersedes the earlier content-only/read-only interaction description. Device-only editorial follow/block remains unchanged. See [Bibi post-detail comparison, deployed contract and exact verification](post-detail-bibi-parity.md).
+
+## Outgoing liked and saved posts — 2026-11-02
+
+Me now includes Liked for the caller's outgoing likes, separate from the received Likes profile metric. Liked/Saved include ordinary and editorial posts, read authoritative reaction-index pages independent of discovery, and reload after returning from detail. Named category routing preserves Drafts and About. See [the collection contract, retained test-post explanation and exact verification](profile-liked-collection.md).
+
+
+## Cover and collection refinement — 2026-11-02
+
+Me has no manual refresh buttons. Online collections refresh on entry/return and every 30 seconds while visible and active; in-flight requests are guarded. Liked/Saved keep the previous content during refresh and replace it after a successful read. Empty Works shows a Create your first post card and opens the existing composer. Settings is the sole Edit profile entry.
+
+Lounge editorial cards preserve their previous content-driven dimensions and spacing. Photos use aspect-fill cropping without determining card size. Cards use edge-to-edge cover photography with a dark readability overlay, title, excerpt and real counts. The footer uses two equal-width columns: author/avatar and Create post. Cover, author and composer remain separate tap targets. Profile collection tiles retain their compact layout.
+
+Verification: latest-source `totiUI` build passed (`/private/tmp/toti-cover-verified-build-1102.log`). Installed and launched on Toti UI Acceptance (`98658066-C6E0-45B3-A1E7-E8FBD950F0DB`). The focused `testCoverCardsAndAutomaticProfileCollections` case passed: 1 test, 0 failures, 43.480 seconds (`/private/tmp/toti-cover-verified-ui-1102.xcresult`). It exercised cover/author visibility, first-post creation and editor dismissal, absence of Me Edit profile and manual Liked/Saved refresh buttons. Visual evidence: [Lounge cover](backend/cover-collection-evidence-20261102/lounge-cover.png), [first post card](backend/cover-collection-evidence-20261102/first-post.png). The earlier size iteration was interrupted after user clarification; the first completed UI run used an incorrect Close label, corrected to Close editor for the passing run. Periodic refresh failure/recovery, large pagination and every Dynamic Type size were not exercised. The source-level collection service test was updated for the deleted fixture but not rerun this round. Static diff checks passed.
+
+
+## Two-column Lounge covers — 2026-11-02
+
+The user's latest size direction supersedes the full-width cover dimensions above. Lounge editorial covers now form two equal columns with 12-point spacing and a 1:1.5 width-to-height ratio, approximately half the former width and height (one-quarter area). Images retain aspect-fill cropping. Titles and excerpts use two-line previews; the author/avatar and accessible plus-only creation control each occupy half the footer. Full content remains available in post detail. Profile collection tiles retain their existing layout. This follow-up received static diff and constraint inspection only; the earlier runtime evidence predates this size change.
+
+The Lounge footer creation control is a bare generated plus icon aligned to the trailing edge, with no white background or border. Its existing composer action and minimum 44-point touch target remain. This visual adjustment received static inspection only.
+
+
+Me collection counts now appear only in Works (n), Liked (n) and Saved (n) chips. Standalone post-count rows and the explanatory Liked/Saved paragraphs were removed. Works uses the authenticated profile post total; outgoing reaction counts traverse the authorized pages and include editorial reactions, so the first loaded page is not presented as the total. Unread counts display an em dash until acknowledged. Chip updates preserve selection, scroll position and stable accessibility identifiers. This adjustment has static verification only.

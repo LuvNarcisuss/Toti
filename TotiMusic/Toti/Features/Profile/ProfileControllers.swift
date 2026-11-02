@@ -3,7 +3,20 @@ import UIKit
 import UniformTypeIdentifiers
 
 final class MeController: StackScreen, UIScrollViewDelegate {
-  private var selection = 0
+  private enum Collection: Int, CaseIterable {
+    case works, liked, saved, drafts, about
+    var title: String { ["Works", "Liked", "Saved", "Drafts", "About"][rawValue] }
+    var reaction: String? { self == .liked ? "like" : self == .saved ? "save" : nil }
+  }
+  private var selection = Collection.works
+  private var reactionPosts: [LoungePost] = []
+  private var reactionCursor: String?
+  private var reactionLoading = false
+  private var reactionError: String?
+  private var collectionRevision = 0
+  private var memberCollectionCounts: [String: Int] = [:]
+  private var countsLoading = false
+  private var collectionRefreshTimer: Timer?
   private let profileHeader = stack(spacing: 18)
   private let body = stack(spacing: 18)
   private let categorySlot = UIView()
@@ -30,12 +43,16 @@ final class MeController: StackScreen, UIScrollViewDelegate {
     categoryChrome.isHidden = true
     categoryChrome.addSubview(categoryWash)
     scroll.addSubview(categoryChrome)
-    let tabs = StudioChoice(items: ["Works", "Saved", "Drafts", "About"], index: selection)
+    let tabs = StudioChoice(items: Collection.allCases.map(\.title), index: selection.rawValue)
     tabs.accessibilityIdentifier = "profile.categories"
     tabs.onChange = { [weak self] next in
       guard let self, self.isAccountContextCurrent else { return }
-      self.selection = next
+      guard let collection = Collection(rawValue: next) else { return }
+      self.selection = collection
+      self.collectionRevision += 1
+      self.reactionPosts = []; self.reactionCursor = nil; self.reactionLoading = false; self.reactionError = nil
       self.fillBody()
+      self.loadReactions(reset: true)
       self.placeCategoryBar()
     }
     categories = tabs
@@ -44,7 +61,38 @@ final class MeController: StackScreen, UIScrollViewDelegate {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    if isViewLoaded { refresh() }
+    if isViewLoaded {
+      refresh()
+      refreshCollectionCounts()
+      if selection.reaction != nil {
+        collectionRevision += 1; reactionLoading = false
+        loadReactions(reset: true)
+      }
+    }
+  }
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    refreshVisibleCollection()
+    collectionRefreshTimer?.invalidate()
+    collectionRefreshTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+      Task { @MainActor [weak self] in self?.refreshVisibleCollection() }
+    }
+  }
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    collectionRefreshTimer?.invalidate()
+    collectionRefreshTimer = nil
+  }
+  private func refreshVisibleCollection() {
+    guard isAccountContextCurrent, store.isOnlineMode, !store.isBusy,
+          !reactionLoading, UIApplication.shared.applicationState == .active else { return }
+    Task { [weak self] in
+      guard let self else { return }
+      _ = await self.store.refreshOnline()
+      guard self.isAccountContextCurrent, self.viewIfLoaded?.window != nil else { return }
+      self.loadReactions(reset: true)
+      self.refreshCollectionCounts()
+    }
   }
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
@@ -65,10 +113,6 @@ final class MeController: StackScreen, UIScrollViewDelegate {
     if store.isOnlineMode, let review = avatarReviewPreview(store.library.profile) { profileHeader.addArrangedSubview(review) }
     let actions = stack(axis: .horizontal, spacing: 10)
     actions.distribution = .fillEqually
-    actions.addArrangedSubview(actionButton("Edit profile", icon: .me, compact: true) { [weak self] in
-      guard let self, self.isAccountContextCurrent else { return }
-      self.push(EditProfileController(store: self.store))
-    })
     actions.addArrangedSubview(actionButton("Wallet", icon: .diamond, tone: .coral, compact: true) { [weak self] in
       guard let self, self.isAccountContextCurrent else { return }
       self.push(WalletController(store: self.store))
@@ -79,9 +123,10 @@ final class MeController: StackScreen, UIScrollViewDelegate {
   }
 
   private func fillBody() {
+    updateCollectionTitles()
     body.arrangedSubviews.forEach { $0.removeFromSuperview() }
-    appendOnlineControls(to: body)
-    if selection == 3 {
+    if let error = store.onlineReadError { body.addArrangedSubview(label(error, 14, TotiTheme.dangerInk)) }
+    if selection == .about {
       body.addArrangedSubview(profilePaper([
         label("Your private corner", 23, TotiTheme.plum, title: true),
         label("Keep your ideas close, and share them when you are ready.", 15, TotiTheme.muted),
@@ -103,17 +148,25 @@ final class MeController: StackScreen, UIScrollViewDelegate {
       })
       return
     }
-    let posts = selection == 0 ? store.loungePosts.filter { $0.author.isLocalOwner && !$0.isEditorial }
-      : selection == 1 ? store.savedLoungePosts : store.loungeDrafts
-    let editorialCount = selection == 1 ? store.savedEditorialPosts.count : 0
-    body.addArrangedSubview(label(totiProfileCollectionCount(posts.count + editorialCount, noun: selection == 2 ? "draft" : "post", suffix: store.isOnlineMode ? "loaded" : "on this device"), 12, TotiTheme.muted))
-    if selection == 1 { appendTotiEditorial(to: body, showsHeading: false, workTiles: true, onlySaved: true) }
+    let reactionCollection = selection.reaction != nil
+    let posts = selection == .works ? store.loungePosts.filter { $0.author.isLocalOwner && !$0.isEditorial }
+      : reactionCollection ? (store.isOnlineMode ? reactionPosts.filter { !store.isCreatorBlocked($0.author.id) && !store.isContentReported($0.id.uuidString, kind: .post) } : (selection == .liked ? store.likedLoungePosts : store.savedLoungePosts)) : store.loungeDrafts
+    let editorialCount = selection == .saved ? store.savedEditorialPosts.count : selection == .liked ? store.likedEditorialPosts.count : 0
+    if reactionCollection {
+      if reactionLoading { body.addArrangedSubview(label("Loading posts…", 14, TotiTheme.muted)) }
+      if let error = reactionError { body.addArrangedSubview(label(error, 14, TotiTheme.dangerInk)) }
+    }
+    if selection == .drafts { body.addArrangedSubview(label(totiProfileCollectionCount(posts.count, noun: "draft", suffix: store.isOnlineMode ? "loaded" : "on this device"), 12, TotiTheme.muted)) }
+    if selection == .saved { appendTotiEditorial(to: body, showsHeading: false, workTiles: true, onlySaved: true) }
+    if selection == .liked { appendTotiEditorial(to: body, showsHeading: false, workTiles: true, onlyLiked: true) }
+    if reactionLoading && posts.isEmpty && editorialCount == 0 { return }
+    if reactionError != nil && posts.isEmpty && editorialCount == 0 { return }
     if posts.isEmpty && editorialCount == 0 {
-      let title = selection == 1 ? "Keep what inspires you." : selection == 2 ? "A little room to finish." : "Your stories belong here."
-      let detail = selection == 1 ? "Save posts from Lounge to find them here."
-        : selection == 2 ? "Posts you save as drafts stay private until you publish them."
-        : "Share a thought, a concert photo or a musical question."
-      let icon: TotiIcon = selection == 1 ? .bookmark : selection == 2 ? .notebook : .plus
+      let title = selection == .liked ? "Find your favorites here." : selection == .saved ? "Keep what inspires you." : selection == .drafts ? "A little room to finish." : "Create your first post."
+      let detail = selection == .liked ? "Like a post in Lounge to find it here. Unlike it to remove it from this collection." : selection == .saved ? "Save posts from Lounge to find them here."
+        : selection == .drafts ? "Posts you save as drafts stay private until you publish them."
+        : "Share a song, a concert moment or an idea. Your published posts will appear here."
+      let icon: TotiIcon = selection == .liked ? .heartOutline : selection == .saved ? .bookmark : selection == .drafts ? .notebook : .plus
       let artwork = UIImageView(image: icon.image(TotiTheme.plum, size: 44))
       artwork.contentMode = .scaleAspectFit
       artwork.translatesAutoresizingMaskIntoConstraints = false
@@ -123,7 +176,7 @@ final class MeController: StackScreen, UIScrollViewDelegate {
       let emptyHeader = stack([artwork, label(title, 23, TotiTheme.plum, title: true)], axis: .horizontal, spacing: 14)
       emptyHeader.alignment = .center
       var rows: [UIView] = [emptyHeader, label(detail, 15, TotiTheme.muted)]
-      if selection != 1 { rows.append(writeButton()) }
+      if !reactionCollection { rows.append(writeButton(title: selection == .works ? "Create your first post" : "Write a post")) }
       body.addArrangedSubview(profilePaper(rows))
     } else {
       let tiles = posts.map { post in
@@ -133,11 +186,86 @@ final class MeController: StackScreen, UIScrollViewDelegate {
         }) { [weak self] in self?.openPost(post) }
       }
       totiProfileGrid(tiles, to: body, singleColumn: traitCollection.preferredContentSizeCategory.isAccessibilityCategory)
-      if selection != 1 { body.addArrangedSubview(writeButton()) }
+      if !reactionCollection { body.addArrangedSubview(writeButton()) }
+    }
+    if reactionCursor != nil {
+      let more = actionButton("Load more " + selection.title.lowercased() + " posts", icon: .refresh) { [weak self] in self?.loadReactions(reset: false) }
+      more.isEnabled = !reactionLoading; body.addArrangedSubview(more)
     }
   }
-  private func writeButton() -> UIView {
-    actionButton("Write a post", icon: .plus, primary: true) { [weak self] in
+  private func loadReactions(reset: Bool) {
+    guard isViewLoaded, isAccountContextCurrent, store.isOnlineMode,
+          let kind = selection.reaction, !reactionLoading, reset || reactionCursor != nil else { return }
+    if reset { reactionCursor = nil }
+    reactionLoading = true; reactionError = nil; fillBody()
+    let revision = collectionRevision
+    let cursor = reset ? nil : reactionCursor
+    Task { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      do {
+        let page = try await self.store.loadProfileReactionPage(kind: kind, cursor: cursor)
+        let editorial = try await TotiBackend.shared.editorialPosts()
+        guard self.isAccountContextCurrent, self.collectionRevision == revision, self.selection.reaction == kind else { return }
+        if reset { self.reactionPosts = page.posts }
+        else { self.reactionPosts += page.posts.filter { post in !self.reactionPosts.contains(where: { $0.id == post.id }) } }
+        self.reactionCursor = page.next
+        self.reactionLoading = false
+        self.store.onlineEditorialPosts = editorial
+        self.fillBody()
+        self.refreshCollectionCounts()
+      } catch {
+        guard self.isAccountContextCurrent, self.collectionRevision == revision else { return }
+        self.reactionLoading = false
+        self.reactionError = "These posts could not be loaded. Check your connection and try again."
+        self.fillBody()
+      }
+    }
+  }
+  private func updateCollectionTitles() {
+    let ownPosts = store.loungePosts.filter { $0.author.isLocalOwner && !$0.isEditorial }.count
+    let ownerID = TotiBackend.shared.accountID?.uuidString ?? ""
+    let works = store.isOnlineMode ? store.onlineProfileMetric("post_count", creatorID: ownerID) : ownPosts
+    let liked = store.isOnlineMode ? memberCollectionCounts["like"] : store.likedLoungePosts.count
+    let saved = store.isOnlineMode ? memberCollectionCounts["save"] : store.savedLoungePosts.count
+    func title(_ name: String, _ count: Int?, editorial: Int = 0) -> String {
+      name + " (" + (count.map { String($0 + editorial) } ?? "—") + ")"
+    }
+    categories?.updateTitles([
+      title("Works", works), title("Liked", liked, editorial: store.likedEditorialPosts.count),
+      title("Saved", saved, editorial: store.savedEditorialPosts.count), "Drafts", "About",
+    ])
+  }
+  private func refreshCollectionCounts() {
+    guard isAccountContextCurrent, store.isOnlineMode, !countsLoading else { return }
+    countsLoading = true
+    Task { [weak self] in
+      guard let self else { return }
+      defer { self.countsLoading = false }
+      do {
+        var counts: [String: Int] = [:]
+        for kind in ["like", "save"] {
+          var ids = Set<UUID>()
+          var cursor: String?
+          var seenCursors = Set<String>()
+          repeat {
+            let page = try await TotiBackend.shared.profileReactions(kind: kind, cursor: cursor)
+            guard self.isAccountContextCurrent else { return }
+            ids.formUnion(page.records.filter { !self.store.isContentReported($0.id.uuidString, kind: .post) }.map(\.id))
+            cursor = page.next_cursor
+            if let cursor, !seenCursors.insert(cursor).inserted { throw TotiBackendError.invalidResponse }
+          } while cursor != nil
+          counts[kind] = ids.count
+        }
+        guard self.isAccountContextCurrent else { return }
+        self.memberCollectionCounts = counts
+        self.updateCollectionTitles()
+      } catch {
+        // Keep acknowledged counts; an unread collection is shown as unknown instead of zero.
+      }
+    }
+  }
+  private func writeButton(title: String = "Write a post") -> UIView {
+    actionButton(title, icon: .plus, primary: true) { [weak self] in
       guard let self, self.isAccountContextCurrent else { return }
       self.presentScreen(LoungeComposerController(store: self.store), full: true)
     }
@@ -145,7 +273,15 @@ final class MeController: StackScreen, UIScrollViewDelegate {
   private func openPost(_ post: LoungePost) {
     guard isAccountContextCurrent else { return }
     if post.isDraft { presentScreen(LoungeComposerController(store: store, post: post), full: true) }
-    else { push(LoungeDetailController(store: store, postID: post.id)) }
+    else if store.isOnlineMode, store.loungePost(post.id) == nil {
+      Task { [weak self] in
+        guard let self else { return }
+        await self.store.loadOnlineThread(kind: "comment", parentID: post.id.uuidString)
+        guard self.isAccountContextCurrent else { return }
+        if self.store.loungePost(post.id) != nil { self.push(LoungeDetailController(store: self.store, postID: post.id)) }
+        else { self.message("This post is no longer available.") }
+      }
+    } else { push(LoungeDetailController(store: store, postID: post.id)) }
   }
   private func placeCategories(pinned: Bool) {
     guard let categories else { return }
