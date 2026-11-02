@@ -14,7 +14,7 @@ All five cases have passing results after targeted rechecks. This is **not a cla
 | Voice room/local message | Passed · 57.637 s |
 | Chat keyboard/local outbox | Passed on targeted recheck · 43.189 s |
 
-Evidence: [full-run summary: 4 passed, 1 failed](isolated-summary.json), [Chat recheck: 1 passed, 0 failed](chat-recheck-summary.json), [initial Chat focus screenshot](../../Assets/Screenshots__xctest-ui__chat-initial-focus-failure.png). Complete bundles: `/tmp/TotiUI-Isolated.xcresult` and `/tmp/TotiUI-ChatRecheck.xcresult`. The screenshot index uses the independent run for the four passing cases and the successful Chat recheck. These are the frozen build products recorded below; subsequent asset-migration changes are verified separately.
+Evidence: [full-run summary: 4 passed, 1 failed](isolated-summary.json), [Chat recheck: 1 passed, 0 failed](chat-recheck-summary.json), [initial Chat focus screenshot](https://pub-e1dd5165c5cf490785389b0538d5d63e.r2.dev/Screenshots__xctest-ui__chat-initial-focus-failure.png). Complete bundles: `/tmp/TotiUI-Isolated.xcresult` and `/tmp/TotiUI-ChatRecheck.xcresult`. The screenshot index uses the independent run for the four passing cases and the successful Chat recheck. These are the frozen build products recorded below; subsequent asset-migration changes are verified separately.
 
 ## Coverage
 
@@ -28,7 +28,7 @@ Evidence: [full-run summary: 4 passed, 1 failed](isolated-summary.json), [Chat r
 
 ## Product fix
 
-Notebook's Clear filters action previously left the search field focused, so the software keyboard covered the bottom navigation. The action now ends editing before resetting filters. The keyboard Search key also dismisses editing. The regression asserts that the keyboard is absent after clearing filters and then navigates to Me. It failed before the fix and passed in Run 2. [Before screenshot](../../Assets/Screenshots__xctest-ui__notebook-keyboard-before.png).
+Notebook's Clear filters action previously left the search field focused, so the software keyboard covered the bottom navigation. The action now ends editing before resetting filters. The keyboard Search key also dismisses editing. The regression asserts that the keyboard is absent after clearing filters and then navigates to Me. It failed before the fix and passed in Run 2. [Before screenshot](https://pub-e1dd5165c5cf490785389b0538d5d63e.r2.dev/Screenshots__xctest-ui__notebook-keyboard-before.png).
 
 ## Harness corrections and earlier runs
 

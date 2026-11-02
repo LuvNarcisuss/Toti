@@ -1,0 +1,591 @@
+{
+  "schemaVersion": 1,
+  "rooms": [
+    {
+      "slug": "pop-lounge",
+      "title": "The Pop Lounge",
+      "cover": {
+        "asset": "RoomCoverHipHop",
+        "file": "Assets/RoomCoverHipHop.jpg",
+        "bytes": 26266,
+        "sha256": "5bb4906c2eb4615cb3726c6cdc67f1c15d34e28734390ea747789f3fafb0e769",
+        "credits": [
+          {
+            "author": "ANTONI SHKRABA production",
+            "sourceURL": "https://www.pexels.com/video/a-woman-singing-with-a-microphone-8042838/",
+            "licenseURL": "https://www.pexels.com/license/",
+            "frameTime": 1.34,
+            "sourceManifest": "Assets/Design__MusicSources__manifest.json",
+            "mappingManifest": "Assets/Design__MusicSources__photo-mappings.json"
+          }
+        ],
+        "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverHipHop.jpg"
+      },
+      "id": "c2e04cc7-7e49-594b-a7f1-aef8007eea95",
+      "people": [
+        {
+          "name": "Avery",
+          "asset": "PortraitVoiceAvery",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceAvery.jpg"
+        },
+        {
+          "name": "Emma",
+          "asset": "PortraitVoiceEmma",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceEmma.jpg"
+        },
+        {
+          "name": "Chloe",
+          "asset": "PortraitVoiceChloe",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceChloe.jpg"
+        }
+      ],
+      "description": "Favorite hooks, new releases and songs worth replaying."
+    },
+    {
+      "slug": "soul-after-hours",
+      "title": "Soul After Hours",
+      "cover": {
+        "asset": "RoomCoverKPop",
+        "file": "Assets/RoomCoverKPop.jpg",
+        "bytes": 26945,
+        "sha256": "72ced20c0f31fae2bb3a799be90dab444b4d8a06232b251de45dee22f1dabea1",
+        "credits": [
+          {
+            "author": "Los Muertos Crew",
+            "sourceURL": "https://www.pexels.com/video/a-woman-singing-while-using-condenser-microphone-7586634/",
+            "licenseURL": "https://www.pexels.com/license/",
+            "frameTime": 2.84,
+            "sourceManifest": "Assets/Design__MusicSources__manifest.json",
+            "mappingManifest": "Assets/Design__MusicSources__photo-mappings.json"
+          }
+        ],
+        "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverKPop.jpg"
+      },
+      "id": "231f7172-cc3e-55e1-8e2f-50b14beed82c",
+      "people": [
+        {
+          "name": "Oliver",
+          "asset": "PortraitVoiceOliver",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceOliver.jpg"
+        },
+        {
+          "name": "Liam",
+          "asset": "PortraitVoiceLiam",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceLiam.jpg"
+        },
+        {
+          "name": "Jack",
+          "asset": "PortraitVoiceJack",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceJack.jpg"
+        }
+      ],
+      "description": "Warm vocals, classic records and stories behind the songs."
+    },
+    {
+      "slug": "blue-note-room",
+      "title": "Blue Note Room",
+      "cover": {
+        "asset": "RoomCoverJazz",
+        "file": "Assets/RoomCoverJazz.jpg",
+        "bytes": 25772,
+        "sha256": "1d7f34a41d01cdf8d51adb1787ff3f2bf10dc405c4964790fe50e68b73f0ef9f",
+        "credits": [
+          {
+            "author": "cottonbro studio",
+            "sourceURL": "https://www.pexels.com/video/a-woman-holding-the-microphone-while-singing-9419269/",
+            "licenseURL": "https://www.pexels.com/license/",
+            "frameTime": 2.58,
+            "sourceManifest": "Assets/Design__MusicSources__manifest.json",
+            "mappingManifest": "Assets/Design__MusicSources__photo-mappings.json"
+          }
+        ],
+        "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverJazz.jpg"
+      },
+      "id": "2eef8ee5-948f-592b-9ce8-cf9048c9ab4f",
+      "people": [
+        {
+          "name": "Sophie",
+          "asset": "PortraitVoiceSophie",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceSophie.jpg"
+        },
+        {
+          "name": "Grace",
+          "asset": "PortraitVoiceGrace",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceGrace.jpg"
+        },
+        {
+          "name": "Ella",
+          "asset": "PortraitVoiceElla",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceElla.jpg"
+        }
+      ],
+      "description": "Jazz discoveries, favorite solos and late-night listening."
+    },
+    {
+      "slug": "acoustic-corner",
+      "title": "Acoustic Corner",
+      "cover": {
+        "asset": "RoomCoverFreestyle",
+        "file": "Assets/RoomCoverFreestyle.jpg",
+        "bytes": 33771,
+        "sha256": "062e380bbf1b824d98182ac3498afc991cdf107e3ecd28e532fb07c08ea17f41",
+        "credits": [
+          {
+            "author": "ANTONI SHKRABA production",
+            "sourceURL": "https://www.pexels.com/video/man-singing-in-the-music-studio-8135078/",
+            "licenseURL": "https://www.pexels.com/license/",
+            "frameTime": 1.02,
+            "sourceManifest": "Assets/Design__MusicSources__manifest.json",
+            "mappingManifest": "Assets/Design__MusicSources__photo-mappings.json"
+          }
+        ],
+        "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverFreestyle.jpg"
+      },
+      "id": "a0228f1f-1ec8-590d-8552-05b7cc4b0061",
+      "people": [
+        {
+          "name": "Mia",
+          "asset": "PortraitVoiceMia",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceMia.jpg"
+        },
+        {
+          "name": "Ruby",
+          "asset": "PortraitVoiceRuby",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceRuby.jpg"
+        },
+        {
+          "name": "Lucy",
+          "asset": "PortraitVoiceLucy",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceLucy.jpg"
+        }
+      ],
+      "description": "Stripped-back songs, guitar ideas and quiet first takes."
+    },
+    {
+      "slug": "piano-and-strings",
+      "title": "Piano & Strings",
+      "cover": {
+        "asset": "MusicPianoRoom",
+        "file": "Assets/MusicPianoRoom.jpg",
+        "bytes": 23998,
+        "sha256": "985db482117337c138f609bbbdd0809d401f33634e8aed60656699702d49535c",
+        "credits": [
+          {
+            "title": "Photographic artwork · MusicPianoRoom",
+            "author": "Göksu Taymaz",
+            "sourceURL": "https://www.pexels.com/photo/17815329/",
+            "licenseURL": "https://www.pexels.com/license/"
+          }
+        ],
+        "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/MusicPianoRoom.jpg"
+      },
+      "id": "12f59f2b-797c-5665-8f84-2714e64d1c28",
+      "people": [
+        {
+          "name": "Hazel",
+          "asset": "PortraitVoiceHazel",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceHazel.jpg"
+        },
+        {
+          "name": "Noah",
+          "asset": "PortraitVoiceNoah",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceNoah.jpg"
+        },
+        {
+          "name": "Lucas",
+          "asset": "PortraitVoiceLucas",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceLucas.jpg"
+        }
+      ],
+      "description": "Piano pieces, orchestral favorites and room to listen closely."
+    },
+    {
+      "slug": "electronic-frequencies",
+      "title": "Electronic Frequencies",
+      "cover": {
+        "asset": "MusicProductionRoom",
+        "file": "Assets/MusicProductionRoom.jpg",
+        "bytes": 33821,
+        "sha256": "b72dd1f420f553b17fc02e23f6e757dfe2e22f1653acafb94cdad83f02883f7e",
+        "credits": [
+          {
+            "title": "Photographic artwork · MusicProductionRoom",
+            "author": "Anna Pou",
+            "sourceURL": "https://www.pexels.com/photo/8132809/",
+            "licenseURL": "https://www.pexels.com/license/",
+            "usage": "Toti editorial only; illustrative photography; not a member identity or live-room presence."
+          }
+        ],
+        "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/MusicProductionRoom.jpg"
+      },
+      "id": "0ea831b4-cd34-54c2-a137-f226556f90c3",
+      "people": [
+        {
+          "name": "Theo",
+          "asset": "PortraitVoiceTheo",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceTheo.jpg"
+        },
+        {
+          "name": "Finn",
+          "asset": "PortraitVoiceFinn",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceFinn.jpg"
+        },
+        {
+          "name": "Owen",
+          "asset": "PortraitVoiceOwen",
+          "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceOwen.jpg"
+        }
+      ],
+      "description": "Synth textures, beat-making and new electronic discoveries."
+    }
+  ],
+  "portraitArtwork": [
+    {
+      "asset": "PortraitVoiceAvery",
+      "file": "Assets/PortraitVoiceAvery.jpg",
+      "bytes": 134368,
+      "sha256": "573e8e85c160d82ff1e22e0fabc41e6a303123c705ec5f814f1508fa67ea389c",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceAvery.jpg",
+      "dimensions": [
+        900,
+        1312
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceAvery",
+          "author": "Ninari",
+          "sourceURL": "https://www.pexels.com/photo/20765278/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceEmma",
+      "file": "Assets/PortraitVoiceEmma.jpg",
+      "bytes": 154078,
+      "sha256": "a71c3decb9de9b98f487d222e2f3d2879785bc53573aa717f231e61ef4f23679",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceEmma.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceEmma",
+          "author": "Martin Lopez",
+          "sourceURL": "https://www.pexels.com/photo/2157171/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceChloe",
+      "file": "Assets/PortraitVoiceChloe.jpg",
+      "bytes": 132641,
+      "sha256": "94be2a773ac790348e252323a7d41b3fb8b13b477ac687c2970ad9bea154d51c",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceChloe.jpg",
+      "dimensions": [
+        900,
+        1283
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceChloe",
+          "author": "shahin khalaji",
+          "sourceURL": "https://www.pexels.com/photo/17744395/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceOliver",
+      "file": "Assets/PortraitVoiceOliver.jpg",
+      "bytes": 175279,
+      "sha256": "fc7e7c08d28f0bfd4983167c68fe72d7d55627cc26af5c4a315f6f011750aad1",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceOliver.jpg",
+      "dimensions": [
+        900,
+        1600
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceOliver",
+          "author": "ἐμμανυελ ",
+          "sourceURL": "https://www.pexels.com/photo/12600484/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceLiam",
+      "file": "Assets/PortraitVoiceLiam.jpg",
+      "bytes": 150756,
+      "sha256": "64b3591f6e4039acc3849987b2fcf46f3e0c1b376204901236232b6ce0778bd5",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceLiam.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceLiam",
+          "author": "Guilman",
+          "sourceURL": "https://www.pexels.com/photo/5939382/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceJack",
+      "file": "Assets/PortraitVoiceJack.jpg",
+      "bytes": 134809,
+      "sha256": "ad8bbba22c068f834274d70a25c41ae8b6b1411ce91109b6748291d3b277b1fd",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceJack.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceJack",
+          "author": "Teja J",
+          "sourceURL": "https://www.pexels.com/photo/13781227/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceSophie",
+      "file": "Assets/PortraitVoiceSophie.jpg",
+      "bytes": 55639,
+      "sha256": "1fecad5383af36a16387b63aff415f4cde4c04ba3d1a1296043cf57f51531bb2",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceSophie.jpg",
+      "dimensions": [
+        900,
+        600
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceSophie",
+          "author": "Yan Krukau",
+          "sourceURL": "https://www.pexels.com/photo/9002783/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceGrace",
+      "file": "Assets/PortraitVoiceGrace.jpg",
+      "bytes": 169549,
+      "sha256": "2c6bbf3f1ebc3db07481f1997026e0b3b6ff7fc489d2d4ee294ddf062517fc75",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceGrace.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceGrace",
+          "author": "Toni Canaj",
+          "sourceURL": "https://www.pexels.com/photo/25254328/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceElla",
+      "file": "Assets/PortraitVoiceElla.jpg",
+      "bytes": 42850,
+      "sha256": "add82b33a622ad2a6aa20ed61ba0167d0f83f04334be020f2b782c34cdb10885",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceElla.jpg",
+      "dimensions": [
+        900,
+        652
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceElla",
+          "author": "Vika Glitter",
+          "sourceURL": "https://www.pexels.com/photo/1650076/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceMia",
+      "file": "Assets/PortraitVoiceMia.jpg",
+      "bytes": 150741,
+      "sha256": "48249d6aa6c5b459da0414d4bef07d68e82e2b9db4d08e1f6d8dc95caebfdf0d",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceMia.jpg",
+      "dimensions": [
+        900,
+        567
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceMia",
+          "author": "Vika Glitter",
+          "sourceURL": "https://www.pexels.com/photo/29564499/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceRuby",
+      "file": "Assets/PortraitVoiceRuby.jpg",
+      "bytes": 69882,
+      "sha256": "57959ec95074d9a10367e96447c3cb55fa1a7e83bccafb8251ad1376e3eda69b",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceRuby.jpg",
+      "dimensions": [
+        900,
+        601
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceRuby",
+          "author": "Pavel Danilyuk",
+          "sourceURL": "https://www.pexels.com/photo/7120409/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceLucy",
+      "file": "Assets/PortraitVoiceLucy.jpg",
+      "bytes": 147441,
+      "sha256": "4499354eb88cc4052797069694f01387071ebb8a7f6f6bf09abdf102895c53b2",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceLucy.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceLucy",
+          "author": "Hatice Baran",
+          "sourceURL": "https://www.pexels.com/photo/16907547/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceHazel",
+      "file": "Assets/PortraitVoiceHazel.jpg",
+      "bytes": 224065,
+      "sha256": "5197a9075bef7d7d6871b7a92e74e0e34445112fd676effa4fc5ce9318e829ba",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceHazel.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceHazel",
+          "author": "Vlad Fonsark",
+          "sourceURL": "https://www.pexels.com/photo/5195651/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceNoah",
+      "file": "Assets/PortraitVoiceNoah.jpg",
+      "bytes": 137501,
+      "sha256": "a857392626dec1734d8c3f1d1332e458a50076aa71548897ce714656481f87f3",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceNoah.jpg",
+      "dimensions": [
+        900,
+        1349
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceNoah",
+          "author": "Ivan S",
+          "sourceURL": "https://www.pexels.com/photo/8128009/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceLucas",
+      "file": "Assets/PortraitVoiceLucas.jpg",
+      "bytes": 182865,
+      "sha256": "439210402533bd338fa81e3c2f1a35109c4a93af97e4de93f38e660b811ba95e",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceLucas.jpg",
+      "dimensions": [
+        900,
+        1359
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceLucas",
+          "author": "Aleksandr Neplokhov",
+          "sourceURL": "https://www.pexels.com/photo/2601187/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceTheo",
+      "file": "Assets/PortraitVoiceTheo.jpg",
+      "bytes": 73072,
+      "sha256": "a1fcfef3b9e4685f44139cd8b97f819401a6c7e4a609ac501f60ecc54e0395bc",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceTheo.jpg",
+      "dimensions": [
+        900,
+        600
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceTheo",
+          "author": "Paloma Clarice",
+          "sourceURL": "https://www.pexels.com/photo/12835521/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceFinn",
+      "file": "Assets/PortraitVoiceFinn.jpg",
+      "bytes": 170310,
+      "sha256": "698543ccd31d4c97c94b758bd4376eb76c2ea4c44c264300001b00ed7e9ccc77",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceFinn.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceFinn",
+          "author": "Pedro Woch",
+          "sourceURL": "https://www.pexels.com/photo/16401243/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    },
+    {
+      "asset": "PortraitVoiceOwen",
+      "file": "Assets/PortraitVoiceOwen.jpg",
+      "bytes": 71286,
+      "sha256": "e404888c0075ee76640eb2ef99a2e952a8a592f2f36446cd9d3112aaefb79525",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceOwen.jpg",
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Voice music portrait · PortraitVoiceOwen",
+          "author": "Ivo Rosenberg",
+          "sourceURL": "https://www.pexels.com/photo/13121369/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ]
+    }
+  ],
+  "portraitUsage": "Illustrative room characters only, not Auth accounts or actual attendees. Names are authored artwork captions. Actual member uploads are unchanged. Nationality is not inferred from appearance.",
+  "verification": {
+    "updatedOn": "2026-11-02",
+    "scope": "Eighteen unique music portraits. Public download and current-source acceptance are recorded in docs/voice-room-music-portraits.md."
+  }
+}

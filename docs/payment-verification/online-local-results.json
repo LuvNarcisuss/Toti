@@ -1,0 +1,110 @@
+{
+  "ui": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 2,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPurchases \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1793353846.149,
+    "passedTests": 2,
+    "result": "Passed",
+    "skippedTests": 0,
+    "startTime": 1793353676.403,
+    "statistics": [],
+    "testFailures": [],
+    "title": "Test - totiPurchases",
+    "topInsights": [],
+    "totalTestCount": 2
+  },
+  "service": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 17,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPayments \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1793353926.554,
+    "passedTests": 17,
+    "result": "Passed",
+    "skippedTests": 0,
+    "startTime": 1793353899.803,
+    "statistics": [],
+    "testFailures": [],
+    "title": "Test - totiPayments",
+    "topInsights": [
+      {
+        "category": "Longest Test Runs",
+        "impact": "21% of duration",
+        "text": "1 longest test run with outlier durations exceeding 1.99s (three standard deviations)"
+      }
+    ],
+    "totalTestCount": 17
+  },
+  "screenshots": [
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/3B501EE9-935A-49F1-A7AA-56757705F088.png",
+      "sha256": "29a04ac56fb94d283322c450a22d475e87ac1bd417504d06f738712873239680"
+    },
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/42E566CB-D484-477C-9945-5481D21E62EA.png",
+      "sha256": "6656031bf1a9b7997a87fc870381f1f7fff5332d14f63d3c5dafb84d6cb8d218"
+    },
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/5998DD3F-DE59-4ABD-87A7-00784EC48204.png",
+      "sha256": "d2c70f6cf7b9420870f86c22309c1315a9f60cf193cd4f32e2caecb533bb092c"
+    },
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/743B1277-841C-4601-A077-36A6EA401F64.png",
+      "sha256": "5bfe1e64c043408d89b3c5a07da53e08f58e643f66d749c5f512ab8d3e8cce10"
+    },
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/9BAE3171-2D28-4177-9E3E-17D961C6AB85.png",
+      "sha256": "976b67e6581a8b27f81bd6304235394add5d871b2ee063e2753d79700674c8ef"
+    },
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/C6641463-F5A5-44C0-AC53-BAD572DECD53.png",
+      "sha256": "f148203e84c67a25c0c3ee82f39ffd6ffb3351cb00bff1b9ff89b78814e9e897"
+    },
+    {
+      "path": "Assets/Verification/OnlineStoreKit/FinalUI/E2436DF7-6A14-49ED-83FC-84DE731310F9.png",
+      "sha256": "20d366eb64e21b9cfe862c8f2ffa006c0f039e829d2fb2970e5aefd3311f6752"
+    }
+  ]
+}

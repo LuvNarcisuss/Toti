@@ -32,6 +32,8 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
     private let finishedObjects = NSHashTable<SKPaymentTransaction>(options: [.weakMemory, .objectPointerPersonality])
     private var finishing: [ObjectIdentifier: FinishedPurchase] = [:]
     private var tail: Task<Void, Never>?
+    // A scoped local test wallet must never adopt another wallet's queued transaction.
+    var transactionOwner: UUID?
 
     init(productsFetcher: StoreProductFetching? = nil, productRequestTimeout: TimeInterval = 20) {
         self.productsFetcher = productsFetcher ?? TotiStoreProductFetcher()
@@ -101,7 +103,7 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
         beginProductRequest()
     }
 
-    func stop() async {
+    func suspend() {
         acceptingPurchases = false
         sessionGeneration += 1
         invalidateProductRequest()
@@ -116,6 +118,10 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
             SKPaymentQueue.default().remove(self)
             observing = false
         }
+    }
+
+    func stop() async {
+        suspend()
         await drain()
     }
 
@@ -193,7 +199,9 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
         let wait = PurchaseWait()
         expected[package.storeProductID, default: 0] += 1
         waiters[package.storeProductID, default: []].append(wait)
-        SKPaymentQueue.default().add(SKPayment(product: product))
+        let payment = SKMutablePayment(product: product)
+        payment.applicationUsername = transactionOwner?.uuidString
+        SKPaymentQueue.default().add(payment)
         return await withCheckedContinuation { continuation in
             if wait.settled {
                 continuation.resume(returning: wait.message)
@@ -316,6 +324,9 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
     }
 
     private func handle(_ transaction: SKPaymentTransaction) async {
+        guard observing else { return }
+        if let transactionOwner,
+           UUID(uuidString: transaction.payment.applicationUsername ?? "") != transactionOwner { return }
         if finishedObjects.contains(transaction) { return }
         let productID = transaction.payment.productIdentifier
         switch transaction.transactionState {
@@ -361,22 +372,53 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
 
     /// Credits one catalog consumable at most once.
     private func credit(_ transaction: SKPaymentTransaction) async -> CreditOutcome {
+        let generation = sessionGeneration
         let productID = transaction.payment.productIdentifier
         guard let package = WalletCatalog.package(forProductID: productID) else { return .notSaved }
-        let identifiers = transactionIdentifiers(transaction)
+        var identifiers = transactionIdentifiers(transaction)
         guard !identifiers.isEmpty else { return .notSaved }
-        if identifiers.contains(where: { ledger.creditedTransactionIDs.contains($0) }) {
-            preexistingIDs.formUnion(identifiers)
-            guard let persist, await persist(ledger) else { return .notSaved }
-            return .alreadySaved
-        }
         let quantity = transaction.payment.quantity
         let (total, overflow) = package.amount.multipliedReportingOverflow(by: quantity)
+        guard quantity > 0, package.amount > 0, !overflow else { return .notSaved }
+        var next = ledger
+        var alreadySaved = identifiers.contains(where: { ledger.creditedTransactionIDs.contains($0) })
+        #if DEBUG && targetEnvironment(simulator)
+        // An owner is assigned only to the isolated local StoreKit wallet. Apple delivery keeps raw IDs.
+        if transactionOwner != nil {
+            let original = transaction.transactionState == .restored ? (transaction.original ?? transaction) : transaction
+            guard let id = original.transactionIdentifier, let date = original.transactionDate else { return .notSaved }
+            let credit = LocalStoreKitCredit(transactionID: id, productID: productID,
+                                             quantity: quantity, amount: total, date: date)
+            guard credit.isValid else { return .notSaved }
+            if next.localStoreKitCredits == nil {
+                // Preserve old activity IDs, dates, titles and balances. Migrate identity metadata only.
+                next.localStoreKitCredits = next.activity.filter { $0.kind != "gift" }.map {
+                    LocalStoreKitCredit(transactionID: $0.id, productID: nil, quantity: nil,
+                                        amount: $0.amount, date: $0.date)
+                }
+            }
+            let credits = next.localStoreKitCredits ?? []
+            alreadySaved = credits.contains { $0.matches(credit) }
+            if !alreadySaved {
+                // A pruned legacy row cannot establish whether this is a replay. Keep it unfinished.
+                if ledger.creditedTransactionIDs.contains(id), !credits.contains(where: { $0.transactionID == id }) {
+                    return .notSaved
+                }
+                next.localStoreKitCredits?.append(credit)
+            }
+            identifiers = [credit.storageID]
+        }
+        #endif
+        if alreadySaved {
+            preexistingIDs.formUnion(identifiers)
+            guard next.isValid, let persist, await persist(next), generation == sessionGeneration, observing else { return .notSaved }
+            ledger = next
+            return .alreadySaved
+        }
         let (balance, balanceOverflow) = ledger.diamonds.addingReportingOverflow(total)
-        guard quantity > 0, package.amount > 0, !overflow, !balanceOverflow, balance >= ledger.diamonds else {
+        guard !balanceOverflow, balance >= ledger.diamonds else {
             return .notSaved
         }
-        var next = ledger
         next.diamonds = balance
         let amountText = total.formatted(.number.locale(Locale(identifier: "en_US")))
         next.activity.insert(
@@ -390,7 +432,7 @@ final class StoreKit1Purchasing: NSObject, SKPaymentTransactionObserver {
         for identifier in identifiers where !next.creditedTransactionIDs.contains(identifier) {
             next.creditedTransactionIDs.append(identifier)
         }
-        guard next.isValid, let persist, await persist(next) else { return .notSaved }
+        guard next.isValid, let persist, await persist(next), generation == sessionGeneration, observing else { return .notSaved }
         preexistingIDs.formUnion(identifiers)
         ledger = next
         publish()

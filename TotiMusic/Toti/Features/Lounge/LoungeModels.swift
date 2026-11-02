@@ -5,6 +5,7 @@ enum LoungeTopic: String, Codable, CaseIterable {
 }
 
 struct LoungePost: Identifiable, Codable {
+    var backendVersion: Int? = nil
     var id = UUID()
     var author: CreatorProfile
     var body: String
@@ -16,6 +17,9 @@ struct LoungePost: Identifiable, Codable {
     /// attachment in the same atomic snapshot prevents orphan files and partial photo edits.
     var photoJPEG: Data? = nil
     var photoAsset: String? = nil
+    var mediaRevisionID: UUID? = nil
+    var mediaStatus: String? = nil
+    var mediaFeedback: String? = nil
     var voiceRoomID: String? = nil
     var isEditorial = false
 
@@ -75,7 +79,19 @@ struct LoungeState: Codable {
             LoungePost(id: UUID(uuidString: "16F40C60-5DC2-4DB5-BF99-000000000003")!,
                        author: CreatorProfile(id: "editorial:elena", name: "Elena · Toti editorial", biography: "A fictional editorial voice for music conversation. Portrait is illustrative artwork.", avatarAsset: "Portrait3"),
                        body: "Your first rehearsal together: one familiar song, plenty of listening, and room to get it wrong. What would you want a new bandmate to know about your sound?", topic: .bandmate,
-                       createdAt: date.addingTimeInterval(-7_200), updatedAt: date, isEditorial: true)
+                       createdAt: date.addingTimeInterval(-7_200), updatedAt: date, isEditorial: true),
+            LoungePost(id: UUID(uuidString: "16F40C60-5DC2-4DB5-BF99-000000000004")!,
+                       author: CreatorProfile(id: "editorial:toti-room", name: "Toti studio editorial", biography: "A fictional editorial voice for music conversation. Portrait is illustrative artwork.", avatarAsset: "TotiMark"),
+                       body: "A chorus can feel bigger when every part leaves room for the next one. What would you keep quiet in your arrangement?", topic: .makingMusic,
+                       createdAt: date.addingTimeInterval(-10_800), updatedAt: date, photoAsset: "MusicProductionRoom", isEditorial: true),
+            LoungePost(id: UUID(uuidString: "16F40C60-5DC2-4DB5-BF99-000000000005")!,
+                       author: CreatorProfile(id: "editorial:toti-concert", name: "Toti concert editorial", biography: "A fictional editorial voice for music conversation. Portrait is illustrative artwork.", avatarAsset: "TotiMark"),
+                       body: "Write down one small detail you remember after the lights come up: a harmony, a handclap, or the sound of people finding the exit.", topic: .concerts,
+                       createdAt: date.addingTimeInterval(-14_400), updatedAt: date, photoAsset: "MusicStudioBackdrop", isEditorial: true),
+            LoungePost(id: UUID(uuidString: "16F40C60-5DC2-4DB5-BF99-000000000006")!,
+                       author: CreatorProfile(id: "editorial:toti-listen", name: "Toti listening editorial", biography: "A fictional editorial voice for music conversation. Portrait is illustrative artwork.", avatarAsset: "TotiMark"),
+                       body: "Finding a collaborator starts with curiosity. Ask what they are hearing before you decide what the song needs.", topic: .bandmate,
+                       createdAt: date.addingTimeInterval(-18_000), updatedAt: date, isEditorial: true)
         ]
     }()
 }

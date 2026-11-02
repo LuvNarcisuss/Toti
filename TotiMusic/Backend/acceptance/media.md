@@ -1,0 +1,35 @@
+# Private media acceptance scenarios
+
+These are unexecuted scenarios for the parent integration task. First obey the current AGENTS.md build/install/launch prerequisites on Toti UI Acceptance. Use only authorized disposable guest accounts and generated pixels. Never upload existing Photos, archive images or user artwork as test fixtures. Record exact observations separately; a checklist is not a passing test result.
+
+## Deployment and negative permissions
+
+1. Confirm 007's remote migration version, both Edge versions/import maps and enabled JWT verification. Inspect the bucket: private, 1 MiB limit, JPEG allowlist. Inspect `pg_policies`: one exact-reservation INSERT policy, no Toti SELECT/UPDATE/DELETE policy. No custom Storage trigger should exist.
+2. Confirm every new private table has RLS with no direct mobile grants. `toti_media_reserve`/`toti_media_finalize` are service-only; `review_media` is private, SECURITY INVOKER and denied to `PUBLIC`, `anon`, `authenticated`, `service_role`. Its real operator invokes SQL through the database owner connection.
+3. Without a caller session, then with an unenrolled guest, try context/upload/read/reserve/finalize. All must fail. Confirm no revision/object appeared from these requests. Do not print tokens or signed URLs.
+4. With active enrolled guest A, try direct Storage INSERT into an unreserved path, B's reserved path, another bucket and a revision already ready. All Toti unauthorized paths must fail. No UPDATE/upsert or DELETE permission is granted. Verify owner cannot list/download/sign a reserved private object directly.
+
+## Real decoder and immutable retry
+
+5. Generate two small RGB JPEGs with visibly distinct colors using a local standard image encoder. Add a harmless generated EXIF/GPS/comment fixture to one JPEG. Save input hashes only in the acceptance record; keep bytes in a private temporary folder.
+6. A uploads JPEG 1 as a new post revision/entity. Expect a ready revision with review `status=pending`, matching identity/kind and SHA of the normalized server JPEG. Owner read returns a short private signed URL; download through the URL without logging it, decode it and inspect representative pixels. Verify original EXIF/GPS/comment are absent. Normalized JPEG can differ from input due to reencoding.
+7. Replay exact JPEG/IDs after discarding the first acknowledgement. Expect same revision/path/hash and only one Storage object. Replay JPEG 2, another kind or another entity with the original revision UUID; expect a conflict and no overwrite. Retry from a new app process using its durable exact bytes/UUID.
+8. Upload malformed JSON, invalid base64, a PNG labeled JPEG, header-only/truncated JPEG, trailing payload, JPEG over 1 MiB, frame over 2048 per edge, over 4 MP and a decoder memory-limit adversary. All must fail before reservation. An image whose quality-82 normalization exceeds 1 MiB must fail with 422. Check object/revision counts remain unchanged.
+9. Interrupt after reservation, then after Storage write, then before final response. Repeat exact request and confirm it resumes. Race two exact requests and confirm no duplicate object/revision and no cleanup deletes the winning request.
+10. With a deliberately paused generated-fixture upload, use A's caller JWT to race an INSERT of different tiny bytes into A's own exact reserved path. Edge must read back and reject that mismatch, leave `upload_state=reserved` and deny owner/foreign media reads. The test operator must not finalize it. An explicit new revision can recover the generated selection; account cleanup must remove the abandoned object. Never mutate production/user reservations for this scenario.
+
+## Attachment, real review and access
+
+11. Save A's non-draft post with the ready pending revision and expected version. Verify A sees `media_revision_id`, `media_status=pending`, while B cannot see the post or request a read URL. Attempts to attach B's revision, wrong kind/entity, reserved incomplete revision, bytes/local asset name or forged approval fields cannot publish an unsafe image.
+12. Save a profile replacement with a pending avatar. A sees pending identity/status; B sees no new avatar or pending/reviewer fields. The owner can preview pending bytes.
+13. A real authorized operator opens the exact normalized generated fixture and inspects the pixels. Only then call `toti_private.review_media` with its actual operator name, decision and English reason. Approval publishes only a currently attached non-draft post and promotes only the current profile replacement. Inspect the private review event's operator/database identity/time and read back the result through both A/B clients. This fixture review never authorizes normal-user autoapproval.
+14. Start a second avatar while the first is approved. A and B retain the first approved avatar during pending/rejected replacement states. Reject the replacement after actual inspection; A receives the reason and owner preview, B does not. Approve a superseded revision and confirm it does not change the current selection. Remove the avatar with explicit JSON null, then confirm neither pending nor current identity remains in projections.
+15. Reject a currently approved attached post/avatar after actual reinspection. The post becomes owner-only and the avatar withdraws; foreign new reads fail. Previously issued signed URLs may remain valid for their bounded lifetime. A draft remains private even when its photo is approved. Removing its photo is an authenticated explicit save, not a server-side silent success.
+16. Read with B after A blocks B, B blocks A, A starts deletion, A's parent is deleted or the revision is superseded. Foreign new URLs fail. Revoke A's live session while keeping its unexpired access token: context, upload/finalize and read fail. A stale JWT role flag does not restore access.
+17. Check peer/member/owner profiles in posts, comments, direct chats, groups and rooms contain only the approved avatar identity. Confirm projected owner feedback never reaches B. Check both paginated and exact older entity reads.
+
+## Cleanup, URL and client lifecycle
+
+18. Inspect signed URL expiration without publishing the URL. Fetch before expiry, then after expiry; the latter must fail. Request responses are `Cache-Control:no-store`. Remove/account-switch while image fetch is in flight; no late image enters another account's memory/cache/UI.
+19. Race a reserved caller Storage INSERT against `account.delete`. The private volatile RLS helper and deletion lock must serialize real metadata creation; after status becomes deleting, new inserts fail. Resume the existing owner cleanup and independently confirm no fixture Storage metadata/bytes remain, then no Auth/account/revision/review-event rows remain. Read back the durable deletion job. There is no arbitrary-account deletion HTTP route.
+20. Compare the pre/post device archive hashes and confirm unchanged. Verify selected Photos files remain untouched. Do not treat cloud fixture cleanup, a passing decoder check or successful deployment as complete production moderation/service acceptance.

@@ -6,6 +6,10 @@ extension AppStore {
   }
 
   func saveNotebookNote(_ note: InspirationNote) async -> Bool {
+    if isOnlineMode {
+      do { try note.validate() } catch { noteSaveError(error.localizedDescription); return false }
+      return await saveOnlineModel(note, action: "note.save", id: note.id)
+    }
     guard !isBusy else {
       noteSaveError("Another change is being saved. Please try again.")
       return false
@@ -40,6 +44,7 @@ extension AppStore {
   }
 
   func deleteNotebookNote(_ id: UUID) async -> Bool {
+    if isOnlineMode { return await performOnline(action: "note.delete", id: id) }
     guard !isBusy else {
       noteSaveError("Another change is being saved. Please try again.")
       return false

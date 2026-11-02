@@ -2,6 +2,13 @@ import Foundation
 
 /// Authored music discussions. These are not remote user activity.
 enum MusicEditorial {
+    /// Historical studio prompts retained as authored copy. Voice discovery now
+    /// shows rooms only; these prompts are not room records or member activity.
+    static let voicePrompts: [(title: String, body: String, asset: String?)] = [
+        ("Warm-up room", "A quiet prompt from Toti: what sound helps you settle into a listening session?", "MusicStudioBackdrop"),
+        ("Room for a first take", "Bring one unfinished idea and leave space for another voice. Editorial prompt only; no live room is running here.", "MusicProductionRoom"),
+        ("Listen before you lead", "Try describing the rhythm, texture, and breath in a favorite recording before you choose your own part.", "MusicStudioBackdrop"),
+    ]
     static let discussion: [String] = [
         "That vocal tone is so warm.",
         "The quiet ending stayed with me.",

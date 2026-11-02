@@ -36,8 +36,9 @@ final class StoreKit1PaymentTests: XCTestCase {
         if let root { try? FileManager.default.removeItem(at: root) }
     }
 
-    private func startService(fetcher: StoreProductFetching? = nil, timeout: TimeInterval = 20, waitForCatalog: Bool = true) async throws {
+    private func startService(fetcher: StoreProductFetching? = nil, timeout: TimeInterval = 20, waitForCatalog: Bool = true, owner: UUID? = nil) async throws {
         purchasing = StoreKit1Purchasing(productsFetcher: fetcher, productRequestTimeout: timeout)
+        purchasing.transactionOwner = owner
         purchasing.onChange = { [weak self] ledger, prices in
             self?.ledger = ledger
             self?.prices = prices
@@ -97,6 +98,30 @@ final class StoreKit1PaymentTests: XCTestCase {
         XCTAssertEqual(ledger.activity.filter { $0.kind == "gift" }.count, 2)
         let saved = try await repository.loadWallet()
         XCTAssertEqual(saved.diamonds, 380)
+    }
+
+    func testScopedWalletRejectsAnotherOwnerAndRecoversForOriginalOwner() async throws {
+        let originalOwner = UUID()
+        purchasing.transactionOwner = originalOwner
+        purchasing.setPersist { _ in false }
+        let result = try await buy("jezvdjvpoifednhy")
+        XCTAssertNotNil(result)
+        XCTAssertEqual(ledger.diamonds, 0)
+        XCTAssertTrue(purchasing.hasUnfinishedTransactions)
+        await purchasing.stop()
+        purchasing.transactionOwner = UUID()
+        enablePersistence()
+        await purchasing.start()
+        XCTAssertEqual(ledger.diamonds, 0)
+        XCTAssertTrue(purchasing.hasUnfinishedTransactions)
+        await purchasing.stop()
+        purchasing.transactionOwner = originalOwner
+        await purchasing.start()
+        try await eventually("Only the original test wallet receives the pending credit") { self.ledger.diamonds == 400 }
+        XCTAssertEqual(ledger.creditedTransactionIDs.count, 1)
+        await purchasing.stop()
+        await purchasing.start()
+        XCTAssertEqual(ledger.diamonds, 400)
     }
 
     func testGiftContextPersistsAndLegacyActivityStillDecodes() async throws {
@@ -270,6 +295,145 @@ final class StoreKit1PaymentTests: XCTestCase {
         }
         XCTAssertEqual(ledger.diamonds, 1200)
         XCTAssertEqual(Set(ledger.creditedTransactionIDs).count, 3)
+    }
+
+    func testReusedLocalIdentifierCreditsNewPurchaseAndPreservesLegacyWallet() async throws {
+        await purchasing.stop()
+        let oldActivity = WalletActivity(id: "0", title: "Added 400 diamonds", currency: .diamonds,
+                                        amount: 400, date: Date(timeIntervalSince1970: 1_793_353_313))
+        let oldLedger = WalletLedger(diamonds: 400, activity: [oldActivity], creditedTransactionIDs: ["0"])
+        try await repository.saveWallet(oldLedger)
+        try await startService(owner: UUID())
+
+        let result = try await buy("uylrrniaqxjtlaie")
+        XCTAssertNil(result)
+        XCTAssertEqual(session.allTransactions().first?.identifier, 0, "Reproduce Xcode's reused identifier")
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 1200, "A new 800-diamond transaction must not collide with the old ID 0")
+        XCTAssertEqual(saved.activity.count, 2)
+        let retained = try XCTUnwrap(saved.activity.first { $0.id == oldActivity.id })
+        XCTAssertEqual(retained.title, oldActivity.title)
+        XCTAssertEqual(retained.date, oldActivity.date)
+        XCTAssertEqual(retained.amount, oldActivity.amount)
+        XCTAssertTrue(saved.isValid)
+    }
+
+    func testLocalHistoryResetCreditsSameProductAgainAndSurvivesRelaunch() async throws {
+        await purchasing.stop()
+        let owner = UUID()
+        try await startService(owner: owner)
+        let first = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(first)
+        XCTAssertEqual(ledger.diamonds, 400)
+        let firstID = try XCTUnwrap(session.allTransactions().first?.identifier)
+        let firstActivity = try XCTUnwrap(ledger.activity.first)
+        await purchasing.stop()
+        // Keep the wallet on disk while only the Xcode history is reset, as in a manual Run after tests.
+        session.clearTransactions()
+        try await startService(owner: owner)
+        let second = try await buy("jezvdjvpoifednhy")
+        XCTAssertNil(second)
+        XCTAssertEqual(session.allTransactions().first?.identifier, firstID)
+        XCTAssertEqual(ledger.diamonds, 800)
+        XCTAssertEqual(ledger.activity.count, 2)
+        XCTAssertTrue(ledger.activity.contains { $0.id == firstActivity.id && $0.date == firstActivity.date })
+        await purchasing.stop()
+        try await startService(owner: owner)
+        XCTAssertEqual(ledger.diamonds, 800)
+        XCTAssertEqual(ledger.activity.count, 2)
+        XCTAssertEqual(ledger.localStoreKitCredits?.count, 2)
+    }
+
+    func testLegacyLocalReplayMigratesWithoutCreditAndDeduplicationOutlivesVisibleHistory() async throws {
+        await purchasing.stop()
+        let owner = UUID()
+        try await startService(owner: owner)
+        purchasing.setPersist { _ in false }
+        let failedSave = try await buy("jezvdjvpoifednhy")
+        XCTAssertNotNil(failedSave)
+        let transaction = try XCTUnwrap(SKPaymentQueue.default().transactions.first { $0.transactionState == .purchased })
+        let id = try XCTUnwrap(transaction.transactionIdentifier)
+        let date = try XCTUnwrap(transaction.transactionDate)
+        await purchasing.stop()
+        let oldLedger = WalletLedger(diamonds: 400,
+            activity: [WalletActivity(id: id, title: "Added 400 diamonds", currency: .diamonds, amount: 400, date: date)],
+            creditedTransactionIDs: [id])
+        try await repository.saveWallet(oldLedger)
+        try await startService(owner: owner)
+        try await eventually("A replay of the credited legacy purchase is finished") { SKPaymentQueue.default().transactions.isEmpty }
+        var saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 400)
+        XCTAssertEqual(saved.activity.first?.id, id)
+        XCTAssertEqual(saved.localStoreKitCredits?.count, 1)
+
+        // Simulate the existing visible-history limit while keeping durable delivery metadata.
+        await purchasing.stop()
+        saved.activity = []
+        try await repository.saveWallet(saved)
+        try await startService(owner: owner)
+        let replayed = expectation(description: "Replay checks the migrated durable identity")
+        let repository = repository!
+        purchasing.setPersist { ledger in
+            try? await repository.saveWallet(ledger)
+            replayed.fulfill()
+            return true
+        }
+        purchasing.paymentQueue(.default(), updatedTransactions: [transaction])
+        await fulfillment(of: [replayed], timeout: 10)
+        saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 400)
+        XCTAssertTrue(saved.activity.isEmpty)
+        XCTAssertEqual(saved.localStoreKitCredits?.count, 1)
+    }
+
+    func testLocalCollisionSaveFailureRetriesExactlyOnce() async throws {
+        await purchasing.stop()
+        let owner = UUID()
+        let oldLedger = WalletLedger(diamonds: 400,
+            activity: [WalletActivity(id: "0", title: "Added 400 diamonds", currency: .diamonds,
+                                      amount: 400, date: Date(timeIntervalSince1970: 1_793_353_313))],
+            creditedTransactionIDs: ["0"])
+        try await repository.saveWallet(oldLedger)
+        try await startService(owner: owner)
+        purchasing.setPersist { _ in false }
+        let failed = try await buy("uylrrniaqxjtlaie")
+        XCTAssertNotNil(failed)
+        XCTAssertEqual(ledger.diamonds, 400)
+        let failedLedger = try await repository.loadWallet()
+        XCTAssertNil(failedLedger.localStoreKitCredits)
+        let transaction = try XCTUnwrap(SKPaymentQueue.default().transactions.first { $0.transactionState == .purchased })
+        await purchasing.stop()
+        try await startService(owner: owner)
+        try await eventually("The failed local credit is retried") { self.ledger.diamonds == 1200 }
+        try await eventually("Recovered local purchase is finished") { SKPaymentQueue.default().transactions.isEmpty }
+        await purchasing.stop()
+        try await startService(owner: owner)
+        let replayed = expectation(description: "Recovered local credit is not delivered twice")
+        let repository = repository!
+        purchasing.setPersist { ledger in
+            try? await repository.saveWallet(ledger)
+            replayed.fulfill()
+            return true
+        }
+        purchasing.paymentQueue(.default(), updatedTransactions: [transaction])
+        await fulfillment(of: [replayed], timeout: 10)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 1200)
+        XCTAssertEqual(saved.activity.count, 2)
+        XCTAssertEqual(saved.localStoreKitCredits?.count, 2)
+    }
+
+    func testUnresolvableLegacyLocalIDStaysUnfinishedWithoutFalseSuccess() async throws {
+        await purchasing.stop()
+        // The old credited ID survived, but its visible activity was already pruned by an earlier build.
+        try await repository.saveWallet(WalletLedger(diamonds: 400, activity: [], creditedTransactionIDs: ["0"]))
+        try await startService(owner: UUID())
+        let result = try await buy("uylrrniaqxjtlaie")
+        XCTAssertNotNil(result)
+        XCTAssertTrue(purchasing.hasUnfinishedTransactions)
+        let saved = try await repository.loadWallet()
+        XCTAssertEqual(saved.diamonds, 400)
+        XCTAssertTrue(saved.activity.isEmpty)
     }
 
     @available(iOS 17.0, *)

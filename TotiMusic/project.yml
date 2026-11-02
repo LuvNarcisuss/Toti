@@ -11,12 +11,20 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     TARGETED_DEVICE_FAMILY: "1"
     SUPPORTS_MACCATALYST: false
+    "CODE_SIGN_IDENTITY[sdk=iphonesimulator*]": "-"
+    "CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]": YES
+packages:
+  Supabase:
+    url: https://github.com/supabase/supabase-swift.git
+    exactVersion: 2.55.5
 targets:
   toti:
     type: application
     platform: iOS
     dependencies:
       - sdk: StoreKit.framework
+      - package: Supabase
+        product: Supabase
     sources:
       - path: Toti
         excludes:
@@ -25,27 +33,34 @@ targets:
           - Features/Shorts/VideoFeedController.swift
           - Features/Creation/CreationController.swift
           - Resources
+      - path: ../Agreements/TermsOfService.html
+        buildPhase: resources
+      - path: ../Agreements/PrivacyPolicy.html
+        buildPhase: resources
       - path: $(DERIVED_FILE_DIR)/FlatAssets.xcassets
         type: file
         optional: true
         buildPhase: resources
-      - path: ../Assets/TetoRhythm-Display.ttf
+      - path: $(DERIVED_FILE_DIR)/RemoteResources/TetoRhythm-Display.ttf
+        type: file
+        optional: true
         buildPhase: resources
-      - path: ../Assets/TetoRhythm-Text.ttf
+      - path: $(DERIVED_FILE_DIR)/RemoteResources/TetoRhythm-Text.ttf
+        type: file
+        optional: true
         buildPhase: resources
-      - path: ../Assets/MediaCredits.json
-        buildPhase: resources
-      - path: ../Assets/TermsOfService.html
-        buildPhase: resources
-      - path: ../Assets/PrivacyPolicy.html
+      - path: $(DERIVED_FILE_DIR)/RemoteResources/MediaCredits.json
+        type: file
+        optional: true
         buildPhase: resources
     preBuildScripts:
-      - name: Prepare flat asset catalog
+      - name: Prepare remote resources
         script: |
           /usr/bin/python3 "$SRCROOT/scripts/prepare_asset_catalog.py" --output "$DERIVED_FILE_DIR/FlatAssets.xcassets"
         basedOnDependencyAnalysis: false
         outputFiles:
           - $(DERIVED_FILE_DIR)/FlatAssets.xcassets
+          - $(DERIVED_FILE_DIR)/RemoteResources
     settings:
       base:
         TARGETED_DEVICE_FAMILY: "1"
@@ -55,6 +70,7 @@ targets:
         SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
         PRODUCT_NAME: toti
         PRODUCT_BUNDLE_IDENTIFIER: com.toti.music
+        DEVELOPMENT_TEAM: JPTS6M4T5B
         INFOPLIST_FILE: Toti/Support/Info.plist
         GENERATE_INFOPLIST_FILE: false
         INFOPLIST_KEY_UIRequiresFullScreen: YES
@@ -138,10 +154,16 @@ schemes:
     run:
       config: Debug
       storeKitConfiguration: Configuration/TotiDiamonds.storekit
+      environmentVariables:
+        TOTI_LOCAL_STOREKIT_TESTING: "1"
     test:
       config: Debug
       targets:
         - totiTests
+      environmentVariables:
+        TOTI_LIVE_GUEST_ACCEPTANCE: "$(TOTI_LIVE_GUEST_ACCEPTANCE)"
+        TOTI_LIVE_MEDIA_ACCEPTANCE: "$(TOTI_LIVE_MEDIA_ACCEPTANCE)"
+        TOTI_GUEST_ACCEPTANCE: "$(TOTI_MEDIA_ACCEPTANCE_RUN)"
     archive:
       config: Release
   totiAppStore:
@@ -156,6 +178,8 @@ schemes:
         toti: all
     test:
       config: Debug
+      environmentVariables:
+        TOTI_PURCHASE_GUEST: "$(TOTI_PURCHASE_GUEST)"
       targets:
         - totiPurchaseUITests
   totiPayments:
@@ -174,5 +198,7 @@ schemes:
         toti: all
     test:
       config: Debug
+      environmentVariables:
+        TOTI_LIVE_GUEST_ACCEPTANCE: "$(TOTI_LIVE_GUEST_ACCEPTANCE)"
       targets:
         - totiUITests

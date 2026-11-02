@@ -158,6 +158,16 @@ extension UIView {
   }
   return item
 }
+/// Adjacent navigation actions share one item to avoid UIKit's extra inter-item gap.
+@MainActor func compactBarButtons(_ buttons: [UIButton]) -> UIBarButtonItem {
+  let row = stack(buttons, axis: .horizontal, spacing: 0)
+  row.alignment = .center
+  for button in buttons {
+    button.widthAnchor.constraint(equalToConstant: 44).isActive = true
+    button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+  }
+  return barButton(row)
+}
 @MainActor func soften(_ button: UIButton) {
   button.addAction(
     UIAction { [weak button] _ in
@@ -627,9 +637,21 @@ final class StudioCounter: UIControl {
   f.accessibilityLabel = placeholder
   return f
 }
+/// Review feedback is visible only on an owner's existing editing surfaces.
+@MainActor func mediaReviewNotice(status: String?, feedback: String?) -> UIView? {
+  guard let status, status != "approved" else { return nil }
+  let text = status == "rejected"
+    ? "Photo not approved. Only you can see this preview. Choose another photo to request review."
+    : "Photo awaiting review. Only you can see this preview until it is approved."
+  var views: [UIView] = [label(text, 13, status == "rejected" ? TotiTheme.dangerInk : TotiTheme.muted)]
+  if let feedback, !feedback.isEmpty { views.append(label(feedback, 13, TotiTheme.muted)) }
+  return stack(views, spacing: 6)
+}
+
 /// A portrait that is present in the asset catalog. Missing names fall back to a stable photograph.
 @MainActor func portraitAsset(_ asset: String?, personID: String) -> String {
   if let asset {
+    if TotiPhoto.mediaRevision(in: asset) != nil { return asset }
     let mapped = MusicPhotography.avatar(asset)
     if UIImage(named: mapped) != nil { return mapped }
   }
@@ -647,7 +669,7 @@ final class StudioCounter: UIControl {
   }
   var seen = Set<String>()
   let assets = Array(conversation.avatars.map { MusicPhotography.avatar($0) }
-    .filter { UIImage(named: $0) != nil && seen.insert($0).inserted }.prefix(9))
+    .filter { (TotiPhoto.mediaRevision(in: $0) != nil || UIImage(named: $0) != nil) && seen.insert($0).inserted }.prefix(9))
   let frame = UIView()
   frame.translatesAutoresizingMaskIntoConstraints = false
   frame.backgroundColor = TotiTheme.soft
@@ -734,12 +756,22 @@ final class TotiPhoto: UIImageView {
     return cache
   }()
   private var request: UUID?
+  private var mediaTask: Task<Void, Never>?
+  private var mediaRevision: UUID?
+  private var mediaGeneration: Int?
+  private var accountObservation: AnyCancellable?
+
+  static func mediaRevision(in asset: String?) -> UUID? {
+    guard let asset, asset.hasPrefix("remote-media:") else { return nil }
+    return UUID(uuidString: String(asset.dropFirst("remote-media:".count)))
+  }
+
   init(asset: String? = nil, size: CGFloat? = nil, round: Bool = false) {
     super.init(frame: .zero)
     contentMode = .scaleAspectFill
     clipsToBounds = true
     backgroundColor = TotiTheme.soft
-    if let asset { image = UIImage(named: MusicPhotography.avatar(asset)) }
+    if let asset { configure(asset: asset) }
     if let size {
       translatesAutoresizingMaskIntoConstraints = false
       widthAnchor.constraint(equalToConstant: size).isActive = true
@@ -749,7 +781,65 @@ final class TotiPhoto: UIImageView {
     isAccessibilityElement = false
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+  deinit { mediaTask?.cancel() }
+
+  /// References contain only a revision ID; the backend authorizes every read.
+  func configure(asset: String?) {
+    cancelImageLoad()
+    accountObservation = nil
+    mediaRevision = Self.mediaRevision(in: asset)
+    guard let mediaRevision else {
+      image = asset.flatMap { UIImage(named: MusicPhotography.avatar($0)) }
+      return
+    }
+    mediaGeneration = TotiBackend.shared.generation
+    image = TotiIcon.photo.image(size: 40)
+    accountObservation = TotiBackend.shared.$generation.dropFirst().sink { [weak self] _ in
+      self?.cancelImageLoad()
+      self?.mediaRevision = nil
+      self?.image = TotiIcon.photo.image(size: 40)
+    }
+    if window != nil { loadMedia(mediaRevision) }
+  }
+
+  override func didMoveToWindow() {
+    super.didMoveToWindow()
+    if window == nil, mediaRevision != nil { cancelImageLoad() }
+    else if let mediaRevision { loadMedia(mediaRevision) }
+  }
+
+  private func cancelImageLoad() {
+    request = nil
+    mediaTask?.cancel()
+    mediaTask = nil
+  }
+
+  private func loadMedia(_ revision: UUID) {
+    cancelImageLoad()
+    let backend = TotiBackend.shared
+    let generation = backend.generation
+    guard generation == mediaGeneration else { return }
+    let id = UUID()
+    request = id
+    mediaTask = Task { [weak self] in
+      do {
+        let bytes = try await backend.mediaImage(revisionID: revision)
+        guard !Task.isCancelled, generation == backend.generation,
+              let self, self.request == id, self.window != nil,
+              let image = UIImage(data: bytes) else { return }
+        self.image = image
+      } catch {
+        guard !Task.isCancelled, generation == backend.generation,
+              let self, self.request == id else { return }
+        self.image = TotiIcon.photo.image(size: 40)
+      }
+    }
+  }
+
   func load(_ url: URL?) {
+    cancelImageLoad()
+    mediaRevision = nil
+    accountObservation = nil
     let id = UUID()
     request = id
     guard let url else {
@@ -860,15 +950,129 @@ private enum CoverDecoding {
   }
 }
 
+/// Keeps the actual destination page in the transition container for both directions.
+@MainActor private final class StudioExpansionTransition: NSObject, UIViewControllerTransitioningDelegate {
+  weak var source: UIView?
+
+  init(source: UIView) { self.source = source }
+
+  func animationController(forPresented presented: UIViewController, presenting: UIViewController,
+    source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    StudioExpansionAnimator(source: self.source, opening: true)
+  }
+
+  func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    StudioExpansionAnimator(source: source, opening: false)
+  }
+}
+
+@MainActor private final class StudioExpansionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+  private weak var source: UIView?
+  private let opening: Bool
+
+  init(source: UIView?, opening: Bool) {
+    self.source = source
+    self.opening = opening
+  }
+
+  func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    UIAccessibility.isReduceMotionEnabled ? 0 : 0.48
+  }
+
+  func animateTransition(using context: UIViewControllerContextTransitioning) {
+    let container = context.containerView
+    let key: UITransitionContextViewControllerKey = opening ? .to : .from
+    guard let controller = context.viewController(forKey: key),
+      let page = context.view(forKey: opening ? .to : .from) else {
+      context.completeTransition(false)
+      return
+    }
+    let frame = opening ? context.finalFrame(for: controller) : context.initialFrame(for: controller)
+    guard frame.width > 0, frame.height > 0 else {
+      context.completeTransition(false)
+      return
+    }
+    if !opening, let behind = context.view(forKey: .to), behind.superview == nil {
+      if let destination = context.viewController(forKey: .to) {
+        behind.frame = context.finalFrame(for: destination)
+      }
+      container.insertSubview(behind, at: 0)
+      behind.layoutIfNeeded()
+    }
+
+    let originalParent = page.superview
+    let originalIndex = originalParent?.subviews.firstIndex(of: page)
+    let wrapper = UIView(frame: frame)
+    wrapper.backgroundColor = TotiTheme.background
+    container.addSubview(wrapper)
+    page.transform = .identity
+    page.frame = wrapper.bounds
+    wrapper.addSubview(page)
+    page.setNeedsLayout()
+    page.layoutIfNeeded()
+
+    let target: CGRect
+    if let source, source.window != nil {
+      let rect = source.convert(source.bounds, to: container)
+      target = rect.width > 2 && rect.height > 2 ? rect
+        : CGRect(x: frame.midX - 26, y: frame.maxY - 90, width: 52, height: 52)
+    } else {
+      target = CGRect(x: frame.midX - 26, y: frame.maxY - 90, width: 52, height: 52)
+    }
+    let small = CGAffineTransform(translationX: target.midX - frame.midX, y: target.midY - frame.midY)
+      .scaledBy(x: target.width / frame.width, y: target.height / frame.height)
+    // A layer mask remains effective even when a screen allows its artwork to overflow.
+    let mask = CAShapeLayer()
+    let round = UIBezierPath(roundedRect: wrapper.bounds, cornerRadius: min(frame.width, frame.height) / 2).cgPath
+    let square = UIBezierPath(roundedRect: wrapper.bounds, cornerRadius: 0).cgPath
+    mask.frame = wrapper.bounds
+    mask.path = opening ? round : square
+    wrapper.layer.mask = mask
+    wrapper.transform = opening ? small : .identity
+
+    let duration = transitionDuration(using: context)
+    if duration > 0 {
+      let shape = CABasicAnimation(keyPath: "path")
+      shape.fromValue = opening ? round : square
+      shape.toValue = opening ? square : round
+      shape.duration = duration
+      shape.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+      mask.path = opening ? square : round
+      mask.add(shape, forKey: "studio.expansion.shape")
+    }
+    UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.96,
+      initialSpringVelocity: 0.15, options: [.curveEaseInOut]) {
+      wrapper.transform = self.opening ? .identity : small
+    } completion: { _ in
+      let cancelled = context.transitionWasCancelled
+      if self.opening && !cancelled {
+        page.frame = frame
+        container.addSubview(page)
+      } else if cancelled, let originalParent, let originalIndex {
+        page.frame = frame
+        originalParent.insertSubview(page, at: min(originalIndex, originalParent.subviews.count))
+      } else {
+        page.removeFromSuperview()
+      }
+      wrapper.removeFromSuperview()
+      context.completeTransition(!cancelled)
+    }
+  }
+}
+
 @MainActor class TotiScreen: UIViewController, UIAdaptivePresentationControllerDelegate {
   func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
     onDismiss?()
   }
   let store: AppStore
+  let accountGeneration = TotiBackend.shared.generation
+  var isAccountContextCurrent: Bool { !store.isOnlineMode || accountGeneration == TotiBackend.shared.generation }
   var tokens = Set<AnyCancellable>()
   var onDismiss: (() -> Void)?
   /// The control this screen grew from. Closing shrinks back to it.
   weak var collapseTarget: UIView?
+  // UIViewController keeps transitioningDelegate weak; the destination owns its delegate.
+  private var expansionTransition: StudioExpansionTransition?
   private let canvas = StudioCanvas()
   private var shownNotice: UUID?
   private var cardLayer: UIView?
@@ -889,8 +1093,10 @@ private enum CoverDecoding {
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.backgroundColor = .clear
+    view.backgroundColor = TotiTheme.background
     view.clipsToBounds = false
+    canvas.frame = view.bounds
+    canvas.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     canvas.isUserInteractionEnabled = false
     view.addSubview(canvas)
     overrideUserInterfaceStyle = .light
@@ -944,7 +1150,7 @@ private enum CoverDecoding {
   /// Sheets stay inside their own bounds so the artwork does not spill over the page behind them.
   func coverFrame() -> CGRect {
     let style = navigationController?.modalPresentationStyle ?? modalPresentationStyle
-    if style == .pageSheet || style == .formSheet || style == .popover { return view.bounds }
+    if style == .pageSheet || style == .formSheet || style == .popover || style == .custom { return view.bounds }
     guard let window = view.window else { return view.bounds }
     return view.convert(window.bounds, from: window)
   }
@@ -964,7 +1170,7 @@ private enum CoverDecoding {
   func presentScreen(
     _ screen: UIViewController, full: Bool = false, animated: Bool = true, collapseTo: UIView? = nil
   ) {
-    let nav = UINavigationController(rootViewController: screen)
+    let nav = TotiNavigationController(rootViewController: screen)
     TotiNavigation.style(nav)
     if full {
       nav.modalPresentationStyle = .fullScreen
@@ -976,6 +1182,12 @@ private enum CoverDecoding {
     }
     if let collapseTo, let toti = screen as? TotiScreen {
       toti.collapseTarget = collapseTo
+      if full, collapseTo.window != nil {
+        let transition = StudioExpansionTransition(source: collapseTo)
+        toti.expansionTransition = transition
+        nav.modalPresentationStyle = .custom
+        nav.transitioningDelegate = transition
+      }
     }
     screen.navigationItem.leftBarButtonItem = barButton(
       iconButton(.close, "Close") { [weak screen] in
@@ -985,11 +1197,17 @@ private enum CoverDecoding {
           screen?.dismiss(animated: true)
         }
       })
+    TotiNavigation.prepare(nav, in: view.window?.bounds ?? view.bounds)
     present(nav, animated: animated)
   }
   /// Shrinks the whole presented page into the control that opened it.
   func dismissCollapsed() {
     let presented = navigationController ?? self
+    if expansionTransition != nil {
+      view.endEditing(true)
+      presented.dismiss(animated: !UIAccessibility.isReduceMotionEnabled)
+      return
+    }
     let notify = onDismiss
     let target = collapseTarget
     guard target != nil else {
@@ -1001,8 +1219,11 @@ private enum CoverDecoding {
       return
     }
     let start = presented.view.convert(presented.view.bounds, to: host)
-    let snapshot =
-      presented.view.snapshotView(afterScreenUpdates: false) ?? StudioCanvas(frame: start)
+    guard let snapshot = presented.view.snapshotView(afterScreenUpdates: false) else {
+      // Keep the real page visible when a snapshot cannot be captured.
+      presented.dismiss(animated: true) { notify?() }
+      return
+    }
     snapshot.frame = start
     snapshot.clipsToBounds = true
     snapshot.layer.cornerCurve = .continuous
@@ -1028,37 +1249,10 @@ private enum CoverDecoding {
       }
     }
   }
-  /// Grows the studio background from the tapped control, then opens the next page on that same field.
+  /// Expands the actual creation page from the control, reversing the same transition on close.
   func presentExpanded(from source: UIView, _ screen: UIViewController) {
-    let reveal = { [weak self] in
-      self?.presentScreen(screen, full: true, animated: false, collapseTo: source)
-    }
-    guard !UIAccessibility.isReduceMotionEnabled, let host = view.window else {
-      presentScreen(screen, full: true, collapseTo: source)
-      return
-    }
-    let start = source.convert(source.bounds, to: host)
-    guard start.width > 2, start.height > 2 else {
-      presentScreen(screen, full: true, collapseTo: source)
-      return
-    }
-    let cover = StudioCanvas(frame: start)
-    cover.isUserInteractionEnabled = true
-    cover.layer.cornerRadius = 22
-    cover.layer.cornerCurve = .continuous
-    cover.clipsToBounds = true
-    host.addSubview(cover)
-    UIView.animate(
-      withDuration: 0.48, delay: 0, usingSpringWithDamping: 0.96, initialSpringVelocity: 0.15,
-      options: [.curveEaseInOut, .allowUserInteraction]
-    ) {
-      cover.frame = host.bounds
-      cover.layer.cornerRadius = 0
-    } completion: { _ in
-      reveal()
-      host.bringSubviewToFront(cover)
-      DispatchQueue.main.async { cover.removeFromSuperview() }
-    }
+    guard presentedViewController == nil else { return }
+    presentScreen(screen, full: true, animated: !UIAccessibility.isReduceMotionEnabled, collapseTo: source)
   }
   func expandSearch(
     from source: UIView, placeholder: String, dark: Bool = false,
@@ -1373,8 +1567,12 @@ private enum CoverDecoding {
     UIView.animate(withDuration: 0.18, animations: { dim.alpha = 0 }) { _ in finish() }
   }
   func save(_ operation: @escaping () async -> Bool) {
+    guard isAccountContextCurrent else { return }
     Task {
-      if !(await operation()) {
+      guard isAccountContextCurrent else { return }
+      let saved = await operation()
+      guard isAccountContextCurrent else { return }
+      if !saved {
         message(store.lastSaveError ?? "Your changes could not be saved. Please try again.")
       }
     }
@@ -1491,8 +1689,59 @@ private final class StudioPopGesture: NSObject, UIGestureRecognizerDelegate {
   }
 }
 
+/// Prepares app destinations for pushes, stack replacements and programmatic returns.
+/// UIKit still owns navigation animations and interactive-pop cancellation.
+@MainActor final class TotiNavigationController: UINavigationController {
+  private func prepareDestination(_ controller: UIViewController?) {
+    guard isViewLoaded, let controller else { return }
+    TotiNavigation.prepare(controller, in: view.bounds)
+  }
+
+  override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+    prepareDestination(viewController)
+    super.pushViewController(viewController, animated: animated)
+  }
+
+  override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+    prepareDestination(viewControllers.last)
+    super.setViewControllers(viewControllers, animated: animated)
+  }
+
+  override func popViewController(animated: Bool) -> UIViewController? {
+    if viewControllers.count > 1 { prepareDestination(viewControllers[viewControllers.count - 2]) }
+    return super.popViewController(animated: animated)
+  }
+
+  override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+    prepareDestination(viewController)
+    return super.popToViewController(viewController, animated: animated)
+  }
+
+  override func popToRootViewController(animated: Bool) -> [UIViewController]? {
+    prepareDestination(viewControllers.first)
+    return super.popToRootViewController(animated: animated)
+  }
+}
+
 @MainActor enum TotiNavigation {
   private static let pop = StudioPopGesture()
+
+  /// Prepare real content synchronously; asynchronous data stays inside that page.
+  static func prepare(_ controller: UIViewController, in bounds: CGRect) {
+    UIView.performWithoutAnimation {
+      controller.loadViewIfNeeded()
+      if bounds.width > 0, bounds.height > 0 { controller.view.frame = bounds }
+      if let nav = controller as? UINavigationController, let screen = nav.topViewController {
+        screen.loadViewIfNeeded()
+        (screen as? TotiScreen)?.installStudioChrome()
+      } else {
+        (controller as? TotiScreen)?.installStudioChrome()
+      }
+      controller.view.setNeedsLayout()
+      controller.view.layoutIfNeeded()
+    }
+  }
+
   static func style(_ nav: UINavigationController) {
     let a = UINavigationBarAppearance()
     a.configureWithTransparentBackground()
@@ -1510,7 +1759,7 @@ private final class StudioPopGesture: NSObject, UIGestureRecognizerDelegate {
     nav.navigationBar.isTranslucent = true
     nav.navigationBar.tintColor = TotiTheme.plum
     nav.navigationBar.prefersLargeTitles = false
-    nav.view.backgroundColor = .clear
+    nav.view.backgroundColor = TotiTheme.background
     nav.view.clipsToBounds = false
     nav.interactivePopGestureRecognizer?.delegate = pop
     nav.interactivePopGestureRecognizer?.isEnabled = true

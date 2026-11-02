@@ -1,7 +1,10 @@
 import UIKit
 
 final class NotebookController: StackScreen {
-  private let search = field("Search your notebook")
+  private let entryGeneration = TotiBackend.shared.generation
+  private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
+  private var query = ""
+  private weak var searchButton: UIButton?
   private let categories = UISegmentedControl(items: ["All"] + NotebookCategory.allCases.map(\.rawValue))
   private let cards = UIStackView()
 
@@ -10,23 +13,10 @@ final class NotebookController: StackScreen {
 
   override func build() {
     super.build()
-    let heading = stack([
-      label("KEEP A LITTLE\nINSPIRATION", 30, TotiTheme.plum, title: true),
-      label("Private notes, lyrics and sounds to come back to.", 15, TotiTheme.muted),
-    ], spacing: 8)
-    content.addArrangedSubview(heading)
-    let create = actionButton("New note", icon: .plus, primary: true) { [weak self] in
-      self?.openEditor()
-    }
-    let template = actionButton("Try a prompt", icon: .music) { [weak self] in self?.showTemplates() }
-    let actions = stack([create, template], axis: .horizontal, spacing: 10)
-    actions.distribution = .fillEqually
-    content.addArrangedSubview(actions)
-    search.accessibilityLabel = "Search private notes"
-    search.returnKeyType = .search
-    search.addTarget(self, action: #selector(finishSearch), for: .editingDidEndOnExit)
-    search.addTarget(self, action: #selector(filterChanged), for: .editingChanged)
-    content.addArrangedSubview(search)
+    let search = iconButton(.search, "Search private notes") { [weak self] in self?.toggleSearch() }
+    let create = iconButton(.plus, "New note") { [weak self] in self?.openEditor() }
+    searchButton = search
+    navigationItem.rightBarButtonItem = compactBarButtons([search, create])
     categories.selectedSegmentIndex = 0
     categories.selectedSegmentTintColor = TotiTheme.coral
     categories.setTitleTextAttributes([.font: TotiTheme.font(13)], for: .normal)
@@ -39,36 +29,101 @@ final class NotebookController: StackScreen {
   }
 
   @objc private func filterChanged() { refresh() }
-  @objc private func finishSearch() { search.resignFirstResponder() }
+
+  private func toggleSearch() {
+    guard entryAccountIsCurrent, let searchButton else { return }
+    if activeSearch != nil {
+      activeSearch?.dismiss()
+      return
+    }
+    expandSearch(from: searchButton, placeholder: "Search your private notes") { [weak self] text in
+      guard let self, self.entryAccountIsCurrent else { return }
+      self.query = text
+      self.refresh()
+    } onClose: { [weak self] in
+      guard let self, self.entryAccountIsCurrent else { return }
+      self.query = ""
+      self.refresh()
+    }
+  }
 
   override func refresh() {
-    guard isViewLoaded else { return }
+    guard isViewLoaded, entryAccountIsCurrent else { return }
     cards.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    appendOnlineControls(to: cards)
+    let notebook = store.library.notebook ?? NotebookState()
+    let hasNotes = !notebook.notes.isEmpty
+    categories.isHidden = !hasNotes
+    if !hasNotes { categories.selectedSegmentIndex = 0 }
     let index = categories.selectedSegmentIndex
     let category = index > 0 ? NotebookCategory.allCases[index - 1] : nil
-    let notes = (store.library.notebook ?? NotebookState()).matching(
-      category: category, query: search.text ?? "")
-    if notes.isEmpty {
-      let filtered = category != nil || !(search.text ?? "").isEmpty
-      cards.addArrangedSubview(label(filtered ? "No matching notes" : "Your next song starts here", 22,
-        TotiTheme.plum, title: true))
-      cards.addArrangedSubview(label(filtered ? "Try another word or category." :
-        "Keep a lyric, a chord change, or a fleeting thought. Everything stays on this device.", 15,
-        TotiTheme.muted))
-      cards.addArrangedSubview(actionButton(filtered ? "Clear filters" : "Write your first note") { [weak self] in
-        guard let self else { return }
-        if filtered {
-          self.view.endEditing(true)
-          self.search.text = ""
-          self.categories.selectedSegmentIndex = 0
-          self.refresh()
-        } else { self.openEditor() }
-      })
+    let notes = notebook.matching(category: category, query: query)
+    let filtered = category != nil || !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    if !hasNotes && !filtered {
+      showWelcomeCards()
+    } else if notes.isEmpty {
+      let reset = actionButton("Clear filters", icon: .search) { [weak self] in
+        guard let self, self.entryAccountIsCurrent else { return }
+        self.activeSearch?.dismiss()
+        self.view.endEditing(true)
+        self.query = ""
+        self.categories.selectedSegmentIndex = 0
+        self.refresh()
+      }
+      cards.addArrangedSubview(stateCard([
+        label("No matching notes", 24, TotiTheme.plum, title: true),
+        label("Try another word or category.", 15, TotiTheme.muted), reset,
+      ]))
     } else {
       cards.addArrangedSubview(label("\(notes.count) private \(notes.count == 1 ? "note" : "notes")", 13,
         TotiTheme.muted))
+      cards.addArrangedSubview(actionButton("Try a prompt", icon: .music, compact: true) { [weak self] in
+        self?.showTemplates()
+      })
       notes.forEach { cards.addArrangedSubview(noteCard($0)) }
     }
+  }
+
+  private func showWelcomeCards() {
+    let artwork = UIImageView(image: TotiIcon.notebook.image(size: 88))
+    artwork.contentMode = .scaleAspectFit
+    artwork.isAccessibilityElement = false
+    artwork.height(100)
+    let eyebrow = label("A LITTLE SPACE FOR BIG IDEAS", 11, TotiTheme.plum)
+    let heading = label("Your next song\nstarts here.", 27, TotiTheme.plum, title: true)
+    heading.accessibilityTraits = .header
+    let detail = label("Keep a lyric, a chord change or a thought before it slips away.", 15, TotiTheme.muted)
+    [eyebrow, heading, detail].forEach { $0.textAlignment = .center }
+    let create = actionButton("Write your first note", icon: .plus, primary: true) { [weak self] in
+      self?.openEditor()
+    }
+    create.accessibilityIdentifier = "notebook.first-note"
+    let hero = stateCard([artwork, eyebrow, heading, detail, create])
+    hero.accessibilityIdentifier = "notebook.welcome"
+    cards.addArrangedSubview(hero)
+    let prompt = actionButton("Choose a writing prompt", icon: .music) { [weak self] in self?.showTemplates() }
+    prompt.accessibilityIdentifier = "notebook.choose-prompt"
+    cards.addArrangedSubview(stateCard([
+      label("Start with a spark", 21, TotiTheme.plum, title: true),
+      label("Explore a lyric, chord progression or songwriting idea. Make it your own before saving.", 15, TotiTheme.muted),
+      prompt,
+    ]))
+    cards.addArrangedSubview(stateCard([
+      label("A space of your own", 18, TotiTheme.plum, title: true),
+      label(store.isOnlineMode ? "Your notes are private to your account. Turning a note into a Lounge draft keeps the original private." : "Your notes stay on this device. Turning a note into a Lounge draft keeps the original private.", 14, TotiTheme.muted),
+    ]))
+  }
+
+  private func stateCard(_ views: [UIView]) -> UIView {
+    let card = stack(views, spacing: 16)
+    card.isLayoutMarginsRelativeArrangement = true
+    card.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 24, leading: 20, bottom: 24, trailing: 20)
+    card.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+    card.layer.cornerRadius = 26
+    card.layer.cornerCurve = .continuous
+    card.layer.borderWidth = 1
+    card.layer.borderColor = TotiTheme.line.cgColor
+    return card
   }
 
   private func noteCard(_ note: InspirationNote) -> UIView {
@@ -96,12 +151,17 @@ final class NotebookController: StackScreen {
   }
 
   private func openEditor(_ note: InspirationNote? = nil, template: NotebookTemplate? = nil) {
+    guard entryAccountIsCurrent else { return }
+    activeSearch?.dismiss()
     view.endEditing(true)
     let editor = NotebookEditorController(store: store, note: note, template: template)
     navigationController?.pushViewController(editor, animated: true)
   }
 
   private func showTemplates() {
+    guard entryAccountIsCurrent, presentedViewController == nil else { return }
+    activeSearch?.dismiss()
+    view.endEditing(true)
     let alert = UIAlertController(title: "A place to start", message: "Prompts open as editable private drafts.",
       preferredStyle: .actionSheet)
     for template in NotebookTemplate.allCases {
@@ -116,14 +176,15 @@ final class NotebookController: StackScreen {
   }
 
   private func showActions(_ note: InspirationNote) {
-    let alert = UIAlertController(title: note.displayTitle, message: "Private · saved on this device",
+    guard entryAccountIsCurrent else { return }
+    let alert = UIAlertController(title: note.displayTitle, message: store.isOnlineMode ? "Private · saved to your account" : "Private · saved on this device",
       preferredStyle: .actionSheet)
     alert.addAction(UIAlertAction(title: note.isPinned ? "Unpin note" : "Pin note", style: .default) { [weak self] _ in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       self.save { await self.store.setNotebookPinned(note.id, pinned: !note.isPinned) }
     })
     alert.addAction(UIAlertAction(title: "Duplicate note", style: .default) { [weak self] _ in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       self.save { await self.store.duplicateNotebookNote(note.id) }
     })
     alert.addAction(UIAlertAction(title: "Delete note", style: .destructive) { [weak self] _ in
@@ -136,11 +197,12 @@ final class NotebookController: StackScreen {
   }
 
   private func confirmDeletion(_ note: InspirationNote) {
-    let alert = UIAlertController(title: "Delete this note?", message: "This removes the private note from this device.",
+    guard entryAccountIsCurrent else { return }
+    let alert = UIAlertController(title: "Delete this note?", message: store.isOnlineMode ? "This removes the private note from your account." : "This removes the private note from this device.",
       preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "Keep note", style: .cancel))
     alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       self.save { await self.store.deleteNotebookNote(note.id) }
     })
     present(alert, animated: true)
@@ -148,6 +210,8 @@ final class NotebookController: StackScreen {
 }
 
 final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGestureRecognizerDelegate {
+  private let entryGeneration = TotiBackend.shared.generation
+  private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
   private var draft: InspirationNote
   private var baseline: InspirationNote
   private let titleInput = field("Untitled idea")
@@ -257,6 +321,7 @@ final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGesture
   private var dirty: Bool { !draft.hasSameContent(as: baseline) }
 
   @objc private func inputChanged() {
+    guard entryAccountIsCurrent else { return }
     draft.title = titleInput.text ?? ""
     draft.body = bodyInput.text ?? ""
     draft.category = NotebookCategory.allCases[categoryInput.selectedSegmentIndex]
@@ -274,7 +339,7 @@ final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGesture
       counts.textColor = TotiTheme.muted
       let hasSavedNote = store.notebookNotes.contains { $0.id == draft.id }
       status.text = dirty ? "Unsaved changes · private to you" :
-        (hasSavedNote ? "Private · saved only on this device" : "New private note · not saved yet")
+        (hasSavedNote ? (store.isOnlineMode ? "Private · saved to your account" : "Private · saved only on this device") : "New private note · not saved yet")
       status.textColor = TotiTheme.muted
     } catch {
       counts.textColor = TotiTheme.dangerInk
@@ -288,15 +353,18 @@ final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGesture
   }
 
   @objc private func chooseMood() {
+    guard entryAccountIsCurrent else { return }
     let alert = UIAlertController(title: "A mood for this idea", message: nil, preferredStyle: .actionSheet)
     alert.addAction(UIAlertAction(title: "None", style: .default) { [weak self] _ in
-      self?.draft.mood = nil
-      self?.updateStatus()
+      guard let self, self.entryAccountIsCurrent else { return }
+      self.draft.mood = nil
+      self.updateStatus()
     })
     for mood in NotebookMood.allCases {
       alert.addAction(UIAlertAction(title: mood.rawValue, style: .default) { [weak self] _ in
-        self?.draft.mood = mood
-        self?.updateStatus()
+        guard let self, self.entryAccountIsCurrent else { return }
+        self.draft.mood = mood
+        self.updateStatus()
       })
     }
     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -306,6 +374,7 @@ final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGesture
   }
 
   private func saveDraft(exitAfter: Bool) {
+    guard entryAccountIsCurrent else { return }
     guard !saving else { return }
     inputChanged()
     do { try draft.validate() } catch {
@@ -317,16 +386,20 @@ final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGesture
     updateStatus()
     let snapshot = draft
     Task { [weak self] in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       let saved = await self.store.saveNotebookNote(snapshot)
+      guard self.entryAccountIsCurrent else { return }
       self.saving = false
       self.content.isUserInteractionEnabled = true
       if saved {
         self.draft = self.store.notebookNotes.first(where: { $0.id == snapshot.id }) ?? snapshot
+        if self.store.isOnlineMode {
+          self.draft.backendVersion = self.store.acknowledgedOnlineVersion(for: snapshot.id) ?? self.draft.backendVersion
+        }
         self.baseline = self.draft
         self.updateStatus()
         if exitAfter { self.finishExit() }
-        else { self.status.text = "Saved on this device · private to you" }
+        else { self.status.text = self.store.isOnlineMode ? "Saved to your account · private to you" : "Saved on this device · private to you" }
       } else {
         self.updateStatus()
         self.showSaveError(self.store.lastSaveError ?? "The note could not be saved. Your changes are still here.",
@@ -384,13 +457,14 @@ final class NotebookEditorController: StackScreen, UITextViewDelegate, UIGesture
   }
 
   private func convertToPost() {
+    guard entryAccountIsCurrent else { return }
     inputChanged()
     let alert = UIAlertController(title: "Create a separate post draft?",
       message: "Your original note stays private. Its title and text will be copied into a Lounge draft for you to edit. Nothing is posted automatically.",
       preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "Keep private", style: .cancel))
     alert.addAction(UIAlertAction(title: "Open post draft", style: .default) { [weak self] _ in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       self.view.endEditing(true)
       self.navigationController?.pushViewController(
         LoungeComposerController(store: self.store, initialText: self.draft.postDraftText), animated: true)

@@ -9,7 +9,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Large text Everyone gift confirmation_0_225190F0-578F-4331-9FD4-86E2081101BC.png",
         "timestamp": 1793009040.673,
-        "savedFileName": "large-text-confirmation.png"
+        "savedFileName": "../../Assets/Screenshots__gift-verification__large-text-confirmation.png"
       }
     ],
     "testIdentifier": "PurchaseUITests/testLargeTextEveryoneConfirmationKeepsCancelAndSpendReachable()",
@@ -25,7 +25,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Post gift persists after relaunch_0_1C781D76-204E-4076-9082-42E9629BFE86.png",
         "timestamp": 1793009109.991,
-        "savedFileName": "post-gift-relaunch.png"
+        "savedFileName": "../../Assets/Screenshots__gift-verification__post-gift-relaunch.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -35,7 +35,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Post gift debit and local record_0_D29F1585-E8D2-415A-A7CE-C73EBACCE770.png",
         "timestamp": 1793009088.527,
-        "savedFileName": "post-gift-debit.png"
+        "savedFileName": "../../Assets/Screenshots__gift-verification__post-gift-debit.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -45,7 +45,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Post gift confirmation and service boundary_0_18F91443-6455-4F58-828E-DC1DEFD16214.png",
         "timestamp": 1793009081.17,
-        "savedFileName": "post-gift-confirmation.png"
+        "savedFileName": "../../Assets/Screenshots__gift-verification__post-gift-confirmation.png"
       }
     ],
     "testIdentifier": "PurchaseUITests/testPostGiftConfirmationCancellationDebitAndRelaunch()",
@@ -61,7 +61,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Voice gift after top up keeps selected recipient_0_E79FAEEA-9CDF-4B59-B769-7878F6DF0314.png",
         "timestamp": 1793009149.512,
-        "savedFileName": "voice-selected-recipient.png"
+        "savedFileName": "../../Assets/Screenshots__gift-verification__voice-selected-recipient.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -71,7 +71,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Voice gift selected recipient and insufficient balance_0_F4C07E5D-B269-4DAE-89BE-C9A06B4D7163.png",
         "timestamp": 1793009134.064,
-        "savedFileName": "voice-insufficient-balance.png"
+        "savedFileName": "../../Assets/Screenshots__gift-verification__voice-insufficient-balance.png"
       }
     ],
     "testIdentifier": "PurchaseUITests/testVoiceRecipientAndInsufficientFundsKeepBalance()",

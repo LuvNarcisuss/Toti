@@ -1,0 +1,80 @@
+{
+  "ui": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 2,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPurchases \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1793601213.749,
+    "passedTests": 2,
+    "result": "Passed",
+    "skippedTests": 0,
+    "startTime": 1793601051.14,
+    "statistics": [],
+    "testFailures": [],
+    "title": "Test - totiPurchases",
+    "topInsights": [],
+    "totalTestCount": 2
+  },
+  "service": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 17,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPayments \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1793601256.805,
+    "passedTests": 17,
+    "result": "Passed",
+    "skippedTests": 0,
+    "startTime": 1793601228.924,
+    "statistics": [],
+    "testFailures": [],
+    "title": "Test - totiPayments",
+    "topInsights": [
+      {
+        "category": "Longest Test Runs",
+        "impact": "20% of duration",
+        "text": "1 longest test run with outlier durations exceeding 1.94s (three standard deviations)"
+      }
+    ],
+    "totalTestCount": 17
+  }
+}

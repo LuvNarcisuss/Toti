@@ -15,7 +15,14 @@ final class PurchaseUITests: XCTestCase {
         session.resetToDefaultState()
         session.clearTransactions()
         session.disableDialogs = true
-        app.launchEnvironment["TOTI_UI_TEST_LIBRARY"] = UUID().uuidString
+        if let guest = ProcessInfo.processInfo.environment["TOTI_PURCHASE_GUEST"], UUID(uuidString: guest) != nil {
+            // Reuse an authorized retained Guest; only the test wallet is newly isolated.
+            app.launchEnvironment["TOTI_GUEST_ACCEPTANCE"] = guest
+            app.launchEnvironment["TOTI_LOCAL_STOREKIT_TESTING"] = "1"
+            app.launchEnvironment["TOTI_STOREKIT_TEST_RUN"] = UUID().uuidString
+        } else {
+            app.launchEnvironment["TOTI_UI_TEST_LIBRARY"] = UUID().uuidString
+        }
         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
     }
 
@@ -206,13 +213,14 @@ final class PurchaseUITests: XCTestCase {
         app.buttons["Continue"].tap()
         let systemUI = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let dismiss = systemUI.otherElements["payment-sheet"].buttons["dismiss"]
-        try await require(dismiss, "exists == true")
-        capture("Native StoreKit payment sheet")
-        attach(systemUI.debugDescription, name: "Native payment sheet hierarchy")
+        try await waitForStablePresentation(dismiss, in: systemUI)
+        try await require(dismiss, "hittable == true")
         // iOS 26 appends whitespace to the product-title accessibility label.
         let title = systemUI.staticTexts.matching(NSPredicate(format: "label MATCHES %@", "^400 Diamonds\\s*$")).firstMatch
-        XCTAssertTrue(title.exists)
+        try await require(title, "hittable == true")
         XCTAssertTrue(systemUI.staticTexts["$0.99"].exists)
+        capture("Native StoreKit payment sheet")
+        attach(systemUI.debugDescription, name: "Native payment sheet hierarchy")
         dismiss.tap()
         try await require(app.staticTexts["Purchase canceled. You have not been charged."], "exists == true")
         capture("Native sheet cancellation")
@@ -222,23 +230,88 @@ final class PurchaseUITests: XCTestCase {
         XCTAssertEqual(session.allTransactions().filter { $0.state == .purchased }.count, 0)
     }
 
+    func testPurchaseAfterStoreKitResetPreservesExistingWallet() async throws {
+        try XCTSkipIf(app.launchEnvironment["TOTI_GUEST_ACCEPTANCE"] == nil,
+                      "This regression requires the authorized online Guest and its scoped local wallet.")
+        try await openWallet()
+        let first = app.buttons["wallet.package.400"]
+        try await require(first, "enabled == true")
+        try reveal(first)
+        first.tap()
+        try await require(app.buttons["Continue"], "exists == true")
+        app.buttons["Continue"].tap()
+        try await expectBalance(400)
+        let firstID = try XCTUnwrap(session.allTransactions().first?.identifier)
+        capture("Existing wallet before StoreKit history reset")
+
+        app.terminate()
+        session.clearTransactions()
+        try await openWallet()
+        try await expectBalance(400)
+        let second = app.buttons["wallet.package.800"]
+        try await require(second, "enabled == true")
+        try reveal(second)
+        second.tap()
+        try await require(app.buttons["Continue"], "exists == true")
+        app.buttons["Continue"].tap()
+        try await expectBalance(1200)
+        XCTAssertEqual(session.allTransactions().first?.identifier, firstID)
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.activity.")).count, 2)
+        capture("Reused StoreKit identifier credits 800 without losing the existing 400")
+
+        app.terminate()
+        try await openWallet()
+        try await expectBalance(1200)
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.activity.")).count, 2)
+        capture("Both credits survive relaunch after identifier reuse")
+    }
+
     private func openWallet() async throws {
         app.launch()
         try await require(app.buttons["Get started"], "exists == true")
         app.buttons["Get started"].tap()
-        try await require(app.buttons["Let's listen"], "exists == true")
+        let login = app.buttons[app.launchEnvironment["TOTI_GUEST_ACCEPTANCE"] == nil ? "Let's listen" : "Log in"]
+        try await require(login, "exists == true")
         let agreement = app.buttons["Agree to the agreements"]
         if agreement.exists { agreement.tap() }
-        app.buttons["Let's listen"].tap()
+        login.tap()
         try await require(app.buttons["Me"], "exists == true")
         app.buttons["Me"].tap()
         try await require(app.buttons["Wallet"], "exists == true")
         app.buttons["Wallet"].tap()
         try await require(app.staticTexts["wallet.balance"], "exists == true")
+        if app.launchEnvironment["TOTI_GUEST_ACCEPTANCE"] != nil {
+            XCTAssertTrue(app.staticTexts["wallet.localTesting.notice"].exists)
+            XCTAssertFalse(app.staticTexts["wallet.payments.unavailable"].exists)
+        }
     }
 
     private func expectBalance(_ value: Int) async throws {
         try await require(app.staticTexts["wallet.balance"], "value == '\(value)'")
+    }
+
+    private func waitForStablePresentation(_ element: XCUIElement, in application: XCUIApplication) async throws {
+        // SpringBoard can expose the sheet while its hit-test coordinates are still animating.
+        // Check observable geometry before asking XCTest for a hit point.
+        var previousFrame: CGRect?
+        var stableSince = ProcessInfo.processInfo.systemUptime
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            guard element.exists else { previousFrame = nil; return false }
+            let frame = element.frame
+            guard !frame.isEmpty, !frame.isInfinite, !frame.isNull,
+                  application.frame.contains(frame) else { previousFrame = nil; return false }
+            if previousFrame != frame {
+                previousFrame = frame
+                stableSince = ProcessInfo.processInfo.systemUptime
+                return false
+            }
+            return ProcessInfo.processInfo.systemUptime - stableSince >= 0.5
+        }, object: element)
+        let result = await XCTWaiter.fulfillment(of: [expectation], timeout: 30)
+        guard result == .completed else {
+            XCTFail("The native payment sheet did not reach a stable visible position.")
+            throw NSError(domain: "TotiPurchaseUITests", code: 3)
+        }
     }
 
     private func require(_ element: XCUIElement, _ predicate: String) async throws {
@@ -253,8 +326,12 @@ final class PurchaseUITests: XCTestCase {
     private func reveal(_ element: XCUIElement) throws {
         let scroll = app.scrollViews.firstMatch
         for _ in 0..<8 {
-            if element.isHittable { return }
-            if element.frame.midY < scroll.frame.minY { scroll.swipeDown() }
+            // Query geometry before tapping: XCTest can throw while computing a
+            // hit point for a control whose accessibility snapshot is updating.
+            let frame = element.frame
+            let viewport = scroll.frame.intersection(app.frame).insetBy(dx: 4, dy: 8)
+            if !frame.isEmpty, !frame.isNull, !frame.isInfinite, viewport.contains(frame) { return }
+            if frame.midY < viewport.midY { scroll.swipeDown() }
             else { scroll.swipeUp() }
         }
         XCTFail("Purchase control is not reachable: \(element)")

@@ -11,6 +11,8 @@ enum AgreementDocument: String, Identifiable, CaseIterable {
     case privacy = "PrivacyPolicy"
     var id: String { rawValue }
     var title: String { self == .terms ? "Toti - Terms of Service" : "Toti - Privacy Policy" }
+    var linkTitle: String { self == .terms ? "Terms of Service" : "Privacy Policy" }
+    var expectedPDFHash: String? { TotiIdentity.agreementHashes[rawValue] }
     var onlineURL: URL? { TotiIdentity.agreementURLs[rawValue] }
     var fileURL: URL? {
         Bundle.main.url(forResource: rawValue, withExtension: "html")
@@ -18,8 +20,19 @@ enum AgreementDocument: String, Identifiable, CaseIterable {
 }
 
 enum TotiUserAgreement {
-    // Acceptance refers to the exact bundled files rather than the retired inline copy.
+    // Online acceptance identifies the pinned PDF bytes; legacy local records stay decodable.
     static let version: String = {
+        #if DEBUG
+        if let value = ProcessInfo.processInfo.environment["TOTI_GUEST_ACCEPTANCE"], UUID(uuidString: value) != nil {
+            return "guest-acceptance-test-not-user-consent-" + value
+        }
+        #endif
+        if TotiBackendConfiguration.usesOnlineBackend {
+            let identity = AgreementDocument.allCases.compactMap { $0.expectedPDFHash }.joined(separator: ":")
+            guard AgreementDocument.allCases.allSatisfy({ $0.expectedPDFHash != nil && $0.onlineURL != nil }) else { return "unavailable" }
+            let digest = SHA256.hash(data: Data(identity.utf8)).map { String(format: "%02x", $0) }.joined()
+            return "pdf-" + String(digest.prefix(12))
+        }
         var content = Data()
         for document in AgreementDocument.allCases {
             guard let url = document.fileURL, let bytes = try? Data(contentsOf: url) else {

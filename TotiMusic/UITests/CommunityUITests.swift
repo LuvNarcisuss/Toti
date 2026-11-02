@@ -34,7 +34,13 @@ final class CommunityUITests: XCTestCase {
     if app.buttons["Get started"].exists { tap("Get started") }
     if !app.buttons["Lounge"].exists {
       tap("Agree to the agreements")
-      tap("Let's listen")
+      if app.buttons["Log in"].waitForExistence(timeout: 5) {
+        tap("Log in")
+      } else if app.buttons["Agree and continue"].waitForExistence(timeout: 5) {
+        tap("Agree and continue")
+      } else {
+        tap("Let's listen")
+      }
     }
     XCTAssertTrue(app.buttons["Lounge"].waitForExistence(timeout: 10))
   }
@@ -90,8 +96,13 @@ final class CommunityUITests: XCTestCase {
     XCTAssertTrue(app.textFields["Name"].waitForExistence(timeout: 5))
     tap("Save")
     tap("Wallet")
-    XCTAssertTrue(app.staticTexts["Diamond purchases are not available yet."].waitForExistence(timeout: 5))
-    XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "gifts in voice rooms")).firstMatch.exists)
+    let balance = app.staticTexts["wallet.balance"]
+    XCTAssertTrue(balance.waitForExistence(timeout: 5))
+    XCTAssertEqual(balance.value as? String, "0", "Opening Wallet must not grant starting credit")
+    for amount in [400, 800, 2450, 5150, 10800, 29400, 63700] {
+      XCTAssertTrue(app.buttons["wallet.package.\(amount)"].exists)
+    }
+    XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "Messages and replies are free.")).firstMatch.exists)
     capture("Wallet")
     tap("Back")
     tap("Settings")

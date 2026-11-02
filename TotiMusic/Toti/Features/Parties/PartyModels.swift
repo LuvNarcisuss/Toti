@@ -27,6 +27,7 @@ struct PartyParticipant: Identifiable {
     let id: String
     let asset: String?
     let name: String
+    var artworkURL: URL? = nil
 }
 struct PartyPopularity {
     let value: Int
@@ -44,8 +45,37 @@ struct PartyRoom: Identifiable, Hashable {
     var popularity: PartyPopularity? = nil
     var onlineCount: Int? = nil
     var draftID: UUID? = nil
+    var coverAsset: String? = nil
+    var coverURL: URL? = nil
+    var isCommunityArtwork = false
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
+}
+
+/// Published room artwork characters are not Auth identities or live attendees.
+struct CommunityVoiceRoom: Decodable {
+    struct Person: Decodable {
+        let name: String
+        let asset: String
+        let url: URL
+    }
+    let id: UUID
+    let title: String
+    let description: String
+    let category: String
+    let cover_asset: String
+    let cover_url: URL
+    let people: [Person]
+
+    var room: PartyRoom {
+        PartyRoom(id: "community-artwork:" + id.uuidString.lowercased(), title: title,
+            description: description, type: .voice,
+            category: PartyCategory(rawValue: category) ?? .freestyle,
+            participants: people.enumerated().map { index, person in
+                PartyParticipant(id: "community-artwork:\(id.uuidString):\(index)",
+                    asset: person.asset, name: person.name, artworkURL: person.url)
+            }, coverAsset: cover_asset, coverURL: cover_url, isCommunityArtwork: true)
+    }
 }
 struct PartyFilter: Equatable {
     enum Kind: String, CaseIterable, Identifiable {

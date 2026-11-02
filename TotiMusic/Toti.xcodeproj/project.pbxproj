@@ -9,18 +9,19 @@
 /* Begin PBXBuildFile section */
 		034E251E5052983D7B9247F9 /* LiveRoomStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CB6164DA60C5268E39CA94 /* LiveRoomStore.swift */; };
 		0407AA37CF433C2643B27122 /* MusicVideoCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4DBA7D56F4960B3415E860 /* MusicVideoCatalog.swift */; };
-		0502EB4DF90B6B8E75229816 /* TermsOfService.html in Resources */ = {isa = PBXBuildFile; fileRef = 4E831BB328192517EEE3C2BE /* TermsOfService.html */; };
+		050C71528D214A826BA5F4BE /* OnlineEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAEBF9BD71AF82227E3D039A /* OnlineEntryController.swift */; };
 		0728EA25E28CE95ABE716FF6 /* NotebookControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06520A6039182D5CB93E0F7 /* NotebookControllers.swift */; };
+		07922021E01ACD5F8CEF2A3A /* AgreementUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185AB8B56A7677CE5A7319C8 /* AgreementUITests.swift */; };
 		07BAFF26EE83CB1D04ED6C3F /* TotiUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45F65B8DC40DC043E85BA89 /* TotiUIKit.swift */; };
 		0CB5ACE44CBE6F637D5A2905 /* LibraryMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3229DE4874D2086DDDF45F31 /* LibraryMigrationTests.swift */; };
 		113C37A1DB7B036AC22E39F1 /* CommunityWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B3AF43847544139A22BC11 /* CommunityWorkflowTests.swift */; };
-		13A877155068AE1EB33DF4AD /* MediaCredits.json in Resources */ = {isa = PBXBuildFile; fileRef = A0C6630599A25983AA328133 /* MediaCredits.json */; };
+		119F1C29CB97CD4C02AA8C23 /* OnlineReadinessUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C47F4C14FD6291DB2B3C51 /* OnlineReadinessUITests.swift */; };
 		1968086373B3FFB3E9DE184A /* StoreProductCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D612FD292FE77F211DD2D35A /* StoreProductCatalog.swift */; };
 		1E2B4B3C20FF46975AE48B4E /* CreatorProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD1876D1C7C04C96B03B8B4 /* CreatorProfile.swift */; };
 		1F41BA4E3647C29496580799 /* TotiApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11445A5D59D5372E6574B428 /* TotiApplication.swift */; };
 		20621C5E5DA4133A9B1AE321 /* LoungeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B51FDED142B4FE55D6F0233 /* LoungeModels.swift */; };
 		2220DECCD60105D11E391981 /* LoungeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649CA9398E72A45FAF4A3900 /* LoungeTests.swift */; };
-		236E4FAFAA39199A0F0CDCBB /* TetoRhythm-Text.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ABB3A0A548E0918086AA91BB /* TetoRhythm-Text.ttf */; };
+		232DC797A476FFBD561A278B /* OnlineMediaRecoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBA9140DAFF1B94BF77D428 /* OnlineMediaRecoveryTests.swift */; };
 		247D47229D8078B96E9AA625 /* LiveRoomPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8968578D7DA253A89C9508C4 /* LiveRoomPlayback.swift */; };
 		283CD72DA1F041855F0E9ED7 /* BundledResourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2355F8D5C2ED9E301CA05460 /* BundledResourceTests.swift */; };
 		2C338DC9076736E4F5DC9C0C /* ShortsInteractionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F2FD83F4E4C0A48E2046DA /* ShortsInteractionRepository.swift */; };
@@ -36,41 +37,56 @@
 		3EBC7A70280C507A22BBC040 /* ChatControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC445283D50EA9338DE1F2E /* ChatControllers.swift */; };
 		3F7310A97F87061DFC789BF9 /* PurchaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C07C155A924B84CDBFDE015 /* PurchaseUITests.swift */; };
 		425EF68EECA736759ECBEEE2 /* WalletModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9D6BF5F5DE590EE80DF1BF /* WalletModels.swift */; };
+		465A1761B681AC410FA90B1E /* OnlineMediaServiceAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059E9A302207FE0D1515B309 /* OnlineMediaServiceAcceptanceTests.swift */; };
+		472DCADAD9D3E73888EC1EF7 /* TetoRhythm-Display.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D4BF4390839CB09F9D82BB3 /* TetoRhythm-Display.ttf */; };
 		4F0F67476D9F238E8D49E4C2 /* FlatAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39CF89BC8868EF0DD3FFC31F /* FlatAssets.xcassets */; };
+		5D34CA6DD9E8FCD206431E1F /* MediaCredits.json in Resources */ = {isa = PBXBuildFile; fileRef = 8E7D84F57BC0E74F8CB51800 /* MediaCredits.json */; };
 		5DC81D93D426205A1856C093 /* NotebookModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E91E7598AFAF743B9C6684E /* NotebookModels.swift */; };
 		5E16830F160EDC31E097C2E5 /* CallCameraSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AD39EAC8A82A8A9D11B81C /* CallCameraSurface.swift */; };
 		64C92F7E882168CB5B8878A7 /* TotiDiamonds.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */; };
 		6640A9DEF0EB7B4F60CC661B /* VideoViewingHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E107568EED7F26D2509BAF2 /* VideoViewingHistory.swift */; };
 		6BF35B44B80C8E8090D5A97F /* ArtistPortraits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 730F9DD14A34CF083493E08F /* ArtistPortraits.swift */; };
 		6BFE5194DAE138284E49AE3D /* LocalVideoPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EBFD63F8A9F69F79A89425 /* LocalVideoPlayback.swift */; };
-		6F3DC005EF80A12338A3B9C9 /* TetoRhythm-Display.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01E890854C072D53AB6128AD /* TetoRhythm-Display.ttf */; };
 		71D1EE7628EA5356B0436304 /* LocalLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3089CEF66776A104781231 /* LocalLibrary.swift */; };
 		742AB9E57E96B7E6D4D23690 /* ShortsPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = C755C9C34D042846531EDD80 /* ShortsPlayback.swift */; };
 		7845221816AB3B75213771A3 /* UserAgreement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB533471AD7D66ACC02CB05 /* UserAgreement.swift */; };
+		794D760C324C8267E5FD40C2 /* TotiKeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25218FEF17303422020934F /* TotiKeychainStorage.swift */; };
 		79D295ED824D83FBB588113C /* ShortsInteractionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A53738CCA199B1FF28947D /* ShortsInteractionStore.swift */; };
+		7DFCD3249025179F37E1A8BE /* OnlineOperationJournal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F484BDDB22AF75F77C8967BF /* OnlineOperationJournal.swift */; };
+		811C7E5B2749F257A5AD44A6 /* TetoRhythm-Text.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4459B6449235A88C9AD0180D /* TetoRhythm-Text.ttf */; };
 		8147F4171D3EB3BDCB057210 /* NotebookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2072FADE0E1C6435F30E759C /* NotebookTests.swift */; };
+		8A28449B55AD363AB578016A /* TotiBackendConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FC98B61A88439C4DC4B3B0 /* TotiBackendConfiguration.swift */; };
 		8AEBE9F4FF9DDD0F76C3EE87 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6266C17E8A1C5AAAA4F8A46C /* StoreKit.framework */; };
-		94512D1CF342E318C0B1B723 /* PrivacyPolicy.html in Resources */ = {isa = PBXBuildFile; fileRef = 97C6F9D3279CC8810635E1FB /* PrivacyPolicy.html */; };
+		8EA61F79A34551B045BC88C2 /* TotiEditorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0D735DC7E922D1CE382062 /* TotiEditorial.swift */; };
+		9A5508FB9F487C820509AED8 /* LegacyArchiveController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0517108A7F2DD9A2B63848BA /* LegacyArchiveController.swift */; };
 		9E3345B4208DF6C7FEE1DE9F /* NotebookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B48C56FDE9B678C554CF2 /* NotebookStore.swift */; };
 		9E6CCC8771DC3F65D15B18B7 /* CallController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5090BEE1537E945C2D8FEED3 /* CallController.swift */; };
 		9E78DD4E994D176125CF8927 /* ProfileControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571B810EEBD06B851BAB9FF8 /* ProfileControllers.swift */; };
 		A01F081B14CE7CEC6E59E764 /* PhraseBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12926D1084C4DC34341C30E7 /* PhraseBook.swift */; };
+		A25D12F7553347A377820233 /* OnlineModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5898818A463F57B1BB38D8 /* OnlineModels.swift */; };
 		A70B4853ABE90B0867CC5234 /* PartyDiscoveryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE4E1D777469BF02F8D8B30 /* PartyDiscoveryStore.swift */; };
 		A7299D319E0CC60A0C1EC7CE /* VoiceRoomDecoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 131667E5066CF87EF05F86D7 /* VoiceRoomDecoration.swift */; };
 		A78C86284B1B141D1679D4BD /* DancePhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ADA0F5A91966597389D8A9D /* DancePhrase.swift */; };
 		ADDA201DAFCF5C3871C54903 /* WalletStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA85A41C124D9F7C2D69532 /* WalletStore.swift */; };
 		B09F3A97EB57712059F300A2 /* PartyControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97E6553C29D103DC214CE9 /* PartyControllers.swift */; };
 		B6EBC2A0913541E084AB7D77 /* TotiDiamonds.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */; };
+		B926096A234616C2EC68EADB /* TotiBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D9D248BBC2F9CAE06EAB8C /* TotiBackend.swift */; };
 		BFF6D4D89BB9DDC310D9BED6 /* ContentSafety.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CFDA3C7CCE6103B997498C /* ContentSafety.swift */; };
+		C0A91EA261795292F9323556 /* OnlineOperationRecoveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2263F5D53ED4A56DD4D78DB4 /* OnlineOperationRecoveryTests.swift */; };
+		C647C78012985D8BEB677FDF /* OnlineAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B81F49F86A038F535DEA606 /* OnlineAppStore.swift */; };
+		CC7AE8C4AD5055C3077034FE /* OnlineMediaJournal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ABBA88A0195722B84F4365F /* OnlineMediaJournal.swift */; };
 		CC88E49F408004E61AB42AE1 /* MediaCreditsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174BCB3958647A4C916153AE /* MediaCreditsController.swift */; };
 		CF4B1D11AC9763DBB35CD280 /* CallCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ED273BA3DB85038DF8C49FF /* CallCameraController.swift */; };
 		D4ED09F3EE8EE1805491F583 /* LoungeControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D621B5DE84FF4A194A7EC0B /* LoungeControllers.swift */; };
+		D67C0927F93455857B4009EF /* PrivacyPolicy.html in Resources */ = {isa = PBXBuildFile; fileRef = E0E28AADEC4CAFC181857FDF /* PrivacyPolicy.html */; };
 		D6C362A5C8442ECF7E88F572 /* LocalLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE839885181D295BE33AEF7 /* LocalLibraryRepository.swift */; };
 		D763D126091E1DAC00B535F3 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B3812778EB5DBA7DF97D6FF /* AppStore.swift */; };
+		D825A8BC794DA3B068CDD20E /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = BAD71532ED01EBA4143B5CA4 /* Supabase */; };
 		DE72B3F28B2B5A240AB628F7 /* CommunityControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E2B5B50516FB55FB09630A /* CommunityControllers.swift */; };
 		DF6B8E3DC6BABA5BAEEFE39C /* TotiIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D806ACE3E7C05D4D3BBBB880 /* TotiIcons.swift */; };
 		E2A358F8C2055D082CCF6E5D /* TotiIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DE0EC2CCB304EA16261C8D /* TotiIdentity.swift */; };
 		E5198EA1C526D3BC63B96954 /* CommunityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9BAD5ADF6B4D29BB8DDA4 /* CommunityUITests.swift */; };
+		E90815B3B8BCBCD7EC38B33D /* TermsOfService.html in Resources */ = {isa = PBXBuildFile; fileRef = 8FBBCC836910550E61546AB5 /* TermsOfService.html */; };
 		EED9BC212A0D368F33D3762C /* CreationSubmission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3D8D87DC8655FD6407406F /* CreationSubmission.swift */; };
 		F0E7BB00BEDAD6792707627E /* VoiceRoomChatScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77960B7BA7B426AD0A96BDF /* VoiceRoomChatScript.swift */; };
 		F450BB2F1B056E6F85B476CF /* LiveRoomModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E055C1ADEB564432710A7F /* LiveRoomModels.swift */; };
@@ -109,8 +125,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		01E890854C072D53AB6128AD /* TetoRhythm-Display.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TetoRhythm-Display.ttf"; sourceTree = "<group>"; };
 		04B3AF43847544139A22BC11 /* CommunityWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityWorkflowTests.swift; sourceTree = "<group>"; };
+		0517108A7F2DD9A2B63848BA /* LegacyArchiveController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyArchiveController.swift; sourceTree = "<group>"; };
+		059E9A302207FE0D1515B309 /* OnlineMediaServiceAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMediaServiceAcceptanceTests.swift; sourceTree = "<group>"; };
 		07C24DC8B344EE07D3DBD4F9 /* totiUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B3812778EB5DBA7DF97D6FF /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
 		0E91E7598AFAF743B9C6684E /* NotebookModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookModels.swift; sourceTree = "<group>"; };
@@ -118,48 +135,57 @@
 		12926D1084C4DC34341C30E7 /* PhraseBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseBook.swift; sourceTree = "<group>"; };
 		131667E5066CF87EF05F86D7 /* VoiceRoomDecoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRoomDecoration.swift; sourceTree = "<group>"; };
 		174BCB3958647A4C916153AE /* MediaCreditsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCreditsController.swift; sourceTree = "<group>"; };
+		185AB8B56A7677CE5A7319C8 /* AgreementUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementUITests.swift; sourceTree = "<group>"; };
+		1D4BF4390839CB09F9D82BB3 /* TetoRhythm-Display.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TetoRhythm-Display.ttf"; sourceTree = "<group>"; };
 		1EA85A41C124D9F7C2D69532 /* WalletStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStore.swift; sourceTree = "<group>"; };
 		2072FADE0E1C6435F30E759C /* NotebookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookTests.swift; sourceTree = "<group>"; };
+		2263F5D53ED4A56DD4D78DB4 /* OnlineOperationRecoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineOperationRecoveryTests.swift; sourceTree = "<group>"; };
 		22E055C1ADEB564432710A7F /* LiveRoomModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomModels.swift; sourceTree = "<group>"; };
 		2355F8D5C2ED9E301CA05460 /* BundledResourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledResourceTests.swift; sourceTree = "<group>"; };
 		3229DE4874D2086DDDF45F31 /* LibraryMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryMigrationTests.swift; sourceTree = "<group>"; };
 		34CB6164DA60C5268E39CA94 /* LiveRoomStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomStore.swift; sourceTree = "<group>"; };
 		34E2B5B50516FB55FB09630A /* CommunityControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityControllers.swift; sourceTree = "<group>"; };
 		39CF89BC8868EF0DD3FFC31F /* FlatAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FlatAssets.xcassets; sourceTree = "<group>"; };
+		3BBA9140DAFF1B94BF77D428 /* OnlineMediaRecoveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMediaRecoveryTests.swift; sourceTree = "<group>"; };
 		3D621B5DE84FF4A194A7EC0B /* LoungeControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeControllers.swift; sourceTree = "<group>"; };
 		3E3089CEF66776A104781231 /* LocalLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLibrary.swift; sourceTree = "<group>"; };
+		4459B6449235A88C9AD0180D /* TetoRhythm-Text.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TetoRhythm-Text.ttf"; sourceTree = "<group>"; };
 		49AD39EAC8A82A8A9D11B81C /* CallCameraSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCameraSurface.swift; sourceTree = "<group>"; };
 		4A9D6BF5F5DE590EE80DF1BF /* WalletModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModels.swift; sourceTree = "<group>"; };
 		4AAA7C884CEBF7D49122D424 /* MusicPhotography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPhotography.swift; sourceTree = "<group>"; };
+		4ABBA88A0195722B84F4365F /* OnlineMediaJournal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineMediaJournal.swift; sourceTree = "<group>"; };
 		4E254045BF49E1D8A0276E8D /* MusicEditorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicEditorial.swift; sourceTree = "<group>"; };
-		4E831BB328192517EEE3C2BE /* TermsOfService.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = TermsOfService.html; sourceTree = "<group>"; };
 		4ED273BA3DB85038DF8C49FF /* CallCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallCameraController.swift; sourceTree = "<group>"; };
+		4F5898818A463F57B1BB38D8 /* OnlineModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineModels.swift; sourceTree = "<group>"; };
 		4FE1D750466FB83F47DFF88D /* totiPurchaseUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiPurchaseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5090BEE1537E945C2D8FEED3 /* CallController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallController.swift; sourceTree = "<group>"; };
+		54FC98B61A88439C4DC4B3B0 /* TotiBackendConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiBackendConfiguration.swift; sourceTree = "<group>"; };
 		571B810EEBD06B851BAB9FF8 /* ProfileControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileControllers.swift; sourceTree = "<group>"; };
 		5B4DBA7D56F4960B3415E860 /* MusicVideoCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicVideoCatalog.swift; sourceTree = "<group>"; };
+		5B81F49F86A038F535DEA606 /* OnlineAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAppStore.swift; sourceTree = "<group>"; };
 		60F2FD83F4E4C0A48E2046DA /* ShortsInteractionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsInteractionRepository.swift; sourceTree = "<group>"; };
 		6266C17E8A1C5AAAA4F8A46C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		649CA9398E72A45FAF4A3900 /* LoungeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeTests.swift; sourceTree = "<group>"; };
 		66CFDA3C7CCE6103B997498C /* ContentSafety.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentSafety.swift; sourceTree = "<group>"; };
-		685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */ = {isa = PBXFileReference; path = TotiDiamonds.storekit; sourceTree = "<group>"; };
+		685A003BAAD1DEFD376E0258 /* TotiDiamonds.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = TotiDiamonds.storekit; sourceTree = "<group>"; };
+		6D0D735DC7E922D1CE382062 /* TotiEditorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiEditorial.swift; sourceTree = "<group>"; };
 		70BF80300BE083EA52618DEB /* LoungeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeStore.swift; sourceTree = "<group>"; };
 		730F9DD14A34CF083493E08F /* ArtistPortraits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistPortraits.swift; sourceTree = "<group>"; };
+		77D9D248BBC2F9CAE06EAB8C /* TotiBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiBackend.swift; sourceTree = "<group>"; };
 		87314041598FDCFE4A099548 /* totiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = totiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		88B9A7BD55F941E3738C8933 /* toti.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = toti.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88B9A7BD55F941E3738C8933 /* toti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = toti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8968578D7DA253A89C9508C4 /* LiveRoomPlayback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveRoomPlayback.swift; sourceTree = "<group>"; };
 		8B3D8D87DC8655FD6407406F /* CreationSubmission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationSubmission.swift; sourceTree = "<group>"; };
 		8CB533471AD7D66ACC02CB05 /* UserAgreement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgreement.swift; sourceTree = "<group>"; };
 		8E107568EED7F26D2509BAF2 /* VideoViewingHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewingHistory.swift; sourceTree = "<group>"; };
+		8E7D84F57BC0E74F8CB51800 /* MediaCredits.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MediaCredits.json; sourceTree = "<group>"; };
+		8FBBCC836910550E61546AB5 /* TermsOfService.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = TermsOfService.html; sourceTree = "<group>"; };
 		9761379045FFFFC5E9A8819B /* MusicDiscussionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicDiscussionContent.swift; sourceTree = "<group>"; };
-		97C6F9D3279CC8810635E1FB /* PrivacyPolicy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = PrivacyPolicy.html; sourceTree = "<group>"; };
 		9ADA0F5A91966597389D8A9D /* DancePhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DancePhrase.swift; sourceTree = "<group>"; };
 		9B51FDED142B4FE55D6F0233 /* LoungeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeModels.swift; sourceTree = "<group>"; };
 		9C07C155A924B84CDBFDE015 /* PurchaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseUITests.swift; sourceTree = "<group>"; };
-		A0C6630599A25983AA328133 /* MediaCredits.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MediaCredits.json; sourceTree = "<group>"; };
 		AA954B73891AD5530C9B055E /* PartyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyModels.swift; sourceTree = "<group>"; };
 		AB30867F689E89EDD3D584B6 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
-		ABB3A0A548E0918086AA91BB /* TetoRhythm-Text.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TetoRhythm-Text.ttf"; sourceTree = "<group>"; };
 		AEE839885181D295BE33AEF7 /* LocalLibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalLibraryRepository.swift; sourceTree = "<group>"; };
 		B7D9BAD5ADF6B4D29BB8DDA4 /* CommunityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityUITests.swift; sourceTree = "<group>"; };
 		BF020A1DD98CA8A8E0F914A2 /* VideoRecommendations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRecommendations.swift; sourceTree = "<group>"; };
@@ -173,13 +199,18 @@
 		CC97E6553C29D103DC214CE9 /* PartyControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyControllers.swift; sourceTree = "<group>"; };
 		CFD1876D1C7C04C96B03B8B4 /* CreatorProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProfile.swift; sourceTree = "<group>"; };
 		D45F65B8DC40DC043E85BA89 /* TotiUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiUIKit.swift; sourceTree = "<group>"; };
+		D4C47F4C14FD6291DB2B3C51 /* OnlineReadinessUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineReadinessUITests.swift; sourceTree = "<group>"; };
 		D5A53738CCA199B1FF28947D /* ShortsInteractionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortsInteractionStore.swift; sourceTree = "<group>"; };
 		D612FD292FE77F211DD2D35A /* StoreProductCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreProductCatalog.swift; sourceTree = "<group>"; };
 		D77960B7BA7B426AD0A96BDF /* VoiceRoomChatScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRoomChatScript.swift; sourceTree = "<group>"; };
 		D806ACE3E7C05D4D3BBBB880 /* TotiIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiIcons.swift; sourceTree = "<group>"; };
+		E0E28AADEC4CAFC181857FDF /* PrivacyPolicy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = PrivacyPolicy.html; sourceTree = "<group>"; };
+		E25218FEF17303422020934F /* TotiKeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiKeychainStorage.swift; sourceTree = "<group>"; };
+		EAEBF9BD71AF82227E3D039A /* OnlineEntryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineEntryController.swift; sourceTree = "<group>"; };
 		ECE4E1D777469BF02F8D8B30 /* PartyDiscoveryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyDiscoveryStore.swift; sourceTree = "<group>"; };
 		F071D648386D871D9342C676 /* DancePhraseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DancePhraseCatalog.swift; sourceTree = "<group>"; };
 		F2DE0EC2CCB304EA16261C8D /* TotiIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotiIdentity.swift; sourceTree = "<group>"; };
+		F484BDDB22AF75F77C8967BF /* OnlineOperationJournal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineOperationJournal.swift; sourceTree = "<group>"; };
 		FE02699F76BE3575AB295564 /* StoreKit1PaymentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKit1PaymentTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -189,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AEBE9F4FF9DDD0F76C3EE87 /* StoreKit.framework in Frameworks */,
+				D825A8BC794DA3B068CDD20E /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,18 +258,6 @@
 			path = DesignSystem;
 			sourceTree = "<group>";
 		};
-		226D253884321796980CCB83 /* Assets */ = {
-			isa = PBXGroup;
-			children = (
-				A0C6630599A25983AA328133 /* MediaCredits.json */,
-				97C6F9D3279CC8810635E1FB /* PrivacyPolicy.html */,
-				4E831BB328192517EEE3C2BE /* TermsOfService.html */,
-				01E890854C072D53AB6128AD /* TetoRhythm-Display.ttf */,
-				ABB3A0A548E0918086AA91BB /* TetoRhythm-Text.ttf */,
-			);
-			path = Assets;
-			sourceTree = "<group>";
-		};
 		26EEFE15655093659E3F05A8 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
@@ -247,6 +267,19 @@
 				1EA85A41C124D9F7C2D69532 /* WalletStore.swift */,
 			);
 			path = Wallet;
+			sourceTree = "<group>";
+		};
+		27CBF9ADC823367128E0C3E5 /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				4ABBA88A0195722B84F4365F /* OnlineMediaJournal.swift */,
+				4F5898818A463F57B1BB38D8 /* OnlineModels.swift */,
+				F484BDDB22AF75F77C8967BF /* OnlineOperationJournal.swift */,
+				77D9D248BBC2F9CAE06EAB8C /* TotiBackend.swift */,
+				54FC98B61A88439C4DC4B3B0 /* TotiBackendConfiguration.swift */,
+				E25218FEF17303422020934F /* TotiKeychainStorage.swift */,
+			);
+			path = Backend;
 			sourceTree = "<group>";
 		};
 		2B7E60D8493CBB52692D318B /* Platform */ = {
@@ -270,7 +303,9 @@
 		30E79973651069FE86C61AD5 /* UITests */ = {
 			isa = PBXGroup;
 			children = (
+				185AB8B56A7677CE5A7319C8 /* AgreementUITests.swift */,
 				B7D9BAD5ADF6B4D29BB8DDA4 /* CommunityUITests.swift */,
+				D4C47F4C14FD6291DB2B3C51 /* OnlineReadinessUITests.swift */,
 			);
 			path = UITests;
 			sourceTree = "<group>";
@@ -308,9 +343,20 @@
 			path = Creators;
 			sourceTree = "<group>";
 		};
+		53686103C927BC80633D6BAC /* RemoteResources */ = {
+			isa = PBXGroup;
+			children = (
+				8E7D84F57BC0E74F8CB51800 /* MediaCredits.json */,
+				1D4BF4390839CB09F9D82BB3 /* TetoRhythm-Display.ttf */,
+				4459B6449235A88C9AD0180D /* TetoRhythm-Text.ttf */,
+			);
+			path = RemoteResources;
+			sourceTree = "<group>";
+		};
 		5EA9A57211CE85DAA1C3261E /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				EAEBF9BD71AF82227E3D039A /* OnlineEntryController.swift */,
 				8CB533471AD7D66ACC02CB05 /* UserAgreement.swift */,
 			);
 			path = Authentication;
@@ -319,7 +365,7 @@
 		663774F182880F0551A43395 /* Toti */ = {
 			isa = PBXGroup;
 			children = (
-				226D253884321796980CCB83 /* Assets */,
+				8930B27D3862CB6E7D7D6126 /* Agreements */,
 			);
 			name = Toti;
 			path = ..;
@@ -347,6 +393,7 @@
 			isa = PBXGroup;
 			children = (
 				F32FCF410E6E86CF900A3085 /* App */,
+				27CBF9ADC823367128E0C3E5 /* Backend */,
 				2DABB0442BEEDCDD3F787134 /* Data */,
 				187E0A497F037771CEA53C69 /* DesignSystem */,
 				E3AC08F8047A66F02DB05672 /* Domain */,
@@ -360,6 +407,7 @@
 			isa = PBXGroup;
 			children = (
 				39CF89BC8868EF0DD3FFC31F /* FlatAssets.xcassets */,
+				53686103C927BC80633D6BAC /* RemoteResources */,
 			);
 			path = "$(DERIVED_FILE_DIR)";
 			sourceTree = "<group>";
@@ -378,6 +426,15 @@
 				9C07C155A924B84CDBFDE015 /* PurchaseUITests.swift */,
 			);
 			path = PurchaseUITests;
+			sourceTree = "<group>";
+		};
+		8930B27D3862CB6E7D7D6126 /* Agreements */ = {
+			isa = PBXGroup;
+			children = (
+				E0E28AADEC4CAFC181857FDF /* PrivacyPolicy.html */,
+				8FBBCC836910550E61546AB5 /* TermsOfService.html */,
+			);
+			path = Agreements;
 			sourceTree = "<group>";
 		};
 		8A14B057C202E4CB37EF38D3 /* Products */ = {
@@ -414,6 +471,7 @@
 				3D621B5DE84FF4A194A7EC0B /* LoungeControllers.swift */,
 				9B51FDED142B4FE55D6F0233 /* LoungeModels.swift */,
 				70BF80300BE083EA52618DEB /* LoungeStore.swift */,
+				6D0D735DC7E922D1CE382062 /* TotiEditorial.swift */,
 			);
 			path = Lounge;
 			sourceTree = "<group>";
@@ -462,6 +520,9 @@
 				3229DE4874D2086DDDF45F31 /* LibraryMigrationTests.swift */,
 				649CA9398E72A45FAF4A3900 /* LoungeTests.swift */,
 				2072FADE0E1C6435F30E759C /* NotebookTests.swift */,
+				3BBA9140DAFF1B94BF77D428 /* OnlineMediaRecoveryTests.swift */,
+				059E9A302207FE0D1515B309 /* OnlineMediaServiceAcceptanceTests.swift */,
+				2263F5D53ED4A56DD4D78DB4 /* OnlineOperationRecoveryTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -477,6 +538,7 @@
 		DBE847E01F9A17EE8F96523C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				0517108A7F2DD9A2B63848BA /* LegacyArchiveController.swift */,
 				174BCB3958647A4C916153AE /* MediaCreditsController.swift */,
 				571B810EEBD06B851BAB9FF8 /* ProfileControllers.swift */,
 			);
@@ -524,6 +586,7 @@
 			isa = PBXGroup;
 			children = (
 				0B3812778EB5DBA7DF97D6FF /* AppStore.swift */,
+				5B81F49F86A038F535DEA606 /* OnlineAppStore.swift */,
 				11445A5D59D5372E6574B428 /* TotiApplication.swift */,
 				F2DE0EC2CCB304EA16261C8D /* TotiIdentity.swift */,
 			);
@@ -555,7 +618,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DE3E99D21B8A455BFDF1C301 /* Build configuration list for PBXNativeTarget "toti" */;
 			buildPhases = (
-				0DC443AACCF75025E585E81A /* Prepare flat asset catalog */,
+				92E1757680464325F5BD5363 /* Prepare remote resources */,
 				2077F9DD562D9A731019F8E1 /* Sources */,
 				2281C19E8F6DB7F49D5A1C50 /* Resources */,
 				70158E7D1637C0F0CA1125D3 /* Frameworks */,
@@ -566,6 +629,7 @@
 			);
 			name = toti;
 			packageProductDependencies = (
+				BAD71532ED01EBA4143B5CA4 /* Supabase */,
 			);
 			productName = toti;
 			productReference = 88B9A7BD55F941E3738C8933 /* toti.app */;
@@ -639,6 +703,9 @@
 					0C0D4BEA33C8402585A218D0 = {
 						TestTargetID = 107CAA000E0B0C27A0C1E9B0;
 					};
+					107CAA000E0B0C27A0C1E9B0 = {
+						DevelopmentTeam = JPTS6M4T5B;
+					};
 					6F9D730EA9CCF6991435C57F = {
 						TestTargetID = 107CAA000E0B0C27A0C1E9B0;
 					};
@@ -653,6 +720,9 @@
 			);
 			mainGroup = 9DE804057351312CFF609A62;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				96F9E486EDBA8FFAE1FFC6E8 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8A14B057C202E4CB37EF38D3 /* Products */;
 			projectDirPath = "";
@@ -681,11 +751,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F0F67476D9F238E8D49E4C2 /* FlatAssets.xcassets in Resources */,
-				13A877155068AE1EB33DF4AD /* MediaCredits.json in Resources */,
-				94512D1CF342E318C0B1B723 /* PrivacyPolicy.html in Resources */,
-				0502EB4DF90B6B8E75229816 /* TermsOfService.html in Resources */,
-				6F3DC005EF80A12338A3B9C9 /* TetoRhythm-Display.ttf in Resources */,
-				236E4FAFAA39199A0F0CDCBB /* TetoRhythm-Text.ttf in Resources */,
+				5D34CA6DD9E8FCD206431E1F /* MediaCredits.json in Resources */,
+				D67C0927F93455857B4009EF /* PrivacyPolicy.html in Resources */,
+				E90815B3B8BCBCD7EC38B33D /* TermsOfService.html in Resources */,
+				472DCADAD9D3E73888EC1EF7 /* TetoRhythm-Display.ttf in Resources */,
+				811C7E5B2749F257A5AD44A6 /* TetoRhythm-Text.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,7 +770,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0DC443AACCF75025E585E81A /* Prepare flat asset catalog */ = {
+		92E1757680464325F5BD5363 /* Prepare remote resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -710,11 +780,12 @@
 			);
 			inputPaths = (
 			);
-			name = "Prepare flat asset catalog";
+			name = "Prepare remote resources";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/FlatAssets.xcassets",
+				"$(DERIVED_FILE_DIR)/RemoteResources",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -740,6 +811,7 @@
 				1E2B4B3C20FF46975AE48B4E /* CreatorProfile.swift in Sources */,
 				A78C86284B1B141D1679D4BD /* DancePhrase.swift in Sources */,
 				37AF9D663E2F59C1F8DE9816 /* DancePhraseCatalog.swift in Sources */,
+				9A5508FB9F487C820509AED8 /* LegacyArchiveController.swift in Sources */,
 				F450BB2F1B056E6F85B476CF /* LiveRoomModels.swift in Sources */,
 				247D47229D8078B96E9AA625 /* LiveRoomPlayback.swift in Sources */,
 				034E251E5052983D7B9247F9 /* LiveRoomStore.swift in Sources */,
@@ -757,6 +829,11 @@
 				0728EA25E28CE95ABE716FF6 /* NotebookControllers.swift in Sources */,
 				5DC81D93D426205A1856C093 /* NotebookModels.swift in Sources */,
 				9E3345B4208DF6C7FEE1DE9F /* NotebookStore.swift in Sources */,
+				C647C78012985D8BEB677FDF /* OnlineAppStore.swift in Sources */,
+				050C71528D214A826BA5F4BE /* OnlineEntryController.swift in Sources */,
+				CC7AE8C4AD5055C3077034FE /* OnlineMediaJournal.swift in Sources */,
+				A25D12F7553347A377820233 /* OnlineModels.swift in Sources */,
+				7DFCD3249025179F37E1A8BE /* OnlineOperationJournal.swift in Sources */,
 				B09F3A97EB57712059F300A2 /* PartyControllers.swift in Sources */,
 				A70B4853ABE90B0867CC5234 /* PartyDiscoveryStore.swift in Sources */,
 				2E75A26FAF58A0548AEF7FF9 /* PartyModels.swift in Sources */,
@@ -768,8 +845,12 @@
 				F7733025F9D49D2251DF2CB4 /* StoreKit1Purchasing.swift in Sources */,
 				1968086373B3FFB3E9DE184A /* StoreProductCatalog.swift in Sources */,
 				1F41BA4E3647C29496580799 /* TotiApplication.swift in Sources */,
+				B926096A234616C2EC68EADB /* TotiBackend.swift in Sources */,
+				8A28449B55AD363AB578016A /* TotiBackendConfiguration.swift in Sources */,
+				8EA61F79A34551B045BC88C2 /* TotiEditorial.swift in Sources */,
 				DF6B8E3DC6BABA5BAEEFE39C /* TotiIcons.swift in Sources */,
 				E2A358F8C2055D082CCF6E5D /* TotiIdentity.swift in Sources */,
+				794D760C324C8267E5FD40C2 /* TotiKeychainStorage.swift in Sources */,
 				07BAFF26EE83CB1D04ED6C3F /* TotiUIKit.swift in Sources */,
 				7845221816AB3B75213771A3 /* UserAgreement.swift in Sources */,
 				328285A13B888ABB91841FC3 /* VideoRecommendations.swift in Sources */,
@@ -798,6 +879,9 @@
 				0CB5ACE44CBE6F637D5A2905 /* LibraryMigrationTests.swift in Sources */,
 				2220DECCD60105D11E391981 /* LoungeTests.swift in Sources */,
 				8147F4171D3EB3BDCB057210 /* NotebookTests.swift in Sources */,
+				232DC797A476FFBD561A278B /* OnlineMediaRecoveryTests.swift in Sources */,
+				465A1761B681AC410FA90B1E /* OnlineMediaServiceAcceptanceTests.swift in Sources */,
+				C0A91EA261795292F9323556 /* OnlineOperationRecoveryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -813,7 +897,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07922021E01ACD5F8CEF2A3A /* AgreementUITests.swift in Sources */,
 				E5198EA1C526D3BC63B96954 /* CommunityUITests.swift in Sources */,
+				119F1C29CB97CD4C02AA8C23 /* OnlineReadinessUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -981,6 +1067,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]" = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphonesimulator*]" = "-";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1041,6 +1129,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = JPTS6M4T5B;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Toti/Support/Info.plist;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
@@ -1086,6 +1175,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = JPTS6M4T5B;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Toti/Support/Info.plist;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
@@ -1138,6 +1228,8 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGNING_ALLOWED[sdk=iphonesimulator*]" = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphonesimulator*]" = "-";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1244,6 +1336,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		96F9E486EDBA8FFAE1FFC6E8 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.55.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BAD71532ED01EBA4143B5CA4 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96F9E486EDBA8FFAE1FFC6E8 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8BD98E1D406020DF9041193D /* Project object */;
 }

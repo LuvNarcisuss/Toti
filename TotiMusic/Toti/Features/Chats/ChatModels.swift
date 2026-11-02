@@ -1,5 +1,13 @@
 import Foundation
 
+struct ChatAttachment: Codable, Equatable {
+    let path: String
+    let filename: String
+    let kind: String
+    let byteCount: Int
+    let contentType: String
+}
+
 struct ChatMessage: Identifiable, Codable {
     let id: String
     let author: String
@@ -8,6 +16,7 @@ struct ChatMessage: Identifiable, Codable {
     let isOwn: Bool
     var createdAt: Date? = nil
     var isPending: Bool? = nil
+    var attachment: ChatAttachment? = nil
 }
 
 struct MusicConversation: Identifiable, Hashable {

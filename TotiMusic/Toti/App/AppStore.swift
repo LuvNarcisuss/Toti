@@ -11,14 +11,73 @@ final class AppStore: ObservableObject {
   @Published var notice: AppNotice?
   @Published private(set) var accountExitRevision = 0
   private var sessionActive = false
+  let isOnlineMode: Bool
+  @Published var onlineEditorialPosts: [OnlineEditorialPost] = []
+  @Published var onlineEditorialError: String?
+  @Published var onlineCommunityRooms: [PartyRoom] = []
+  @Published var onlineCommunityRoomsError: String?
+  @Published var onlineReadError: String?
+  @Published var onlineHasMore = false
+  var onlineRecords: [String: [OnlineRecord]] = [:]
+  var onlineCursors: [String: String] = [:]
+  var onlineThreadPages: [String: Int] = [:]
+  var onlineThreadStarts: [String: String] = [:]
+  var onlineThreadParentKinds: [String: String] = [:]
+  var onlineAcknowledgedVersions: [UUID: Int] = [:]
+  var onlineReadInProgress = false
+  var onlineMutationInProgress = false
+  var onlineRefreshTask: Task<Void, Never>?
+  var onlineAccountObservation: AnyCancellable?
+  var onlineProjectedAccountID: UUID?
+  var onlineProjectedGeneration: Int?
+
+  func adoptOnlineLibrary(_ value: LocalLibrary) {
+    library = value
+    isLoaded = true
+    sessionActive = TotiBackend.shared.isAuthenticated
+    loadError = nil
+  }
+
+  func clearOnlineState() {
+    onlineRefreshTask?.cancel()
+    onlineRefreshTask = nil
+    onlineRecords = [:]
+    onlineEditorialPosts = []
+    onlineEditorialError = nil
+    onlineCommunityRooms = []
+    onlineCommunityRoomsError = nil
+    onlineCursors = [:]
+    onlineThreadPages = [:]
+    onlineThreadStarts = [:]
+    onlineThreadParentKinds = [:]
+    onlineAcknowledgedVersions = [:]
+    onlineHasMore = false
+    onlineReadError = nil
+    onlineProjectedAccountID = nil
+    onlineProjectedGeneration = nil
+    library = LocalLibrary()
+    sessionActive = false
+    isLoaded = false
+    ownerAvatarCache = nil
+    ownerAvatarStamp = nil
+    wallet.clearAccountMemory()
+    notice = nil
+    lastSaveError = nil
+  }
+
+  func finishOnlineExit() {
+    clearOnlineState()
+    accountExitRevision += 1
+  }
   var canEndSession: Bool {
-    isLoaded && sessionActive && !isBusy && !shortsSocial.isSaving && !wallet.isBusy
+    isLoaded && sessionActive && !isBusy && !onlineMutationInProgress && !shortsSocial.isSaving && !wallet.isBusy
   }
   private(set) var lastSaveError: String?
   private var ownerAvatarCache: UIImage?
   private var ownerAvatarStamp: Date?
 
   func giftUnavailableReason(_ context: GiftContext) -> String? {
+    if isOnlineMode { return "Gifts are unavailable until server payment verification is configured." }
     guard isLoaded, sessionActive, !isBusy else { return "Please reopen the wallet before giving a gift." }
     guard context.isValid, !context.recipients.contains(where: { isCreatorBlocked($0.id) }) else {
       return "This recipient is unavailable. No diamonds were spent."
@@ -55,7 +114,7 @@ final class AppStore: ObservableObject {
   private var refreshingLive = false
   private var refreshingShorts = false
   private let repository: LocalLibraryRepository
-  var isBusy: Bool { busyMessage != nil }
+  var isBusy: Bool { busyMessage != nil || onlineMutationInProgress || onlineReadInProgress }
   // Retired content is retained only for private-library decoding.
   var musicVideos: [LocalVideo] { [] }
   var discoveryVideos: [LocalVideo] { feed(surface: .live, orderedBy: liveVideoOrder) }
@@ -121,20 +180,34 @@ final class AppStore: ObservableObject {
   }
 
   init(storageRoot suppliedRoot: URL? = nil) {
+    isOnlineMode = suppliedRoot == nil && TotiBackendConfiguration.usesOnlineBackend
     liveVideoOrder = MusicVideoCatalog.shuffledDiscoveryIDs(for: .live)
     shortsVideoOrder = MusicVideoCatalog.shuffledDiscoveryIDs(for: .shorts)
-    let root = suppliedRoot ?? URL.applicationSupportDirectory.appendingPathComponent(TotiIdentity.storageDirectory, isDirectory: true)
+    // Online mode never initializes the legacy repository against its archive path.
+    let root = suppliedRoot ?? URL.applicationSupportDirectory.appendingPathComponent(
+      isOnlineMode ? "TotiOnline/UnavailableLocalStore" : TotiIdentity.storageDirectory, isDirectory: true)
     storageRoot = root
     viewingHistory = VideoViewingHistory(root: root)
     repository = LocalLibraryRepository(root: root)
     shortsSocial = ShortsInteractionStore(root: root)
+    wallet.requiresServerVerification = isOnlineMode
+    wallet.allowsLocalStoreKitTesting = isOnlineMode
+    if isOnlineMode {
+      onlineAccountObservation = TotiBackend.shared.$generation.dropFirst().sink { [weak self] _ in
+        guard let self else { return }
+        let wasSignedIn = self.onlineProjectedAccountID != nil
+        self.clearOnlineState()
+        if wasSignedIn && !TotiBackend.shared.isTransitioning { self.accountExitRevision += 1 }
+      }
+    }
     socialObservation = shortsSocial.objectWillChange.sink { [weak self] _ in
       self?.objectWillChange.send()
     }
   }
 
-  // Records explicit consent; this does not authenticate an online account.
+  // Legacy local-only agreement path. Online mode uses the real Guest enrollment path in EntryController.
   func acceptUserAgreement() async -> Bool {
+    if isOnlineMode { noteSaveError("Use the Guest login action to authenticate online."); return false }
     var updated = library
     updated.agreementAcceptance = AgreementAcceptance(
       version: TotiUserAgreement.version, acceptedAt: Date())
@@ -148,6 +221,7 @@ final class AppStore: ObservableObject {
 
   /// Ends only the local session. No online credentials or remote session exist.
   func logOut() async -> Bool {
+    if isOnlineMode { return await signOutOnline() }
     guard canEndSession else { return false }
     busyMessage = "Signing out…"
     defer { busyMessage = nil }
@@ -163,6 +237,7 @@ final class AppStore: ObservableObject {
 
   /// Explicitly confirmed by the settings screen; never called on simple logout.
   func deleteLocalAccount() async -> Bool {
+    if isOnlineMode { return await deleteOnlineAccount() }
     guard canEndSession else { return false }
     guard !wallet.hasUnfinishedTransactions else {
       notice = AppNotice(title: "Purchase pending", message: "Please wait until the purchase is resolved before deleting your data.")
@@ -205,6 +280,7 @@ final class AppStore: ObservableObject {
   }
 
   func load() async {
+    if isOnlineMode { return }
     guard !isBusy, !isLoaded else { return }
     busyMessage = "Opening your library…"
     defer { busyMessage = nil }
@@ -365,6 +441,7 @@ final class AppStore: ObservableObject {
   }
 
   func saveProfile(_ profile: LocalProfile, avatarJPEG: Data? = nil) async -> Bool {
+    if isOnlineMode { return await saveOnlineProfile(profile, avatarJPEG: avatarJPEG) }
     lastSaveError = nil
     var profile = profile
     profile.displayName = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -401,8 +478,19 @@ final class AppStore: ObservableObject {
     return saved
   }
 
-  /// The signed-in dancer's saved portrait, when one has been chosen on this device.
+  /// Shared current-user avatar source for Me, profile editing and room seats.
+  var ownerAvatarAsset: String {
+    isOnlineMode ? (onlineOwnerProfile?.avatarAsset ?? "TotiMark")
+      : MusicPhotography.creatorAvatar(for: "local-owner")
+  }
+
+  func configureOwnerAvatar(_ photo: TotiPhoto) {
+    photo.configure(asset: ownerAvatarAsset)
+    if !isOnlineMode, let image = ownerAvatarImage() { photo.image = image }
+  }
+
   func ownerAvatarImage() -> UIImage? {
+    if isOnlineMode { return nil }
     guard library.profile.hasCustomAvatar == true else { return nil }
     let url = storageRoot.appendingPathComponent("Media/profile-avatar.jpg")
     guard let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
@@ -416,6 +504,7 @@ final class AppStore: ObservableObject {
   }
 
   func saveRoom(_ draft: VoiceRoomDraft) async -> Bool {
+    if isOnlineMode { return await saveOnlineModel(draft, action: "room.save", id: draft.id) }
     var draft = draft
     draft.title = draft.title.trimmingCharacters(in: .whitespacesAndNewlines)
     guard !draft.title.isEmpty, draft.title.count <= 60, draft.description.count <= 240,
@@ -430,6 +519,7 @@ final class AppStore: ObservableObject {
   }
 
   func deleteRoom(_ id: UUID) async -> Bool {
+    if isOnlineMode { return await performOnline(action: "room.delete", id: id) }
     var updated = library
     updated.roomDrafts.removeAll { $0.id == id }
     let saved = await commit(updated)
@@ -438,6 +528,7 @@ final class AppStore: ObservableObject {
   }
 
   func saveMessageDraft(_ text: String) async -> Bool {
+    if isOnlineMode { noteSaveError("Open a conversation before saving a draft."); return false }
     guard text.count <= 2_000 else { return false }
     var updated = library
     updated.messageDraft = text
@@ -445,6 +536,7 @@ final class AppStore: ObservableObject {
   }
 
   var chatConversations: [MusicConversation] {
+    if isOnlineMode { return onlineConversations }
     let state = library.creatorState ?? CreatorLocalState()
     var records = state.conversations ?? [:]
     // Surface existing drafts from versions that did not store inbox entries.
@@ -507,6 +599,7 @@ final class AppStore: ObservableObject {
 
   /// Saves a group on this device. The other people are not notified.
   func createChatGroup(with people: [MusicConversation]) async -> MusicConversation? {
+    if isOnlineMode { return await createOnlineGroup(people) }
     guard isLoaded, !isBusy, people.count >= 2 else { return nil }
     let names = people.map { $0.name.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
     guard names.count >= 2, CreationValidation.isEnglish(names.joined(separator: ", ")) else {
@@ -533,10 +626,12 @@ final class AppStore: ObservableObject {
   }
 
   func messages(for conversation: MusicConversation) -> [ChatMessage] {
-    chatConversations.first { $0.id == conversation.id }?.messages ?? conversation.messages
+    if isOnlineMode { return onlineConversations.first { $0.id == conversation.id }?.messages ?? [] }
+    return chatConversations.first { $0.id == conversation.id }?.messages ?? conversation.messages
   }
 
   func followsChatPartner(_ conversation: MusicConversation) -> Bool {
+    if isOnlineMode { return conversation.creator.map { isFollowingCreator($0.id) } ?? false }
     if let creator = conversation.creator { return isFollowingCreator(creator.id) }
     return library.chatState?.followingOverrides?[conversation.id]
       ?? MusicChatCatalog.initialMutualIDs.contains(conversation.id)
@@ -544,6 +639,7 @@ final class AppStore: ObservableObject {
 
   /// Catalog friends follow the chat relationship. Video creators follow the creator list.
   func followsProfile(_ creator: CreatorProfile) -> Bool {
+    if isOnlineMode { return isFollowingCreator(creator.id) }
     if let person = MusicChatCatalog.people.first(where: { $0.id == creator.id }) {
       return followsChatPartner(person)
     }
@@ -553,6 +649,7 @@ final class AppStore: ObservableObject {
   /// Use the same incoming relationship IDs as Chats; following alone is not mutual.
   func isMutualProfile(_ creator: CreatorProfile) -> Bool {
     guard !creator.isLocalOwner, !isCreatorBlocked(creator.id) else { return false }
+    if isOnlineMode { return isFollowingCreator(creator.id) && onlineFollowerIDs.contains(creator.id.lowercased()) }
     if let person = MusicChatCatalog.people.first(where: { $0.id == creator.id }) {
       return isMutualChat(person)
     }
@@ -561,6 +658,7 @@ final class AppStore: ObservableObject {
   }
 
   func toggleProfileFollow(_ creator: CreatorProfile) async {
+    if isOnlineMode { await toggleCreatorFollow(creator.id); return }
     guard !isCreatorBlocked(creator.id) else { return }
     if let person = MusicChatCatalog.people.first(where: { $0.id == creator.id }) {
       await toggleChatFollow(person)
@@ -570,6 +668,7 @@ final class AppStore: ObservableObject {
   }
 
   func chatPartnerFollowsMe(_ conversation: MusicConversation) -> Bool {
+    if isOnlineMode { return conversation.creator.map { onlineFollowerIDs.contains($0.id.lowercased()) } ?? false }
     // Unknown creator relationships remain false until an authoritative service updates them.
     let followers = library.chatState?.followerIDs ?? MusicChatCatalog.initialFollowerIDs
     return followers.contains(conversation.id)
@@ -580,6 +679,7 @@ final class AppStore: ObservableObject {
   }
 
   func canSendChatMessage(_ conversation: MusicConversation) -> Bool {
+    if isOnlineMode { return onlineConversations.contains { $0.id == conversation.id } && !isBusy }
     if conversation.kind == .activity { return false }
     if isCreatorBlocked(conversation.id) { return false }
     if let creator = conversation.creator, isCreatorBlocked(creator.id) { return false }
@@ -592,6 +692,7 @@ final class AppStore: ObservableObject {
   }
 
   func toggleChatFollow(_ conversation: MusicConversation) async {
+    if isOnlineMode { if let creator = conversation.creator { await toggleCreatorFollow(creator.id) }; return }
     if let creator = conversation.creator {
       await toggleCreatorFollow(creator.id)
       return
@@ -610,6 +711,7 @@ final class AppStore: ObservableObject {
 
   /// Local outbox only: persistence does not imply remote delivery or a read receipt.
   func sendChatMessage(_ text: String, to conversation: MusicConversation) async -> Bool {
+    if isOnlineMode { return await sendOnlineMessage(text, conversation: conversation) }
     guard isLoaded, !isBusy else { return false }
     lastSaveError = nil
     let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -654,6 +756,7 @@ final class AppStore: ObservableObject {
   }
 
   func chatDraft(for conversation: MusicConversation) -> String? {
+    if isOnlineMode { return onlinePreference(conversation.id)?.string("draft") }
     if let creator = conversation.creator { return library.creatorState?.messageDrafts[creator.id] }
     return library.chatState?.drafts[conversation.id]
   }
@@ -672,6 +775,7 @@ final class AppStore: ObservableObject {
 
   @discardableResult
   func openCreatorConversation(_ creator: CreatorProfile) async -> Bool {
+    if isOnlineMode { return await openOnlineConversation(creator) }
     guard !isCreatorBlocked(creator.id) else { return false }
     var updated = library
     var state = updated.creatorState ?? CreatorLocalState()
@@ -683,20 +787,29 @@ final class AppStore: ObservableObject {
   }
 
   func chatUnreadCount(_ conversation: MusicConversation) -> Int {
+    if isOnlineMode { return onlinePreference(conversation.id)?.bool("read") == false ? 1 : 0 }
     if let marked = library.chatState?.unreadMarks?[conversation.id] { return marked }
     if library.chatState?.readIDs.contains(conversation.id) == true { return 0 }
     return conversation.initialUnread
   }
 
   func isChatPinned(_ conversation: MusicConversation) -> Bool {
-    library.chatState?.pinOverrides[conversation.id] ?? conversation.initiallyPinned
+    if isOnlineMode { return onlinePreference(conversation.id)?.bool("pinned") == true }
+    return library.chatState?.pinOverrides[conversation.id] ?? conversation.initiallyPinned
   }
 
   func isChatMuted(_ conversation: MusicConversation) -> Bool {
-    library.chatState?.mutedIDs?.contains(conversation.id) == true
+    if isOnlineMode { return onlinePreference(conversation.id)?.bool("muted") == true }
+    return library.chatState?.mutedIDs?.contains(conversation.id) == true
   }
 
   func markChatRead(_ id: String? = nil) async {
+    if isOnlineMode {
+      for value in id.map({ [$0] }) ?? onlineConversations.map(\.id) {
+        _ = await saveOnlinePreference(value, payload: ["read": .bool(true)])
+      }
+      return
+    }
     var updated = library
     var state = updated.chatState ?? ChatLocalState()
     let ids = id.map { Set([$0]) } ?? Set(chatConversations.map(\.id))
@@ -712,6 +825,7 @@ final class AppStore: ObservableObject {
 
   /// Forces a local unread count of 1. This does not deliver a message.
   func markChatUnread(_ conversation: MusicConversation) async {
+    if isOnlineMode { _ = await saveOnlinePreference(conversation.id, payload: ["read": .bool(false)]); return }
     var updated = library
     var state = updated.chatState ?? ChatLocalState()
     var marks = state.unreadMarks ?? [:]
@@ -723,6 +837,7 @@ final class AppStore: ObservableObject {
   }
 
   func toggleChatPin(_ conversation: MusicConversation) async {
+    if isOnlineMode { _ = await saveOnlinePreference(conversation.id, payload: ["pinned": .bool(!isChatPinned(conversation))]); return }
     var updated = library
     var state = updated.chatState ?? ChatLocalState()
     state.pinOverrides[conversation.id] = !isChatPinned(conversation)
@@ -731,6 +846,7 @@ final class AppStore: ObservableObject {
   }
 
   func toggleChatMute(_ conversation: MusicConversation) async {
+    if isOnlineMode { _ = await saveOnlinePreference(conversation.id, payload: ["muted": .bool(!isChatMuted(conversation))]); return }
     var updated = library
     var state = updated.chatState ?? ChatLocalState()
     var muted = state.mutedIDs ?? []
@@ -746,6 +862,7 @@ final class AppStore: ObservableObject {
 
   /// Hides the row on this device. The conversation is not removed from another account.
   func hideChat(_ conversation: MusicConversation) async {
+    if isOnlineMode { _ = await saveOnlinePreference(conversation.id, payload: ["hidden": .bool(true)]); return }
     var updated = library
     var state = updated.chatState ?? ChatLocalState()
     var hidden = state.hiddenChatIDs ?? []
@@ -757,6 +874,7 @@ final class AppStore: ObservableObject {
   }
 
   func saveChatDraft(_ text: String, conversationID: String) async -> Bool {
+    if isOnlineMode { return await saveOnlinePreference(conversationID, payload: ["draft": .string(text)]) }
     let known = MusicChatCatalog.conversations.contains { $0.id == conversationID }
       || (library.chatState?.createdGroups ?? []).contains { $0.id == conversationID }
     guard text.count <= 2_000, known else { return false }
@@ -780,6 +898,7 @@ final class AppStore: ObservableObject {
   }
 
   func statistics(for creator: CreatorProfile) -> CreatorStatistics {
+    if isOnlineMode { return onlineStatistics(creator) }
     let posts = loungePosts(for: creator.id)
     let totals = (likes: posts.filter { (library.lounge?.likedPostIDs ?? []).contains($0.id) }.count,
                   saves: posts.filter { (library.lounge?.savedPostIDs ?? []).contains($0.id) }.count)
@@ -799,10 +918,15 @@ final class AppStore: ObservableObject {
   }
 
   func isFollowingCreator(_ id: String) -> Bool {
-    library.creatorState?.followedIDs.contains(id) == true
+    library.creatorState?.followedIDs.contains(isOnlineMode ? id.lowercased() : id) == true
   }
 
   func toggleCreatorFollow(_ id: String) async {
+    if isOnlineMode {
+      guard let target = UUID(uuidString: id) else { return }
+      _ = await performOnline(action: "follow.set", id: target, payload: ["enabled": .bool(!isFollowingCreator(id))])
+      return
+    }
     guard isLoaded, !isBusy, !isCreatorBlocked(id) else { return }
     var updated = library
     var state = updated.creatorState ?? CreatorLocalState()
@@ -816,6 +940,12 @@ final class AppStore: ObservableObject {
   }
 
   func saveCreatorMessageDraft(_ text: String, creator: CreatorProfile) async -> Bool {
+    if isOnlineMode {
+      guard let conversation = onlineConversations.first(where: { $0.creator?.id == creator.id }) else {
+        noteSaveError("Open this conversation before saving a draft."); return false
+      }
+      return await saveOnlinePreference(conversation.id, payload: ["draft": .string(text)])
+    }
     guard !isCreatorBlocked(creator.id), text.count <= 2_000 else { return false }
     var updated = library
     var state = updated.creatorState ?? CreatorLocalState()
@@ -828,11 +958,13 @@ final class AppStore: ObservableObject {
   }
 
   func isCreatorBlocked(_ id: String) -> Bool {
-    library.contentSafety?.blockedCreators[id] != nil
+    library.contentSafety?.blockedCreators[isOnlineMode ? id.lowercased() : id] != nil
   }
 
   func isContentReported(_ id: String, kind: ContentSafetyTarget.Kind) -> Bool {
-    library.contentSafety?.reports.contains { $0.contentID == id && $0.kind == kind } == true
+    library.contentSafety?.reports.contains {
+      (isOnlineMode ? $0.contentID.lowercased() == id.lowercased() : $0.contentID == id) && $0.kind == kind
+    } == true
   }
 
   /// A report hides that film on its own surface. A block hides every film from that creator.
@@ -871,6 +1003,7 @@ final class AppStore: ObservableObject {
 
   /// Removes every saved reason for one item so it can appear again. Media stays on device.
   func removeReports(contentID: String, kind: ContentSafetyTarget.Kind) async -> Bool {
+    if isOnlineMode { noteSaveError("Submitted reports remain available for review."); return false }
     var updated = library
     var safety = updated.contentSafety ?? ContentSafetyState()
     let before = safety.reports.count
@@ -881,6 +1014,10 @@ final class AppStore: ObservableObject {
   }
 
   func blockCreator(_ creator: CreatorProfile) async -> Bool {
+    if isOnlineMode {
+      guard let id = UUID(uuidString: creator.id) else { noteSaveError("This account is unavailable."); return false }
+      return await performOnline(action: "block.set", id: id, payload: ["enabled": .bool(true)])
+    }
     guard !creator.isLocalOwner, !isBusy else { return false }
     var updated = library
     var safety = updated.contentSafety ?? ContentSafetyState()
@@ -896,6 +1033,10 @@ final class AppStore: ObservableObject {
   }
 
   func unblockCreator(_ id: String) async -> Bool {
+    if isOnlineMode {
+      guard let target = UUID(uuidString: id) else { return false }
+      return await performOnline(action: "block.set", id: target, payload: ["enabled": .bool(false)])
+    }
     var updated = library
     var safety = updated.contentSafety ?? ContentSafetyState()
     safety.blockedCreators[id] = nil
@@ -906,6 +1047,7 @@ final class AppStore: ObservableObject {
   func saveContentReport(
     _ target: ContentSafetyTarget, reason: ContentReportReason, details: String
   ) async -> Bool {
+    if isOnlineMode { return await reportOnline(target, reason: reason, details: details) }
     let text = details.trimmingCharacters(in: .whitespacesAndNewlines)
     lastSaveError = nil
     guard text.count <= 500,
@@ -942,6 +1084,7 @@ final class AppStore: ObservableObject {
 
   /// Copy new files first, commit their references atomically, then release unused app-owned copies.
   func commit(_ updated: LocalLibrary, permitsEntry: Bool = false) async -> Bool {
+    if isOnlineMode { noteSaveError("This action requires an online service operation."); return false }
     guard isLoaded, !isBusy, sessionActive || permitsEntry else { return false }
     lastSaveError = nil
     busyMessage = "Saving…"

@@ -1,0 +1,22 @@
+[
+  {
+    "time": "2026-10-27T02:44:18.807091+00:00",
+    "event": "mode",
+    "offline": true
+  },
+  {
+    "time": "2026-10-27T02:44:49.855429+00:00",
+    "event": "mode",
+    "offline": false
+  },
+  {
+    "time": "2026-10-27T02:45:25.842712+00:00",
+    "event": "mode",
+    "offline": true
+  },
+  {
+    "time": "2026-10-27T02:46:10.074009+00:00",
+    "event": "mode",
+    "offline": false
+  }
+]

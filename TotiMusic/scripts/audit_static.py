@@ -1,18 +1,19 @@
 """Inspect files and metadata only. Does not compile, typecheck, launch or test application behavior."""
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from asset_paths import ASSETS, asset_file
+from asset_paths import CACHE, asset_file, MANIFEST
+from remote_assets import fetch_resources, runtime_urls
 from prepare_asset_catalog import generate_catalog
 import json,plistlib,re,hashlib,subprocess,xml.etree.ElementTree as ET
 from PIL import Image
 r=Path(__file__).resolve().parents[1];src=r/'Toti';issues=[];checks={}
 catalog_tmp=TemporaryDirectory(prefix='toti-static-catalog-');assets=Path(catalog_tmp.name)/'FlatAssets.xcassets'
-generate_catalog(ASSETS,r/'Configuration/AssetCatalog.json',assets)
+fetch_resources(MANIFEST, runtime_urls(MANIFEST, r/'Configuration/AssetCatalog.json'), CACHE)
+generate_catalog(CACHE,r/'Configuration/AssetCatalog.json',assets)
 def note(condition,message):
  if not condition:issues.append(message)
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
-note(not any(p.is_dir() for p in ASSETS.iterdir()),'Source Assets must contain files only')
-jsons=list(r.rglob('*.json'))+list((r.parent/'Assets').rglob('*.json'))+list((r.parent/'docs').rglob('*.json'))
+jsons=list(r.rglob('*.json'))+list(CACHE.rglob('*.json'))+list((r.parent/'docs').rglob('*.json'))
 for p in jsons:
  try:json.loads(p.read_text())
  except Exception as e:issues.append(str(p.relative_to(r.parent))+': '+str(e))
@@ -46,7 +47,7 @@ checks['exportedIconPadding']='All generated exported silhouettes have transpare
 media=json.loads(asset_file('Design/MusicSources/manifest.json').read_text());checks['videoCount']=len(media);checks['liveCount']=sum(x['surface']=='live' for x in media);checks['shortsCount']=sum(x['surface']=='shorts' for x in media)
 for key in ['uuid','assetName','runtimeSHA256']:note(len({x[key] for x in media})==len(media),'Duplicate video '+key)
 for x in media:
- f=asset_file(f'MusicMedia/{x["assetName"]}.mp4');cover=f.with_suffix('.jpg');note(digest(f)==x['runtimeSHA256'],'Video hash mismatch '+x['assetName']);note(digest(cover)==x['coverSHA256'],'Cover hash mismatch '+x['assetName'])
+ f=asset_file(f'MusicMedia/{x["assetName"]}.mp4');cover=asset_file(f'MusicMedia/{x["assetName"]}.jpg');note(digest(f)==x['runtimeSHA256'],'Video hash mismatch '+x['assetName']);note(digest(cover)==x['coverSHA256'],'Cover hash mismatch '+x['assetName'])
  info=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(f)]));note(abs(float(info['format']['duration'])-x['duration'])<.1,'Duration changed '+x['assetName']);note(sum(v['codec_type']=='audio' for v in info['streams'])==x['audioTracks'],'Audio mapping mismatch')
  note(len(x['inspectionTimes'])==3 and 'visualReview' in x,'Missing frame review')
 checks['silentRecordings']=sum(x['audioTracks']==0 for x in media)
@@ -59,7 +60,7 @@ for illegal in ['import SwiftUI','UIHostingController','UIImage(systemName:','co
 note(not list(src.rglob('*.m')),'Objective-C source');note(not (src/'Resources/DanceMedia').exists(),'Old dance videos remain')
 pbx=(r/'Toti.xcodeproj/project.pbxproj').read_text();note('com.toti.music' in pbx,'Bundle identity missing');note('IPHONEOS_DEPLOYMENT_TARGET = 16.0' in pbx,'Deployment target missing');note('SWIFT_VERSION = 5.0' in pbx,'Swift mode missing');note('DEVELOPMENT_TEAM' not in pbx,'Inherited signing team');note('MediaCreditsController.swift' in pbx,'New controller excluded');note('MediaCredits.json' in pbx,'Credits resource excluded')
 app=(src/'App/TotiApplication.swift').read_text();note(all(label in app for label in ['"Lounge"', '"Voice"', '"Notebook"', '"Chats"', '"Me"']),'Five-tab identity changed')
-checks['swiftFiles']=len(list(src.rglob('*.swift')));checks['runtimeResourceBytes']=sum(p.stat().st_size for p in assets.rglob('*') if p.is_file()) + sum((ASSETS/name).stat().st_size for name in ['TetoRhythm-Display.ttf','TetoRhythm-Text.ttf','TermsOfService.html','PrivacyPolicy.html','MediaCredits.json'])
+checks['swiftFiles']=len(list(src.rglob('*.swift')));checks['runtimeResourceBytes']=sum(p.stat().st_size for p in assets.rglob('*') if p.is_file()) + sum((CACHE/name).stat().st_size for name in ['TetoRhythm-Display.ttf','TetoRhythm-Text.ttf','MediaCredits.json'])
 checks['verificationScope']='Static source/resource/configuration inspection only; no build, typecheck, app execution or tests.'
-report={'date':'2026-10-26','checks':checks,'issues':issues}
+report={'date':__import__('datetime').date.today().isoformat(),'checks':checks,'issues':issues}
 (r.parent/'docs/static-audit.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2));raise SystemExit(bool(issues))

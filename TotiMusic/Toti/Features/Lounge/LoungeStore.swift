@@ -4,10 +4,25 @@ import Foundation
 extension AppStore {
     var loungePosts: [LoungePost] {
         var state = library.lounge ?? LoungeState()
-        state.posts += LoungeState.editorialPosts
+        if !isOnlineMode { state.posts += LoungeState.editorialPosts }
         let hidden = Set((library.contentSafety?.reports ?? []).filter { $0.kind == .post }.compactMap { UUID(uuidString: $0.contentID) })
         return state.visiblePosts(blockedAuthorIDs: Set(library.contentSafety?.blockedCreators.keys.map { $0 } ?? []), hiddenPostIDs: hidden)
             .map(currentLoungeAuthor).sorted { $0.createdAt > $1.createdAt }
+    }
+
+    func loungeLikeCount(_ id: UUID) -> Int {
+        if isOnlineMode { return onlineRecords["post"]?.first { $0.id == id }?.integer("like_count") ?? 0 }
+        return library.lounge?.likedPostIDs.contains(id) == true ? 1 : 0
+    }
+
+    func loungeSaveCount(_ id: UUID) -> Int {
+        if isOnlineMode { return onlineRecords["post"]?.first { $0.id == id }?.integer("save_count") ?? 0 }
+        return library.lounge?.savedPostIDs.contains(id) == true ? 1 : 0
+    }
+
+    func loungeCommentCount(_ id: UUID) -> Int {
+        if isOnlineMode { return onlineRecords["post"]?.first { $0.id == id }?.integer("comment_count") ?? 0 }
+        return loungeComments(for: id).count
     }
 
     var loungeDrafts: [LoungePost] {
@@ -25,7 +40,8 @@ extension AppStore {
     }
 
     var loungeVoiceRooms: [PartyRoom] {
-        (library.roomDrafts.map(MusicRoomCatalog.room(from:)) + MusicRoomCatalog.rooms).filter { room in
+        if isOnlineMode { return onlineRooms }
+        return (library.roomDrafts.map(MusicRoomCatalog.room(from:)) + MusicRoomCatalog.rooms).filter { room in
             room.type == .voice && !isPartyReported(room.id) && !isCreatorBlocked("party:" + room.id)
                 && !room.participants.contains { isCreatorBlocked($0.id) }
         }
@@ -33,11 +49,17 @@ extension AppStore {
 
     private func currentLoungeAuthor(_ post: LoungePost) -> LoungePost {
         var post = post
-        if post.author.isLocalOwner { post.author = .signedIn(library.profile) }
+        if post.author.isLocalOwner && !isOnlineMode { post.author = .signedIn(library.profile) }
         return post
     }
 
     func saveLoungePost(_ post: LoungePost, asDraft: Bool) async -> Bool {
+        if isOnlineMode {
+            if let error = post.validationError(asDraft: asDraft) { noteSaveError(error); return false }
+            var value = post
+            value.isDraft = asDraft
+            return await saveOnlineModel(value, action: "post.save", id: post.id)
+        }
         guard post.author.isLocalOwner, !post.isEditorial else { noteSaveError("Only your own posts can be edited."); return false }
         if let error = post.validationError(asDraft: asDraft) { noteSaveError(error); return false }
         var updated = library
@@ -57,6 +79,7 @@ extension AppStore {
     }
 
     func deleteLoungePost(_ id: UUID) async -> Bool {
+        if isOnlineMode { return await performOnline(action: "post.delete", id: id) }
         var updated = library
         guard var state = updated.lounge, state.posts.contains(where: { $0.id == id && $0.author.isLocalOwner }) else { return false }
         state.posts.removeAll { $0.id == id }
@@ -68,6 +91,7 @@ extension AppStore {
     }
 
     func toggleLoungeLike(_ id: UUID) async -> Bool {
+        if isOnlineMode { return await performOnline(action: "reaction.set", id: id, payload: ["kind": .string("like"), "enabled": .bool(library.lounge?.likedPostIDs.contains(id) != true)]) }
         guard loungePost(id) != nil else { noteSaveError("This post is no longer available."); return false }
         var updated = library
         var state = updated.lounge ?? LoungeState()
@@ -77,6 +101,7 @@ extension AppStore {
     }
 
     func toggleLoungeSave(_ id: UUID) async -> Bool {
+        if isOnlineMode { return await performOnline(action: "reaction.set", id: id, payload: ["kind": .string("save"), "enabled": .bool(library.lounge?.savedPostIDs.contains(id) != true)]) }
         guard loungePost(id) != nil else { noteSaveError("This post is no longer available."); return false }
         var updated = library
         var state = updated.lounge ?? LoungeState()
@@ -86,6 +111,11 @@ extension AppStore {
     }
 
     func addLoungeComment(_ text: String, postID: UUID) async -> Bool {
+        if isOnlineMode {
+            if let error = LoungeComment.validationError(text) { noteSaveError(error); return false }
+            return await performOnline(action: "comment.save", id: retryStableEntity(action: "comment.save", context: postID.uuidString, text: text),
+              payload: ["postID": .string(postID.uuidString), "body": .string(text)])
+        }
         if let error = LoungeComment.validationError(text) { noteSaveError(error); return false }
         guard loungePost(postID) != nil else { noteSaveError("This post is no longer available."); return false }
         var updated = library
@@ -96,6 +126,7 @@ extension AppStore {
     }
 
     func deleteLoungeComment(_ id: UUID) async -> Bool {
+        if isOnlineMode { return await performOnline(action: "comment.delete", id: id) }
         var updated = library
         guard var state = updated.lounge, state.comments.contains(where: { $0.id == id && $0.author.isLocalOwner }) else { return false }
         state.comments.removeAll { $0.id == id }

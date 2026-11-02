@@ -113,6 +113,8 @@ struct WalletLedger: Codable {
     var diamonds: Int
     var activity: [WalletActivity]
     var creditedTransactionIDs: [String]
+    // Optional for existing ledgers. Local Xcode delivery identities outlive the visible history.
+    var localStoreKitCredits: [LocalStoreKitCredit]? = nil
 
     static let empty = WalletLedger(diamonds: 0, activity: [], creditedTransactionIDs: [])
 
@@ -124,6 +126,8 @@ struct WalletLedger: Codable {
             && creditedTransactionIDs.allSatisfy { !$0.isEmpty }
             && Set(creditedTransactionIDs).count == creditedTransactionIDs.count
             && Set(activity.map(\.id)).count == activity.count
+            && (localStoreKitCredits?.allSatisfy(\.isValid) ?? true)
+            && Set(localStoreKitCredits?.map(\.storageID) ?? []).count == (localStoreKitCredits?.count ?? 0)
             && activity.allSatisfy { item in
                 guard item.amount > 0, !item.id.isEmpty, !item.title.isEmpty, item.currency == .diamonds else {
                     return false
@@ -137,5 +141,34 @@ struct WalletLedger: Codable {
                 }
                 return (item.kind == nil || item.kind == "credit") && creditedTransactionIDs.contains(item.id)
             }
+    }
+}
+
+/// Xcode can reuse a numeric transaction ID after its test history is cleared.
+/// Legacy activity supplies date and amount; newly delivered credits also retain product and quantity.
+struct LocalStoreKitCredit: Codable {
+    let transactionID: String
+    let productID: String?
+    let quantity: Int?
+    let amount: Int
+    let date: Date
+
+    private var milliseconds: Double { (date.timeIntervalSince1970 * 1000).rounded() }
+    var isValid: Bool {
+        !transactionID.isEmpty && amount > 0 && milliseconds.isFinite
+            && abs(milliseconds) < 1_000_000_000_000_000
+            && (productID == nil || productID?.isEmpty == false)
+            && (quantity == nil || (quantity ?? 0) > 0)
+    }
+    var storageID: String {
+        // Length prefixes avoid delimiter ambiguity; millisecond precision survives JSON round trips.
+        let product = productID ?? ""
+        let time = isValid ? String(Int64(milliseconds)) : "invalid"
+        return "xcode-v1:\(transactionID.count):\(transactionID):\(product.count):\(product):\(quantity ?? 0):\(amount):\(time)"
+    }
+    func matches(_ other: LocalStoreKitCredit) -> Bool {
+        transactionID == other.transactionID && milliseconds == other.milliseconds && amount == other.amount
+            && (productID == nil || productID == other.productID)
+            && (quantity == nil || quantity == other.quantity)
     }
 }

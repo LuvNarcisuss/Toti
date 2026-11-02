@@ -1,0 +1,21 @@
+# Original entry restoration and online PDF agreements
+
+Later entry update on 2026-10-28: every cold launch now shows the original welcome/login before explicit Log in reuses the stored guest. This supersedes automatic navigation to tabs in the earlier restoration results below; secure session persistence is retained. See entry-launch-repair.md.
+
+Current authentication verification: session-persistence-repair.md records the later unsigned-build Keychain failure, signed repair and actual live login/relaunch acceptance. Earlier build and UI-only evidence below is historical within its original scope.
+Decision: on 2026-10-28 the user requested the original startup/login design, one Log in button, one agreement sentence with a checkbox and online PDF links, plus an agreement-confirmation dialog when login is tapped unchecked.
+
+The coordinator now reuses EntryController for the original welcome artwork/Get started screen and the original login artwork/layout. Existing authenticated sessions restore before entry. The online branch of Log in calls the real guest authentication/enrollment service and authorized refresh before opening tabs. The former OnlineEntryController layout, guest-explanation blocks, large agreement cards, switch and manual connection button are removed. Authentication failures appear only when relevant; repeated login taps are serialized. The existing Agree and continue / Disagree card is retained. No acceptance or cloud identity is fabricated.
+
+The agreement sentence uses short Terms of Service / Privacy Policy links. Both Login and Settings use the same HTTPS PDF viewer with PDFKit, response/signature/size/SHA-256 validation, loading feedback and Retry on failure. Acceptance identifies the pinned PDF bytes rather than unrelated bundled HTML. Historical agreement acceptance remains decodable. The existing HTML sources remain in Agreements; this change converts the current documents to PDF without a legal-content rewrite. Their existing draft publisher/contact and pre-backend service wording remain release content dependencies. This UI change does not establish legal approval or production readiness.
+
+The requested public PDFs were uploaded through the signed-in dashboard to a new independent toti-agreements bucket (public read, 5 MB cap, application/pdf only, no client-write policies). No private media bucket settings or user files were changed. Chrome initially required local-file upload permission; the user enabled it, and both uploads subsequently completed.
+
+| Document | Bytes | SHA-256 | Public URL |
+| --- | --- | --- | --- |
+| Terms | 13067 | 3185dda395e8e119bf9881e2616fc58bf46a824c8c81c917d9390713451e64f4 | https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-agreements/TermsOfService.pdf |
+| Privacy | 13947 | c77de63afcbf5964ae6337f42487fc3252b211d51640f92aea6ee9301a1aa205 | https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-agreements/PrivacyPolicy.pdf |
+
+Public downloads returned HTTP 200/application/pdf, and bytes matched the local originals and pinned hashes without login. Both five-page PDFs were rendered and visually inspected with PDFium. PDFs stay in the ignored Assets/Agreements/2026-10-28 archive; native source/configuration carries URLs and hashes, not binary documents.
+
+The current Simulator build succeeded (/tmp/toti-original-entry-build.log). The specified Toti UI Acceptance simulator (98658066-C6E0-45B3-A1E7-E8FBD950F0DB) received that build before the selected UI test. OnlineReadinessUITests exercised welcome, Get started, Log in, the two inline links, checkbox, unchecked-login confirmation, and Disagree returning to login. It did not accept terms or create a guest. Evidence: /tmp/toti-original-entry-tests.log and /tmp/toti-original-entry-tests.xcresult. Final result: 1 selected UI test passed, 0 failures, TEST SUCCEEDED. The current build was installed and launched again after testing. Welcome, login and consent-dialog screenshots were exported and visually inspected under Assets/Verification/Backend/original-*.png. The online PDF viewer itself was compiled; its in-app rendering was not separately exercised in this selected test. Authenticated guest REST checks remain the earlier scoped results in guest-sign-in.md; no new cloud accounts are needed for this UI restoration.

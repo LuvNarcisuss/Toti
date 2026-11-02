@@ -27,6 +27,8 @@ class CatalogGenerationTests(unittest.TestCase):
         (self.assets / 'Catalog-Studio.json').write_text('{"images":[{"filename":"image.png","idiom":"universal"}]}')
         (self.assets / 'Catalog-Launch.json').write_text('{"colors":[]}')
         (self.assets / 'Studio.png').write_bytes(b'original-image-bytes')
+        for entry in self.entries:
+            entry['source'] = 'https://assets.example.com/' + entry['source']
         self.save_manifest()
 
     def save_manifest(self):
@@ -38,7 +40,7 @@ class CatalogGenerationTests(unittest.TestCase):
     def test_preserves_catalog_names_metadata_and_flat_source_bytes(self):
         self.generate()
         for entry in self.entries:
-            self.assertEqual((self.assets / entry['source']).read_bytes(),
+            self.assertEqual((self.assets / entry['source'].rsplit('/', 1)[-1]).read_bytes(),
                              (self.output / entry['path']).read_bytes())
         self.assertFalse(any(p.is_dir() for p in self.assets.iterdir()))
 

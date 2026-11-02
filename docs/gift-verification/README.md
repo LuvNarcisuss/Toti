@@ -47,13 +47,13 @@ The original concurrent-spend test failed with 390 instead of 380 diamonds and o
 
 ## Screenshots
 
-- [Post gift confirmation](post-gift-confirmation.png)
-- [Post gift debit](post-gift-debit.png)
-- [Persisted post gift and balance](post-gift-relaunch.png)
-- [Voice insufficient balance](voice-insufficient-balance.png)
-- [Voice selected recipient after top-up](voice-selected-recipient.png)
-- [Accessibility text confirmation](large-text-confirmation.png)
-- [Final normal app launch](final-launch.png)
+- [Post gift confirmation](../../Assets/Screenshots__gift-verification__post-gift-confirmation.png)
+- [Post gift debit](../../Assets/Screenshots__gift-verification__post-gift-debit.png)
+- [Persisted post gift and balance](../../Assets/Screenshots__gift-verification__post-gift-relaunch.png)
+- [Voice insufficient balance](../../Assets/Screenshots__gift-verification__voice-insufficient-balance.png)
+- [Voice selected recipient after top-up](../../Assets/Screenshots__gift-verification__voice-selected-recipient.png)
+- [Accessibility text confirmation](../../Assets/Screenshots__gift-verification__large-text-confirmation.png)
+- [Final normal app launch](../../Assets/Screenshots__gift-verification__final-launch.png)
 
 ## Evidence bundles
 

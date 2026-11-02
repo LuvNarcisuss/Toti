@@ -2,6 +2,7 @@ import AVFoundation
 import Combine
 import UIKit
 
+/// Call presentation and local camera preview only; no remote call transport or audio capture.
 final class CallController: TotiScreen {
   private let name: String, asset: String?, video: Bool
   private let camera = CallCameraController(), surface = CallCameraSurface(),
@@ -17,7 +18,9 @@ final class CallController: TotiScreen {
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func build() {
     view.backgroundColor = TotiTheme.ink
-    let background = TotiPhoto(asset: asset ?? "LifestyleStudioPractice")
+    view.accessibilityIdentifier = video ? "call.video" : "call.voice"
+    let portrait = asset ?? (store.isOnlineMode ? "TotiMark" : ArtistPortraits.asset(forName: name))
+    let background = TotiPhoto(asset: portrait)
     view.addSubview(background)
     background.pin(to: view)
     let blur = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
@@ -32,9 +35,14 @@ final class CallController: TotiScreen {
     let identity = stack(spacing: 20)
     identity.alignment = .center
     if !video {
-      identity.addArrangedSubview(TotiPhoto(asset: asset ?? ArtistPortraits.asset(forName: name), size: 140, round: true))
+      identity.addArrangedSubview(TotiPhoto(asset: portrait, size: 140, round: true))
     }
+    let mode = label(video ? "Video call" : "Voice call", 16, .white)
+    mode.accessibilityIdentifier = "call.mode"
+    identity.addArrangedSubview(mode)
     identity.addArrangedSubview(label(name, 30, .white, title: true))
+    stateLabel.accessibilityIdentifier = "call.status"
+    stateLabel.textAlignment = .center
     identity.addArrangedSubview(stateLabel)
     view.addSubview(identity)
     identity.translatesAutoresizingMaskIntoConstraints = false
@@ -106,6 +114,8 @@ final class CallController: TotiScreen {
       NSLayoutConstraint.activate([
         retry.leadingAnchor.constraint(
           equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
+        retry.trailingAnchor.constraint(
+          equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
         retry.bottomAnchor.constraint(equalTo: controls.topAnchor, constant: -20),
       ])
       camera.objectWillChange.receive(on: DispatchQueue.main).sink { [weak self] _ in
@@ -130,7 +140,7 @@ final class CallController: TotiScreen {
     NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification).sink {
       [weak self] _ in if self?.active == true && self?.video == true { self?.camera.start() }
     }.store(in: &tokens)
-    stateLabel.text = video ? "" : "Voice call"
+    stateLabel.text = ""
     updateControls()
   }
   override func viewWillAppear(_ animated: Bool) {

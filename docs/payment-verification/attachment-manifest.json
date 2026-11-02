@@ -9,7 +9,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Native sheet cancellation_0_9EC30B58-0E00-4782-B902-E005518446B3.png",
         "timestamp": 1793006475.095,
-        "projectEvidenceFile": "native-cancellation.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__native-cancellation.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -29,7 +29,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Native StoreKit payment sheet_0_96884659-2C7B-4ECE-96C5-DDDB5B346C78.png",
         "timestamp": 1793006470.707,
-        "projectEvidenceFile": "native-payment-sheet.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__native-payment-sheet.png"
       }
     ],
     "testIdentifier": "PurchaseUITests/testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit()",
@@ -45,7 +45,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Persisted balance and history after relaunch_0_AC4114E9-40D8-4C79-8704-9E097B741A48.png",
         "timestamp": 1793006574.976,
-        "projectEvidenceFile": "relaunch-balance.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__relaunch-balance.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -55,7 +55,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "StoreKit cancellation_0_12A88DF3-14BD-4B30-9FD5-39289BC579BD.png",
         "timestamp": 1793006554.179,
-        "projectEvidenceFile": "storekit-cancellation.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__storekit-cancellation.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -65,7 +65,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Seven completed purchases_0_4C4E9389-54B3-4694-89D7-FFB999288EFE.png",
         "timestamp": 1793006545.619,
-        "projectEvidenceFile": "seven-purchases.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__seven-purchases.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -75,7 +75,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Purchase confirmation_0_3481174B-06B8-4F2B-949B-A4951CA96F6A.png",
         "timestamp": 1793006500.532,
-        "projectEvidenceFile": "purchase-confirmation.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__purchase-confirmation.png"
       },
       {
         "configurationName": "Test Scheme Action",
@@ -85,7 +85,7 @@
         "isAssociatedWithFailure": false,
         "suggestedHumanReadableName": "Seven loaded StoreKit offers_0_725C737B-B49F-425E-9A61-E010BAA54FA2.png",
         "timestamp": 1793006498.254,
-        "projectEvidenceFile": "catalog.png"
+        "projectEvidenceFile": "../../Assets/Screenshots__payment-verification__catalog.png"
       }
     ],
     "testIdentifier": "PurchaseUITests/testSevenPurchasesPricesCancellationAndRelaunchHistory()",

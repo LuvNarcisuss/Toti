@@ -5,6 +5,7 @@ struct ContentSafetyTarget: Identifiable {
         case live = "Live video", shortVideo = "Short video", comment = "Comment", party = "Voice room"
         case phrase = "Phrase"
         case post = "Music post"
+        case profile = "Profile"
     }
     let id: String
     let title: String

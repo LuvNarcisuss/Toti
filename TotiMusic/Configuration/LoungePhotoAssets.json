@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "selectedOn": "2026-11-02",
+  "usage": "Editorial post and author Works covers; author avatars remain unchanged.",
+  "photos": [
+    {
+      "asset": "LoungeVinylListening",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000001",
+      "author": "Yulia Polyakova",
+      "sourceURL": "https://www.pexels.com/photo/10648396/",
+      "licenseURL": "https://www.pexels.com/license/",
+      "publicURL": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeVinylListening.jpg",
+      "sha256": "8b4d117e934fb78b00e97483efcf7bfec96163872d8b038f12bb31b029893ca5",
+      "size": 641574,
+      "width": 1400,
+      "height": 2100
+    },
+    {
+      "asset": "LoungePianoMelody",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000002",
+      "author": "Markus Spiske",
+      "sourceURL": "https://www.pexels.com/photo/97973/",
+      "licenseURL": "https://www.pexels.com/license/",
+      "publicURL": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungePianoMelody.jpg",
+      "sha256": "6f74187c9853f4189c6390cd66cbb78d11be192230729c5e0cf4b02a919b3434",
+      "size": 392797,
+      "width": 1400,
+      "height": 2100
+    },
+    {
+      "asset": "LoungeGuitarRehearsal",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000003",
+      "author": "Brett Sayles",
+      "sourceURL": "https://www.pexels.com/photo/1205062/",
+      "licenseURL": "https://www.pexels.com/license/",
+      "publicURL": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeGuitarRehearsal.jpg",
+      "sha256": "b1383581b3d7f12f9a500f89a0b93b7cec9426ba52b40c5ad25ecad72370ec1c",
+      "size": 69209,
+      "width": 1400,
+      "height": 933
+    },
+    {
+      "asset": "LoungeStudioMixing",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000004",
+      "author": "cottonbro studio",
+      "sourceURL": "https://www.pexels.com/photo/7088044/",
+      "licenseURL": "https://www.pexels.com/license/",
+      "publicURL": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeStudioMixing.jpg",
+      "sha256": "7ac946143aa46e43f8bbb1ab58ea21e30ef4410a38aff36ff58708bf83b9c764",
+      "size": 104554,
+      "width": 1400,
+      "height": 933
+    },
+    {
+      "asset": "LoungeConcertLights",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000005",
+      "author": "Lisa Fotios",
+      "sourceURL": "https://www.pexels.com/photo/13230507/",
+      "licenseURL": "https://www.pexels.com/license/",
+      "publicURL": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeConcertLights.jpg",
+      "sha256": "da2478377676464b44cf9433a3f9c840cbc8fc7d0982415aa4a4abfeeb5a4f4d",
+      "size": 111845,
+      "width": 1400,
+      "height": 1050
+    },
+    {
+      "asset": "LoungeMusicCorner",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000006",
+      "author": "Flávia Vicentini",
+      "sourceURL": "https://www.pexels.com/photo/32218646/",
+      "licenseURL": "https://www.pexels.com/license/",
+      "publicURL": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeMusicCorner.jpg",
+      "sha256": "1058138aaf2c17f14937d77d5f35e233aa6b31df65a8d9bfa9a4d3e0d77c35bf",
+      "size": 222306,
+      "width": 1400,
+      "height": 2100
+    }
+  ]
+}

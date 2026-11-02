@@ -1,0 +1,170 @@
+[
+  {
+    "asset": "RoomCoverHipHop",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverHipHop.jpg",
+    "bytes": 26266,
+    "sha256": "5bb4906c2eb4615cb3726c6cdc67f1c15d34e28734390ea747789f3fafb0e769",
+    "httpStatus": 200
+  },
+  {
+    "asset": "RoomCoverKPop",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverKPop.jpg",
+    "bytes": 26945,
+    "sha256": "72ced20c0f31fae2bb3a799be90dab444b4d8a06232b251de45dee22f1dabea1",
+    "httpStatus": 200
+  },
+  {
+    "asset": "RoomCoverJazz",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverJazz.jpg",
+    "bytes": 25772,
+    "sha256": "1d7f34a41d01cdf8d51adb1787ff3f2bf10dc405c4964790fe50e68b73f0ef9f",
+    "httpStatus": 200
+  },
+  {
+    "asset": "RoomCoverFreestyle",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/RoomCoverFreestyle.jpg",
+    "bytes": 33771,
+    "sha256": "062e380bbf1b824d98182ac3498afc991cdf107e3ecd28e532fb07c08ea17f41",
+    "httpStatus": 200
+  },
+  {
+    "asset": "MusicPianoRoom",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/MusicPianoRoom.jpg",
+    "bytes": 23998,
+    "sha256": "985db482117337c138f609bbbdd0809d401f33634e8aed60656699702d49535c",
+    "httpStatus": 200
+  },
+  {
+    "asset": "MusicProductionRoom",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/MusicProductionRoom.jpg",
+    "bytes": 33821,
+    "sha256": "b72dd1f420f553b17fc02e23f6e757dfe2e22f1653acafb94cdad83f02883f7e",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait11",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait11.jpg",
+    "bytes": 37107,
+    "sha256": "a5f95bda4360c04565bfeaecccbcd1fef952830298ea8d1e12718eebf3698bf7",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait14",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait14.jpg",
+    "bytes": 44816,
+    "sha256": "35b379679023f576002ad6815ca0c1f57c3c21aed942526d5e59841a930a8fc5",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait23",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait23.jpg",
+    "bytes": 103433,
+    "sha256": "c605885a4a6dbdbf549a2259f5288e39e8690d10eac6d516d23b3e94c2373016",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait32",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait32.jpg",
+    "bytes": 60107,
+    "sha256": "4766bd980f6e3e7920e1e5cd41f028fc66ce84e85a15d0c8b04cac4491af4ee1",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait40",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait40.jpg",
+    "bytes": 91870,
+    "sha256": "d2432c63aefc6d115ab2c79e4e84b6aa5e66d48861c208d86c1446d07e20a1a9",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait41",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait41.jpg",
+    "bytes": 20407,
+    "sha256": "a5eb90eab962ea77dcd0a2250614c473e079c900cc6f5b318d0ef7a4d1b5442b",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait12",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait12.jpg",
+    "bytes": 40490,
+    "sha256": "546f8803ce4f542ee68c76a0cdad56bdf2500a703b2087c33a2f8b02b2858c03",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait16",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait16.jpg",
+    "bytes": 57261,
+    "sha256": "8283e4f7ed0d99518524bf5a2ac6c97439fa934413dd48159ea3f9eb12ff9909",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait17",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait17.jpg",
+    "bytes": 128688,
+    "sha256": "659b45d8f29f3b06be64ca3555dce682dfbb6d3807ced1c4ab383f7a6279ca53",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait20",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait20.jpg",
+    "bytes": 118070,
+    "sha256": "568b371bf3038943d23c86abc49f8320dd4d997cc599a668e666ea5e217b8b15",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait21",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait21.jpg",
+    "bytes": 30512,
+    "sha256": "fc5bde7146c26bca7647616d0557b2e62cca86223a6b5dae60b6e2498d68927e",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait25",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait25.jpg",
+    "bytes": 62040,
+    "sha256": "bbb585a4417f7cc589c5e692b9ffa9dc55217b59a89015d64a6f0bf987d57b22",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait26",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait26.jpg",
+    "bytes": 76853,
+    "sha256": "ca4816ac926591bc30f2862d38556112d614a66910851348903782519cf1ac0f",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait33",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait33.jpg",
+    "bytes": 24103,
+    "sha256": "3d5e7b043f9e02d69d92c8082bf7562ae1439c488e14714358aba7e72c5340bc",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait35",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait35.jpg",
+    "bytes": 105830,
+    "sha256": "e067a15a9e7e6fec51325c28afb2b6271776a66a91407cc45019694150497ba1",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait36",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait36.jpg",
+    "bytes": 144476,
+    "sha256": "a63f5653c0c1044aa632242bb72559f596843d36772d6ec94cbb275cb3b14461",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait45",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait45.jpg",
+    "bytes": 64951,
+    "sha256": "789da33a8cf92afea6bea56f1c77fe2f0a5f69d29f13c09d860e33fe7c9fd503",
+    "httpStatus": 200
+  },
+  {
+    "asset": "Portrait49",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Portrait49.jpg",
+    "bytes": 65931,
+    "sha256": "2356f2d26d14a8f47bb2990eab4aae0f3331443023b632ee499079e434233c8c",
+    "httpStatus": 200
+  }
+]

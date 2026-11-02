@@ -20,6 +20,7 @@ enum NotebookValidationError: LocalizedError {
 }
 
 struct InspirationNote: Codable, Equatable, Identifiable {
+    var backendVersion: Int? = nil
   var id: UUID = UUID()
   var title: String = ""
   var body: String = ""

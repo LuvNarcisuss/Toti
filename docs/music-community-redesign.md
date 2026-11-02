@@ -1,6 +1,6 @@
 # Toti: Lounge and Notebook redesign
 
-Status: approved by user, implementation underway, 2026-10-26.
+Status: approved local feature design from 2026-10-26. Navigation, product theme and feature-retirement decisions remain current. The device-local service/persistence behavior and earlier execution authorization below are historical: the 2026-10-27 backend contract and current AGENTS.md now govern online behavior and verification permissions. See `docs/backend/contract.md` and `docs/backend/release-checklist.md`.
 
 ## Intent and confirmed direction
 
@@ -18,7 +18,7 @@ Do not delete user-imported files, historical wallet entries, message records or
 
 ## Feature 1: Lounge — music community
 
-An editorial-style scrolling feed for music discussion, concert photographs and finding musical collaborators. Filters: **For you / Following / Saved**, with topic chips **All / Listening / Concerts / Making music / Find a bandmate**. Search matches post text, topic and author. Show clear empty states with a relevant action.
+An editorial-style scrolling feed for music discussion, concert photographs and finding musical collaborators. Current navigation update (2026-10-30): retain one **For you / Following / Saved** row and move **All topics / Listening / Concerts / Making music / Find a bandmate** into the adjacent topic-filter menu. The permanent search field is replaced by an expanding search button beside the plus action at the top right, matching Chats. Search matches post text, topic and author. Show clear empty states with a relevant action. See `navigation-search-and-filters.md` for the current source and verification scope.
 
 Each post contains stable ID, author identity, topic, text, optional one photo, created date, and optional linked voice-room ID. Feed cards show author/portrait, topic, body, photo if present, and like/comment/save actions. Opening a card presents the full post and comments. No fabricated audience, view counts or automated incoming interactions.
 
@@ -30,7 +30,7 @@ Seed a small, clearly authored editorial collection using fictional identities c
 
 ## Feature 2: Notebook — private music inspiration
 
-A private writing workspace with **All / Lyrics / Chords / Ideas**, text search, pinned items, last-edited dates and topic/mood tags. A visually distinct paper-card layout uses the same palette and typography.
+A private writing workspace with **All / Lyrics / Chords / Ideas**, text search from the upper-right Search button, pinned items, last-edited dates and topic/mood tags. With no private notes, hide categories and show welcome, first-note, writing-prompt and privacy cards. Existing notes replace the welcome state with the note list; unmatched filters have a separate reset card. A visually distinct paper-card layout uses the same palette and typography.
 
 Notes have stable ID, title (up to 80 characters), body (up to 10,000 characters), category, optional mood tag, pinned flag and timestamps. Empty title is allowed for drafts and displayed as **Untitled idea**. Create, edit, save, pin/unpin, duplicate and delete notes. Save uses atomic storage before confirming success; preserve unsaved editor contents after failures. On leaving a dirty editor, offer Save / Discard / Keep editing. Do not silently drop changes or save every keypress.
 
@@ -42,7 +42,7 @@ An explicit **Turn into a post** action copies the note title/body into a Lounge
 
 Keep Voice room discovery, creation/drafts, seats, local messages, invitations, gifts and safety controls. Keep Chats filters, conversations, drafts, groups, relationship sending limits and private calls. Real RTC and remote message delivery remain unconnected.
 
-Me becomes a profile hub: editable avatar/name/bio, wallet, **My posts / Saved posts / Drafts**, a private **My notebook** shortcut and voice-room drafts. Member profiles show visible Lounge posts and existing relationship controls. Their statistics reflect appropriate local post activity and relationships; remove video-derived metrics. Pending video submissions are archived data, not current product items.
+Me follows the selected Bibi profile structure with a rounded identity/statistics card, editable avatar/name/bio, wallet, and sticky **Works / Saved / Drafts / About** categories. Works contains the owner's visible Lounge posts; About preserves the private **My notebook** shortcut and voice-room drafts. Member profiles use the same card style and show only that author's visible, non-draft, non-editorial Lounge posts as Works, alongside the existing relationship controls. Their statistics reflect appropriate local post activity and relationships; remove video-derived metrics. Pending video submissions are archived data, not current product items.
 
 ## Storage and failure behavior
 
@@ -73,3 +73,7 @@ A network-first version of the selected pair would require authentication, stora
 - Build and run scheme toti on the existing iPhone simulator after implementation; inspect primary pages and exercise representative local flows. Do not purchase, upload, accept agreements or delete existing user data during validation.
 
 Implementation was authorized by the user, including Xcode running and error repair.
+
+## Editorial profile figures — 2026-11-02
+
+The user explicitly requested plausible simulated data for the six material-author profiles. Approved scope: fixed, disclosed illustrative Likes/Saves/Following/Followers figures on those editorial profiles. This does not authorize fictional Auth identities, online activity, incoming follow relationships, message delivery, payments or modifications to real user statistics. Figures are presentation metadata and cannot enable Message. Values, provenance and validation are recorded in `lounge-editorial-authors.md`; genuine profiles keep their server-derived received counts.

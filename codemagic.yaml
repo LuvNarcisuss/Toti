@@ -1,0 +1,31 @@
+workflows:
+  toti_ios_release:
+    name: Toti iOS Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      xcode: 26.5
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.toti.music
+    scripts:
+      - name: Generate the Xcode project
+        script: xcodegen generate --spec TotiMusic/project.yml
+      - name: Restore pinned public build resources
+        script: |
+          set -euo pipefail
+          export TOTI_CI_RESOURCE_CACHE="$CM_BUILD_DIR/.ci/toti-assets"
+          echo "TOTI_CI_RESOURCE_CACHE=$TOTI_CI_RESOURCE_CACHE" >> "$CM_ENV"
+          python3 TotiMusic/scripts/restore_ci_resources.py
+      - name: Verify repository media policy
+        script: python3 TotiMusic/scripts/check_git_media.py --all
+      - name: Resolve signing profiles
+        script: xcode-project use-profiles
+      - name: Build the Toti archive and IPA
+        script: xcode-project build-ipa --project TotiMusic/Toti.xcodeproj --scheme toti --config Release
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration

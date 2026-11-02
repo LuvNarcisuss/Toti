@@ -2,75 +2,360 @@ import PhotosUI
 import UIKit
 import UniformTypeIdentifiers
 
-final class MeController: StackScreen {
+final class MeController: StackScreen, UIScrollViewDelegate {
   private var selection = 0
+  private let profileHeader = stack(spacing: 18)
+  private let body = stack(spacing: 18)
+  private let categorySlot = UIView()
+  private let categoryChrome = UIView()
+  private let categoryWash = StudioCanvas()
+  private var categories: StudioChoice?
+  private var categoryPins: [NSLayoutConstraint] = []
+
   override func build() {
     super.build()
     title = "Me"
     navigationItem.leftBarButtonItem = barButton(totiMark())
     navigationItem.rightBarButtonItem = barButton(iconButton(.settings, "Settings") { [weak self] in
-      guard let self else { return }
+      guard let self, self.isAccountContextCurrent else { return }
       self.push(SettingsController(store: self.store))
     })
+    scroll.delegate = self
+    scroll.accessibilityIdentifier = "profile.me"
+    content.addArrangedSubview(profileHeader)
+    categorySlot.heightAnchor.constraint(equalToConstant: 44).isActive = true
+    content.addArrangedSubview(categorySlot)
+    content.addArrangedSubview(body)
+    categoryChrome.clipsToBounds = true
+    categoryChrome.isHidden = true
+    categoryChrome.addSubview(categoryWash)
+    scroll.addSubview(categoryChrome)
+    let tabs = StudioChoice(items: ["Works", "Saved", "Drafts", "About"], index: selection)
+    tabs.accessibilityIdentifier = "profile.categories"
+    tabs.onChange = { [weak self] next in
+      guard let self, self.isAccountContextCurrent else { return }
+      self.selection = next
+      self.fillBody()
+      self.placeCategoryBar()
+    }
+    categories = tabs
+    placeCategories(pinned: false)
   }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if isViewLoaded { refresh() }
+  }
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    placeCategoryBar()
+  }
+  func scrollViewDidScroll(_ scrollView: UIScrollView) { placeCategoryBar() }
+
   override func refresh() {
-    guard isViewLoaded else { return }
-    clear()
-    let photo = TotiPhoto(size: 88, round: true)
-    photo.image = store.ownerAvatarImage() ?? UIImage(named: MusicPhotography.creatorAvatar(for: "local-owner"))
-    let identity = stack([photo, label(store.library.profile.displayName, 27, title: true),
-      label(store.library.profile.biography, 15, TotiTheme.muted)])
-    identity.alignment = .center
-    content.addArrangedSubview(identity)
+    guard isViewLoaded, isAccountContextCurrent else { return }
+    profileHeader.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    let photo = TotiPhoto(size: 92, round: true)
+    store.configureOwnerAvatar(photo)
+    let owner = store.onlineOwnerProfile ?? CreatorProfile.signedIn(store.library.profile)
+    profileHeader.addArrangedSubview(totiProfileIdentityCard(
+      photo: photo, name: store.library.profile.displayName,
+      biography: store.library.profile.biography, eyebrow: "YOUR MUSIC SPACE",
+      metrics: profileMetrics(owner, store: store)))
+    if store.isOnlineMode, let review = avatarReviewPreview(store.library.profile) { profileHeader.addArrangedSubview(review) }
     let actions = stack(axis: .horizontal, spacing: 10)
     actions.distribution = .fillEqually
     actions.addArrangedSubview(actionButton("Edit profile", icon: .me, compact: true) { [weak self] in
-      guard let self else { return }; self.push(EditProfileController(store: self.store))
+      guard let self, self.isAccountContextCurrent else { return }
+      self.push(EditProfileController(store: self.store))
     })
     actions.addArrangedSubview(actionButton("Wallet", icon: .diamond, tone: .coral, compact: true) { [weak self] in
-      guard let self else { return }; self.push(WalletController(store: self.store))
+      guard let self, self.isAccountContextCurrent else { return }
+      self.push(WalletController(store: self.store))
     })
-    content.addArrangedSubview(actions)
-    content.addArrangedSubview(actionButton("My notebook · \(store.notebookNotes.count) " + (store.notebookNotes.count == 1 ? "idea" : "ideas"), icon: .notebook) { [weak self] in
-      guard let self else { return }; self.push(NotebookController(store: self.store))
-    })
-    let choices = StudioChoice(items: ["My posts", "Saved", "Drafts"], index: selection)
-    choices.onChange = { [weak self] value in self?.selection = value; self?.refresh() }
-    content.addArrangedSubview(choices)
-    let posts = selection == 0 ? store.loungePosts(for: "local-owner") : selection == 1 ? store.savedLoungePosts : store.loungeDrafts
-    content.addArrangedSubview(label("\(posts.count) " + (selection == 2 ? (posts.count == 1 ? "draft" : "drafts") : (posts.count == 1 ? "post" : "posts")) + " · On this device", 12, TotiTheme.muted))
-    if posts.isEmpty {
-      heading(selection == 1 ? "Keep what inspires you." : "Your next story starts here.")
-      content.addArrangedSubview(label(selection == 1 ? "Save posts from Lounge to find them here." : "Share a thought, a concert photo or a musical question.", 16, TotiTheme.muted))
-    }
-    for post in posts {
-      content.addArrangedSubview(profilePostButton(post) { [weak self] in
-        guard let self else { return }
-        if post.isDraft { self.presentScreen(LoungeComposerController(store: self.store, post: post)) }
-        else { self.push(LoungeDetailController(store: self.store, postID: post.id)) }
+    profileHeader.addArrangedSubview(actions)
+    fillBody()
+    placeCategoryBar()
+  }
+
+  private func fillBody() {
+    body.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    appendOnlineControls(to: body)
+    if selection == 3 {
+      body.addArrangedSubview(profilePaper([
+        label("Your private corner", 23, TotiTheme.plum, title: true),
+        label("Keep your ideas close, and share them when you are ready.", 15, TotiTheme.muted),
+        actionButton("My notebook", icon: .notebook) { [weak self] in
+          guard let self, self.isAccountContextCurrent else { return }
+          self.push(NotebookController(store: self.store))
+        },
+      ]))
+      body.addArrangedSubview(label("Your voice rooms", 22, TotiTheme.plum, title: true))
+      for room in store.library.roomDrafts {
+        body.addArrangedSubview(actionButton(room.title, icon: .voice) { [weak self] in
+          guard let self, self.isAccountContextCurrent else { return }
+          self.presentScreen(PartyCreationController(store: self.store, draft: room))
+        })
+      }
+      body.addArrangedSubview(actionButton("Create a voice room", icon: .voice) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.presentScreen(PartyCreationController(store: self.store))
       })
+      return
     }
-    content.addArrangedSubview(actionButton("Write a post", icon: .plus, primary: true) { [weak self] in
-      guard let self else { return }; self.presentScreen(LoungeComposerController(store: self.store))
-    })
-    heading("Your voice rooms")
-    if store.library.roomDrafts.isEmpty {
-      content.addArrangedSubview(label("Create a space for songs and conversation.", 15, TotiTheme.muted))
+    let posts = selection == 0 ? store.loungePosts.filter { $0.author.isLocalOwner && !$0.isEditorial }
+      : selection == 1 ? store.savedLoungePosts : store.loungeDrafts
+    let editorialCount = selection == 1 ? store.savedEditorialPosts.count : 0
+    body.addArrangedSubview(label(totiProfileCollectionCount(posts.count + editorialCount, noun: selection == 2 ? "draft" : "post", suffix: store.isOnlineMode ? "loaded" : "on this device"), 12, TotiTheme.muted))
+    if selection == 1 { appendTotiEditorial(to: body, showsHeading: false, workTiles: true, onlySaved: true) }
+    if posts.isEmpty && editorialCount == 0 {
+      let title = selection == 1 ? "Keep what inspires you." : selection == 2 ? "A little room to finish." : "Your stories belong here."
+      let detail = selection == 1 ? "Save posts from Lounge to find them here."
+        : selection == 2 ? "Posts you save as drafts stay private until you publish them."
+        : "Share a thought, a concert photo or a musical question."
+      let icon: TotiIcon = selection == 1 ? .bookmark : selection == 2 ? .notebook : .plus
+      let artwork = UIImageView(image: icon.image(TotiTheme.plum, size: 44))
+      artwork.contentMode = .scaleAspectFit
+      artwork.translatesAutoresizingMaskIntoConstraints = false
+      artwork.widthAnchor.constraint(equalToConstant: 52).isActive = true
+      artwork.height(52)
+      artwork.isAccessibilityElement = false
+      let emptyHeader = stack([artwork, label(title, 23, TotiTheme.plum, title: true)], axis: .horizontal, spacing: 14)
+      emptyHeader.alignment = .center
+      var rows: [UIView] = [emptyHeader, label(detail, 15, TotiTheme.muted)]
+      if selection != 1 { rows.append(writeButton()) }
+      body.addArrangedSubview(profilePaper(rows))
+    } else {
+      let tiles = posts.map { post in
+        profilePostCard(post, store: store, openAuthor: { [weak self] in
+          guard let self else { return }
+          openProfileAuthor(post.author, from: self)
+        }) { [weak self] in self?.openPost(post) }
+      }
+      totiProfileGrid(tiles, to: body, singleColumn: traitCollection.preferredContentSizeCategory.isAccessibilityCategory)
+      if selection != 1 { body.addArrangedSubview(writeButton()) }
     }
-    for room in store.library.roomDrafts {
-      content.addArrangedSubview(actionButton(room.title, icon: .voice) { [weak self] in
-        guard let self else { return }; self.presentScreen(PartyCreationController(store: self.store, draft: room))
-      })
+  }
+  private func writeButton() -> UIView {
+    actionButton("Write a post", icon: .plus, primary: true) { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      self.presentScreen(LoungeComposerController(store: self.store), full: true)
     }
-    content.addArrangedSubview(actionButton("Create a voice room", icon: .voice) { [weak self] in
-      guard let self else { return }; self.presentScreen(PartyCreationController(store: self.store))
-    })
+  }
+  private func openPost(_ post: LoungePost) {
+    guard isAccountContextCurrent else { return }
+    if post.isDraft { presentScreen(LoungeComposerController(store: store, post: post), full: true) }
+    else { push(LoungeDetailController(store: store, postID: post.id)) }
+  }
+  private func placeCategories(pinned: Bool) {
+    guard let categories else { return }
+    let host = pinned ? categoryChrome : categorySlot
+    guard categories.superview !== host else { return }
+    NSLayoutConstraint.deactivate(categoryPins)
+    categories.removeFromSuperview()
+    host.addSubview(categories)
+    categories.translatesAutoresizingMaskIntoConstraints = false
+    categoryPins = [
+      categories.leadingAnchor.constraint(equalTo: host.leadingAnchor, constant: pinned ? 16 : 0),
+      categories.trailingAnchor.constraint(equalTo: host.trailingAnchor, constant: pinned ? -16 : 0),
+      categories.topAnchor.constraint(equalTo: host.topAnchor),
+      categories.bottomAnchor.constraint(equalTo: host.bottomAnchor),
+    ]
+    NSLayoutConstraint.activate(categoryPins)
+  }
+  private func placeCategoryBar() {
+    guard categorySlot.bounds.height > 0, scroll.bounds.width > 0 else { return }
+    let slot = categorySlot.convert(categorySlot.bounds, to: scroll)
+    if slot.minY < scroll.contentOffset.y {
+      categoryChrome.isHidden = false
+      categoryChrome.frame = CGRect(x: 0, y: scroll.contentOffset.y, width: scroll.bounds.width, height: 44)
+      categoryWash.frame = categoryChrome.convert(coverFrame(), from: view)
+      scroll.bringSubviewToFront(categoryChrome)
+      placeCategories(pinned: true)
+      categoryChrome.layoutIfNeeded()
+    } else {
+      placeCategories(pinned: false)
+      categoryChrome.isHidden = true
+    }
   }
 }
 
-@MainActor private func profilePostButton(_ post: LoungePost, action: @escaping () -> Void) -> UIView {
-  let caption = post.body.trimmingCharacters(in: .whitespacesAndNewlines)
-  return actionButton(caption.isEmpty ? "Untitled draft" : String(caption.prefix(150)), icon: post.isDraft ? .clock : .lounge, action: action)
+/// Shared visual language for profile identity; never supplies account statistics.
+@MainActor func totiProfileIdentityCard(photo: UIView, name: String, biography: String,
+  eyebrow: String, metrics: UIView? = nil) -> UIView {
+  let card = UIView()
+  card.backgroundColor = TotiTheme.soft
+  card.layer.cornerRadius = 28
+  card.layer.cornerCurve = .continuous
+  card.layer.borderWidth = 1
+  card.layer.borderColor = UIColor.white.withAlphaComponent(0.95).cgColor
+  card.clipsToBounds = true
+  let wash = StudioCanvas()
+  card.addSubview(wash)
+  wash.pin(to: card)
+  let avatar = UIView()
+  avatar.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+  avatar.layer.cornerRadius = 52
+  avatar.layer.borderWidth = 2
+  avatar.layer.borderColor = TotiTheme.coral.withAlphaComponent(0.55).cgColor
+  avatar.addSubview(photo)
+  photo.pin(to: avatar, insets: UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6))
+  let nameLabel = label(name, 28, TotiTheme.plum, title: true)
+  let detail = stack([label(eyebrow, 10, TotiTheme.plum), nameLabel], spacing: 8)
+  detail.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+  nameLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+  let largeText = UIApplication.shared.preferredContentSizeCategory.isAccessibilityCategory
+  let identity = stack([avatar, detail], axis: largeText ? .vertical : .horizontal, spacing: 16)
+  identity.alignment = largeText ? .leading : .center
+  let rows = stack([identity], spacing: 18)
+  if !biography.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+    rows.addArrangedSubview(label(biography, 16, TotiTheme.ink))
+  }
+  if let metrics { rows.addArrangedSubview(metrics) }
+  card.addSubview(rows)
+  rows.pin(to: card, insets: UIEdgeInsets(top: 24, left: 20, bottom: 24, right: 20))
+  card.accessibilityIdentifier = "profile.identity"
+  return card
+}
+
+/// An odd final item keeps its column width. Accessibility sizes use a single column.
+@MainActor func totiProfileGrid(_ tiles: [UIView], to host: UIStackView, singleColumn: Bool) {
+  if singleColumn {
+    tiles.forEach { host.addArrangedSubview($0) }
+    return
+  }
+  for index in stride(from: 0, to: tiles.count, by: 2) {
+    let row = stack(axis: .horizontal, spacing: 12)
+    row.distribution = .fillEqually
+    row.alignment = .top
+    row.addArrangedSubview(tiles[index])
+    row.addArrangedSubview(index + 1 < tiles.count ? tiles[index + 1] : UIView())
+    host.addArrangedSubview(row)
+  }
+}
+
+@MainActor private func profilePaper(_ views: [UIView]) -> UIView {
+  let card = UIView()
+  card.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+  card.layer.cornerRadius = 24
+  card.layer.cornerCurve = .continuous
+  card.layer.borderWidth = 1
+  card.layer.borderColor = TotiTheme.line.cgColor
+  let column = stack(views, spacing: 16)
+  card.addSubview(column)
+  column.pin(to: card, insets: UIEdgeInsets(top: 20, left: 18, bottom: 20, right: 18))
+  return card
+}
+
+@MainActor private func profileMetrics(_ creator: CreatorProfile, store: AppStore) -> UIView {
+  let statistics = store.statistics(for: creator)
+  return totiProfileMetrics(TotiProfileMetric.allCases.map { metric in
+    (metric.rawValue, store.isOnlineMode ? store.onlineProfileMetric(metric.field, creatorID: creator.id)
+      : metric.value(in: statistics))
+  })
+}
+
+@MainActor func totiProfileMetrics(_ values: [(String, Int?)], illustrative: Bool = false) -> UIView {
+  let row = stack(axis: .horizontal, spacing: 6)
+  row.distribution = .fillEqually
+  for (title, numberValue) in values {
+    let value = numberValue.map(String.init) ?? "—"
+    let number = label(value, 22, TotiTheme.plum, title: true)
+    let caption = label(title, 11, TotiTheme.muted)
+    number.textAlignment = .center
+    caption.textAlignment = .center
+    let metric = stack([number, caption], spacing: 4)
+    metric.backgroundColor = UIColor.white.withAlphaComponent(0.76)
+    metric.layer.cornerRadius = 16
+    metric.isLayoutMarginsRelativeArrangement = true
+    metric.layoutMargins = UIEdgeInsets(top: 12, left: 4, bottom: 12, right: 4)
+    metric.isAccessibilityElement = true
+    metric.accessibilityLabel = title
+    metric.accessibilityValue = value
+    metric.accessibilityIdentifier = "profile.metric." + title.lowercased()
+    if illustrative { metric.accessibilityHint = "Illustrative editorial figure. Not live community activity." }
+    number.isAccessibilityElement = false
+    caption.isAccessibilityElement = false
+    row.addArrangedSubview(metric)
+  }
+  return row
+}
+
+@MainActor private func openProfileAuthor(_ author: CreatorProfile, from screen: StackScreen) {
+  guard screen.isAccountContextCurrent else { return }
+  if let profile = screen as? CreatorController, profile.creator.id == author.id {
+    profile.scroll.setContentOffset(.zero, animated: !UIAccessibility.isReduceMotionEnabled)
+    return
+  }
+  screen.push(CreatorController(store: screen.store, creator: author))
+}
+
+@MainActor private func profilePostCard(_ post: LoungePost, store: AppStore,
+  openAuthor: @escaping () -> Void, action: @escaping () -> Void) -> UIView {
+  let card = UIView()
+  card.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+  card.layer.cornerRadius = 24
+  card.layer.cornerCurve = .continuous
+  card.layer.borderWidth = 1
+  card.layer.borderColor = TotiTheme.line.cgColor
+  card.clipsToBounds = true
+  let button = UIControl()
+  let column = stack(spacing: 10)
+  let top = label(post.isDraft ? "PRIVATE DRAFT" : post.topic.rawValue.uppercased(), 10, TotiTheme.plum)
+  column.addArrangedSubview(top)
+  if post.mediaRevisionID != nil || post.photoJPEG != nil || post.photoAsset != nil {
+    if post.author.isLocalOwner || post.mediaRevisionID == nil || post.mediaStatus == "approved" {
+      let photo = TotiPhoto()
+      photo.contentMode = .scaleAspectFill
+      photo.translatesAutoresizingMaskIntoConstraints = false
+      photo.heightAnchor.constraint(equalTo: photo.widthAnchor, multiplier: 1.1).isActive = true
+      photo.layer.cornerRadius = 16
+      if let bytes = post.photoJPEG { photo.image = UIImage(data: bytes) }
+      else if let revision = post.mediaRevisionID { photo.configure(asset: "remote-media:" + revision.uuidString) }
+      else { photo.configure(asset: post.photoAsset) }
+      column.addArrangedSubview(photo)
+    }
+  }
+  if post.author.isLocalOwner, let review = mediaReviewNotice(status: post.mediaStatus, feedback: post.mediaFeedback) {
+    column.addArrangedSubview(review)
+  }
+  let excerpt = label(post.body.isEmpty ? "Untitled draft" : post.body, 16, TotiTheme.ink)
+  excerpt.numberOfLines = 3
+  column.addArrangedSubview(excerpt)
+  let footer = post.isDraft ? "Continue writing" : "\(store.loungeLikeCount(post.id)) likes · \(store.loungeCommentCount(post.id)) replies"
+  column.addArrangedSubview(label(footer, 11, TotiTheme.plum))
+  column.isUserInteractionEnabled = false
+  column.accessibilityElementsHidden = true
+  button.addSubview(column)
+  column.pin(to: button)
+  button.isAccessibilityElement = true
+  button.accessibilityTraits = .button
+  button.accessibilityIdentifier = "profile.post." + post.id.uuidString
+  button.accessibilityLabel = (post.isDraft ? "Continue draft, " : "Read post, ") + String(post.body.prefix(180)) + ", " + post.author.name
+  button.addAction(UIAction { _ in action() }, for: .touchUpInside)
+  let photo = TotiPhoto(asset: post.author.avatarAsset, size: 36, round: true)
+  if post.author.isLocalOwner { store.configureOwnerAvatar(photo) }
+  let metadata = stack([
+    label(post.author.name, 14, TotiTheme.plum, title: true),
+    label(post.updatedAt.formatted(date: .abbreviated, time: .omitted), 12, TotiTheme.muted),
+  ], spacing: 3)
+  let authorRow = stack([photo, metadata, UIView()], axis: .horizontal, spacing: 10)
+  authorRow.alignment = .center
+  authorRow.isUserInteractionEnabled = false
+  authorRow.accessibilityElementsHidden = true
+  let author = UIControl()
+  author.addSubview(authorRow)
+  authorRow.pin(to: author)
+  author.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+  author.isAccessibilityElement = true
+  author.accessibilityTraits = .button
+  author.accessibilityLabel = "View " + post.author.name + "'s profile"
+  author.accessibilityIdentifier = "profile.post.author." + post.id.uuidString
+  author.addAction(UIAction { _ in openAuthor() }, for: .touchUpInside)
+  let contents = stack([button, author], spacing: 10)
+  card.addSubview(contents)
+  contents.pin(to: card, insets: UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12))
+  return card
 }
 
 final class CreatorController: StackScreen {
@@ -81,41 +366,51 @@ final class CreatorController: StackScreen {
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func refresh() {
-    guard isViewLoaded else { return }
+    guard isViewLoaded, isAccountContextCurrent else { return }
     clear()
-    let header = stack(
-      [
-        ownerPortrait(size: 88), label(creator.name, 26, title: true),
-      ], axis: .horizontal)
-    header.alignment = .center
-    content.addArrangedSubview(header)
-    let stats = store.statistics(for: creator)
-    let row = stack(axis: .horizontal, spacing: 7)
-    row.distribution = .fillEqually
-    for (name, value) in [
-      ("Likes", stats.likes), ("Saves", stats.saves), ("Following", stats.following),
-      ("Followers", stats.followers),
-    ] {
-      let l = label("\(value)\n\(name)", 13)
-      l.textAlignment = .center
-      row.addArrangedSubview(l)
-    }
-    content.addArrangedSubview(row)
-    content.addArrangedSubview(label(creator.biography))
-    if !creator.isLocalOwner {
+    appendOnlineControls()
+    let current = store.isOnlineMode ? UUID(uuidString: creator.id).map { store.onlineCreator($0) } ?? creator : creator
+    title = current.name
+    content.addArrangedSubview(totiProfileIdentityCard(photo: ownerPortrait(size: 92),
+      name: current.name, biography: current.biography, eyebrow: "MUSIC & CONNECTIONS",
+      metrics: profileMetrics(current, store: store)))
+    if !current.isLocalOwner {
       content.addArrangedSubview(profileActions())
+      let safety = actionButton("Report or block", icon: .flag, compact: true) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        let screen = SafetyController(store: self.store, target: ContentSafetyTarget(
+          id: current.id, title: current.name, kind: .profile, creator: current))
+        screen.onResolved = { [weak self] in
+          guard let self, self.isAccountContextCurrent else { return }
+          if self.store.isCreatorBlocked(current.id) { self.leaveAfterBlock() }
+          else { self.refresh() }
+        }
+        self.presentScreen(screen)
+      }
+      safety.accessibilityIdentifier = "profile.safety"
+      content.addArrangedSubview(safety)
     }
-    content.addArrangedSubview(
-      label("IP: " + (creator.ipRegion ?? "Not shared"), 12, TotiTheme.muted))
-    let posts = store.loungePosts(for: creator.id)
-    heading("Posts (\(posts.count))")
-    if posts.isEmpty { content.addArrangedSubview(label("No music stories here yet.", 15, TotiTheme.muted)) }
-    for post in posts {
-      content.addArrangedSubview(profilePostButton(post) { [weak self] in
+    if let region = current.ipRegion, !region.isEmpty { content.addArrangedSubview(label("IP: " + region, 12, TotiTheme.muted)) }
+    let posts = store.loungePosts(for: creator.id).filter { !$0.isEditorial && !$0.isDraft }
+    heading("Works")
+    content.addArrangedSubview(label(totiProfileCollectionCount(posts.count, suffix: store.isOnlineMode ? "loaded" : ""), 12, TotiTheme.muted))
+    if posts.isEmpty {
+      content.addArrangedSubview(profilePaper([
+        label("A story is still to come.", 23, TotiTheme.plum, title: true),
+        label("Published music posts will appear here.", 15, TotiTheme.muted),
+      ]))
+    }
+    let tiles = posts.map { post in
+      profilePostCard(post, store: store, openAuthor: { [weak self] in
         guard let self else { return }
+        openProfileAuthor(post.author, from: self)
+      }) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
         self.push(LoungeDetailController(store: self.store, postID: post.id))
-      })
+      }
     }
+    totiProfileGrid(tiles, to: content, singleColumn: traitCollection.preferredContentSizeCategory.isAccessibilityCategory)
+
   }
 
   /// Only mutual follows show Message. Otherwise Follow fills its former space.
@@ -238,14 +533,14 @@ final class CreatorController: StackScreen {
     }
   }
   private func openChat() {
-    guard store.isMutualProfile(creator) else { return }
+    guard isAccountContextCurrent, store.isMutualProfile(creator) else { return }
     if let nav = navigationController,
       nav.viewControllers.dropLast().last is ConversationController
     {
       nav.popViewController(animated: true)
       return
     }
-    if let person = MusicChatCatalog.people.first(where: { $0.id == creator.id }) {
+    if !store.isOnlineMode, let person = MusicChatCatalog.people.first(where: { $0.id == creator.id }) {
       push(ConversationController(store: store, conversation: person))
       return
     }
@@ -254,8 +549,10 @@ final class CreatorController: StackScreen {
       return
     }
     Task {
-      if await store.openCreatorConversation(creator),
-        let conversation = store.chatConversations.first(where: { $0.creator?.id == creator.id })
+      guard isAccountContextCurrent, store.isMutualProfile(creator) else { return }
+      let opened = await store.openCreatorConversation(creator)
+      guard isAccountContextCurrent, store.isMutualProfile(creator) else { return }
+      if opened, let conversation = store.chatConversations.first(where: { $0.creator?.id == creator.id })
       {
         push(ConversationController(store: store, conversation: conversation))
       } else if store.isCreatorBlocked(creator.id) {
@@ -266,27 +563,29 @@ final class CreatorController: StackScreen {
     }
   }
   private func ownerPortrait(size: CGFloat) -> TotiPhoto {
-    let photo = TotiPhoto(
-      asset: portraitAsset(creator.avatarAsset, personID: creator.id), size: size, round: true)
-    if creator.isLocalOwner, let image = store.ownerAvatarImage() {
-      photo.image = image
-    }
+    let current = store.isOnlineMode ? UUID(uuidString: creator.id).map { store.onlineCreator($0) } : nil
+    let photo = TotiPhoto(asset: portraitAsset(current?.avatarAsset ?? creator.avatarAsset, personID: creator.id), size: size, round: true)
+    if current?.isLocalOwner == true || creator.isLocalOwner { store.configureOwnerAvatar(photo) }
     return photo
   }
 }
 final class EditProfileController: StackScreen, PHPickerViewControllerDelegate {
+  private let entryGeneration = TotiBackend.shared.generation
+  private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
   private var name = field("Name"), bio = field("Biography")
   private let portrait = TotiPhoto(size: 96, round: true)
+  private var editingProfile = LocalProfile()
   private var chosenPhoto: Data?
   private var picking = false
+  private var saving = false
+  private let photoPreparationStatus = label("", 13, TotiTheme.muted)
   override func build() {
     super.build()
     title = "Edit profile"
+    editingProfile = store.library.profile
     name.text = store.library.profile.displayName
     bio.text = store.library.profile.biography
-    portrait.image =
-      store.ownerAvatarImage()
-      ?? UIImage(named: portraitAsset(nil, personID: "local-owner"))
+    store.configureOwnerAvatar(portrait)
     portrait.isAccessibilityElement = false
     let ring = UIButton(type: .custom)
     ring.accessibilityLabel = "Change photo"
@@ -309,17 +608,32 @@ final class EditProfileController: StackScreen, PHPickerViewControllerDelegate {
     let header = stack([ring, change], spacing: 12)
     header.alignment = .center
     content.addArrangedSubview(header)
+    photoPreparationStatus.isHidden = true
+    content.addArrangedSubview(photoPreparationStatus)
+    if store.isOnlineMode {
+      content.addArrangedSubview(label("Your current approved avatar stays visible while a replacement is reviewed.", 13, TotiTheme.muted))
+      if let review = avatarReviewPreview(store.library.profile) { content.addArrangedSubview(review) }
+    }
     content.addArrangedSubview(name)
     content.addArrangedSubview(bio)
     content.addArrangedSubview(
       actionButton("Save", icon: .check, primary: true) { [weak self] in
-        guard let self else { return }
-        var profile = self.store.library.profile
+        guard let self, self.entryAccountIsCurrent else { return }
+        guard !self.picking else { self.message("Your photo is still being prepared. Please try again in a moment."); return }
+        guard !self.saving, !self.store.isBusy else { return }
+        var profile = self.editingProfile
         profile.displayName = self.name.text ?? ""
         profile.biography = self.bio.text ?? ""
         let photo = self.chosenPhoto
+        self.saving = true
+        self.content.isUserInteractionEnabled = false
         Task {
-          if await self.store.saveProfile(profile, avatarJPEG: photo) {
+          guard self.entryAccountIsCurrent else { return }
+          let saved = await self.store.saveProfile(profile, avatarJPEG: photo)
+          guard self.entryAccountIsCurrent else { return }
+          self.saving = false
+          self.content.isUserInteractionEnabled = true
+          if saved {
             if self.navigationController?.viewControllers.first == self {
               self.dismiss(animated: true)
             } else {
@@ -334,7 +648,8 @@ final class EditProfileController: StackScreen, PHPickerViewControllerDelegate {
       })
   }
   private func choosePhoto() {
-    guard !picking, !store.isBusy else { return }
+    guard entryAccountIsCurrent else { return }
+    guard !picking, !saving, !store.isBusy else { return }
     var configuration = PHPickerConfiguration(photoLibrary: .shared())
     configuration.filter = .images
     configuration.selectionLimit = 1
@@ -344,30 +659,62 @@ final class EditProfileController: StackScreen, PHPickerViewControllerDelegate {
     present(picker, animated: true)
   }
   func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    guard entryAccountIsCurrent else { picker.dismiss(animated: false); return }
     picker.dismiss(animated: true)
     guard let provider = results.first?.itemProvider else { return }
     picking = true
-    provider.loadDataRepresentation(forTypeIdentifier: UTType.image.identifier) {
+    photoPreparationStatus.isHidden = false
+    photoPreparationStatus.text = "Preparing photo…"
+    guard let identifier = provider.registeredTypeIdentifiers.first(where: { UTType($0)?.conforms(to: .image) == true }) else {
+      picking = false
+      photoPreparationStatus.text = "Photo could not be opened. Choose another photo."
+      message("That photo couldn't be opened. Please choose another.")
+      return
+    }
+    provider.loadDataRepresentation(forTypeIdentifier: identifier) {
       [weak self] data, _ in
-      let data = data
+      let data = data.flatMap(LoungePhotoImport.normalizedJPEG)
       Task { @MainActor in
-        guard let self else { return }
+        guard let self, self.entryAccountIsCurrent else { return }
         self.picking = false
-        guard let data, data.count <= 30 * 1024 * 1024, UIImage(data: data) != nil else {
+        guard let data else {
+          self.photoPreparationStatus.text = "Photo could not be prepared. Your previous selection is kept."
           self.message("Choose another photo.")
           return
         }
         self.chosenPhoto = data
+        self.photoPreparationStatus.text = self.store.isOnlineMode ? "Ready to upload when you save. Your replacement will await review." : "Ready to save on this device."
+        self.portrait.configure(asset: nil)
         self.portrait.image = UIImage(data: data)
       }
     }
   }
 }
+@MainActor private func avatarReviewPreview(_ profile: LocalProfile) -> UIView? {
+  guard let notice = mediaReviewNotice(status: profile.avatarMediaStatus, feedback: profile.avatarMediaFeedback) else { return nil }
+  var views: [UIView] = []
+  if let revision = profile.avatarPendingMediaRevisionID {
+    let preview = TotiPhoto(asset: "remote-media:" + revision.uuidString, size: 72, round: true)
+    preview.isAccessibilityElement = true
+    preview.accessibilityLabel = "Your private avatar review preview"
+    let row = stack([preview, notice], axis: .horizontal, spacing: 12)
+    row.alignment = .center
+    views.append(row)
+  } else { views.append(notice) }
+  return stack(views)
+}
+
 final class SettingsController: StackScreen {
   override func refresh() {
     guard isViewLoaded else { return }
     clear()
     title = "Settings"
+    if store.isOnlineMode {
+      content.addArrangedSubview(actionButton("Local archive", icon: .notebook) { [weak self] in
+        guard let self else { return }
+        self.push(LegacyArchiveController(store: self.store))
+      })
+    }
     content.addArrangedSubview(
       actionButton("Edit profile", icon: .me) { [weak self] in
         guard let self else { return }
@@ -384,6 +731,12 @@ final class SettingsController: StackScreen {
       guard let self else { return }
       self.push(MediaCreditsController(store: self.store))
     })
+    if store.isOnlineMode {
+      content.addArrangedSubview(actionButton("Editorial preferences", icon: .me) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.push(TotiEditorialPreferencesController(store: self.store))
+      })
+    }
     let blocked = store.library.contentSafety?.blockedCreators ?? [:]
     let blockedTitle = blocked.isEmpty ? "Blocked" : "Blocked (\(blocked.count))"
     let blockedButton = actionButton(blockedTitle, icon: .block) { [weak self] in
@@ -402,16 +755,24 @@ final class SettingsController: StackScreen {
     let logout = actionButton("Log out", icon: .logout) { [weak self] in
       guard let self else { return }
       self.confirm(
-        "Log out?", message: "Your posts, notes and drafts will stay on this device.",
+        "Log out?", message: self.store.isOnlineMode ? "This device will leave the session. Guest accounts cannot be recovered after logout. Their cloud content remains until account deletion." : "Your posts, notes and drafts will stay on this device.",
         button: "Log out"
       ) { self.save { await self.store.logOut() } }
+    }
+    if store.isOnlineMode {
+      content.addArrangedSubview(actionButton("Retry pending changes", icon: .refresh) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.confirm("Retry pending changes?", message: "Retry changes previously submitted by this account, including messages and deletions. Each confirmed change is applied only once. Account deletion is not retried here.", button: "Retry") {
+          self.save { await self.store.retryPendingOnlineChanges() }
+        }
+      })
     }
     let delete = actionButton("Delete account", icon: .trash) { [weak self] in
       guard let self else { return }
       self.confirm(
         "Delete account?",
         message:
-          "This permanently deletes your profile, posts, notes, imported copies, interactions and drafts from this device. Original files in Photos are kept.",
+          self.store.isOnlineMode ? "This permanently deletes your online account, posts, notes, rooms and groups you own, including their associated replies and messages. Other members' accounts and independent content are not deleted. Your on-device archive and original Photos files are kept." : "This permanently deletes your profile, posts, notes, imported copies, interactions and drafts from this device. Original files in Photos are kept.",
         destructive: true, button: "Delete account"
       ) { self.save { await self.store.deleteLocalAccount() } }
     }
@@ -477,6 +838,7 @@ final class BlockedCreatorsController: StackScreen {
       label("Long press an artist to unblock them.", 14, TotiTheme.muted))
     for creator in blocked.values.sorted(by: { $0.name < $1.name }) {
       let row = BlockedAuthorRow(creator: creator)
+      row.accessibilityIdentifier = "blocked.author." + creator.id.lowercased()
       row.addGestureRecognizer(
         UILongPressGestureRecognizer(target: self, action: #selector(longPressAuthor(_:))))
       row.accessibilityCustomActions = [
@@ -497,7 +859,7 @@ final class BlockedCreatorsController: StackScreen {
     guard let creator = blocked[creatorID] else { return }
     confirm(
       "Unblock " + creator.name + "?",
-      message: "Their posts, comments and voice rooms can show again. This stays on this device.",
+      message: store.isOnlineMode ? "Their posts, comments and voice rooms can show again in your account." : "Their posts, comments and voice rooms can show again. This stays on this device.",
       button: "Unblock"
     ) { [weak self] in
       guard let self else { return }
@@ -533,31 +895,31 @@ private final class ReportedCard: UIControl {
   private static func visual(for item: ReportedContentItem, store: AppStore) -> UIView {
     switch item.kind {
     case .live, .shortVideo:
-      return commentRow(item) // Historical reports remain removable; retired playback has no route.
-    case .post:
-      return commentRow(item)
+      return commentRow(item, store: store) // Historical reports remain removable; retired playback has no route.
+    case .post, .profile:
+      return commentRow(item, store: store)
     case .party:
       if let room = room(for: item, store: store) {
         return musicRoomCard(room, animated: false, stretches: true)
       }
     case .phrase:
-      return commentRow(item) // Preserve removal of an older report without a retired feature route.
+      return commentRow(item, store: store) // Preserve removal of an older report without a retired feature route.
     case .comment:
-      return commentRow(item)
+      return commentRow(item, store: store)
     }
     return missing(item)
   }
 
   private static func room(for item: ReportedContentItem, store: AppStore) -> PartyRoom? {
-    if let room = MusicRoomCatalog.rooms.first(where: { $0.id == item.contentID }) { return room }
+    if let room = store.loungeVoiceRooms.first(where: { $0.id == item.contentID }) { return room }
     if let draft = store.library.roomDrafts.first(where: { $0.id.uuidString == item.contentID }) {
       return MusicRoomCatalog.room(from: draft)
     }
     return nil
   }
 
-  private static func commentRow(_ item: ReportedContentItem) -> UIView {
-    let photo = roundPortrait(asset: nil, size: 44, personID: item.creatorName)
+  private static func commentRow(_ item: ReportedContentItem, store: AppStore) -> UIView {
+    let photo = roundPortrait(asset: store.isOnlineMode ? "TotiMark" : nil, size: 44, personID: item.creatorName)
     let name = label(item.creatorName, 15, TotiTheme.plum, title: true)
     name.numberOfLines = 1
     let body = label(item.title, 16)
@@ -602,7 +964,7 @@ final class ReportedContentController: StackScreen {
       return
     }
     content.addArrangedSubview(
-      label("Long press a card to remove it. Reports stay on this device.", 14, TotiTheme.muted))
+      label(store.isOnlineMode ? "Submitted reports remain available for review. A submission does not mean moderation has completed." : "Long press a card to remove it. Reports stay on this device.", 14, TotiTheme.muted))
     let columns = traitCollection.preferredContentSizeCategory.isAccessibilityCategory ? 1 : 2
     let spacing: CGFloat = 12
     for start in stride(from: 0, to: reports.count, by: columns) {
@@ -627,6 +989,10 @@ final class ReportedContentController: StackScreen {
   }
   private func reportCard(_ item: ReportedContentItem) -> ReportedCard {
     let card = ReportedCard(item: item, store: store)
+    if store.isOnlineMode {
+      card.accessibilityHint = "Submitted report"
+      return card
+    }
     card.addGestureRecognizer(
       UILongPressGestureRecognizer(target: self, action: #selector(longPressReport(_:))))
     card.accessibilityCustomActions = [

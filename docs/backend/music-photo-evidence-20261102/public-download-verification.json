@@ -1,0 +1,106 @@
+[
+  {
+    "file": "LoungeVinylListening.jpg",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeVinylListening.jpg",
+    "size": 641574,
+    "sha256": "8b4d117e934fb78b00e97483efcf7bfec96163872d8b038f12bb31b029893ca5",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "Catalog-LoungeVinylListening.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Catalog-LoungeVinylListening.json",
+    "size": 164,
+    "sha256": "4d06a85a5ba0264ec586fa9e2aee95ed9cc1915cd1ec944559bbf71a89fd0bcc",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "LoungePianoMelody.jpg",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungePianoMelody.jpg",
+    "size": 392797,
+    "sha256": "6f74187c9853f4189c6390cd66cbb78d11be192230729c5e0cf4b02a919b3434",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "Catalog-LoungePianoMelody.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Catalog-LoungePianoMelody.json",
+    "size": 161,
+    "sha256": "684f3e76ad5fefd78cdb6d99a725b6dd0e9365f65e559460688f7cca4548a658",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "LoungeGuitarRehearsal.jpg",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeGuitarRehearsal.jpg",
+    "size": 69209,
+    "sha256": "b1383581b3d7f12f9a500f89a0b93b7cec9426ba52b40c5ad25ecad72370ec1c",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "Catalog-LoungeGuitarRehearsal.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Catalog-LoungeGuitarRehearsal.json",
+    "size": 165,
+    "sha256": "e7accdd04a890dd45ad41b7822f1bcbb960560710a3e9d69689598f34554c55d",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "LoungeStudioMixing.jpg",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeStudioMixing.jpg",
+    "size": 104554,
+    "sha256": "7ac946143aa46e43f8bbb1ab58ea21e30ef4410a38aff36ff58708bf83b9c764",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "Catalog-LoungeStudioMixing.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Catalog-LoungeStudioMixing.json",
+    "size": 162,
+    "sha256": "99abc533144fadc6656eb3a4e9a3b5f7fb05946ab11c2d88a1e164e61649a2a4",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "LoungeConcertLights.jpg",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeConcertLights.jpg",
+    "size": 111845,
+    "sha256": "da2478377676464b44cf9433a3f9c840cbc8fc7d0982415aa4a4abfeeb5a4f4d",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "Catalog-LoungeConcertLights.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Catalog-LoungeConcertLights.json",
+    "size": 163,
+    "sha256": "78097dba85439a67e3120b3840a08048e5ffa78a86cd7fd401711022931fc543",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "LoungeMusicCorner.jpg",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/LoungeMusicCorner.jpg",
+    "size": 222306,
+    "sha256": "1058138aaf2c17f14937d77d5f35e233aa6b31df65a8d9bfa9a4d3e0d77c35bf",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "Catalog-LoungeMusicCorner.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Catalog-LoungeMusicCorner.json",
+    "size": 161,
+    "sha256": "9142853fbae35f7cbbdc39c18e142a59d4b7b3344861f0f7bde7a1f4e76fe7e0",
+    "anonymousRead": true,
+    "exactMatch": true
+  },
+  {
+    "file": "MediaCredits.json",
+    "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/MediaCredits.json",
+    "size": 17512,
+    "sha256": "f31da86cff22e4fcc68f31ea1ae6564193f20301eef662ab7d2cca853cdfb335",
+    "anonymousRead": true,
+    "exactMatch": true
+  }
+]

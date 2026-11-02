@@ -3,7 +3,7 @@ import UIKit
 
 final class PartyDiscoveryController: StackScreen {
   private let discoveryStore = PartyDiscoveryStore()
-  private var rooms: [PartyRoom] { discoveryStore.rooms }
+  private var rooms: [PartyRoom] { store.isOnlineMode ? store.onlineRooms : discoveryStore.rooms }
   private var category: PartyCategory?
   private let categories = BubbleTrack(
     titles: ["All"] + PartyCategory.allCases.map(\.title), index: 0, barHeight: 44)
@@ -24,13 +24,7 @@ final class PartyDiscoveryController: StackScreen {
     // The list is pinned to the page keyboard guide. Ignore the dock inset so cards pass under it.
     pinListUnderDock()
     let create = iconButton(.plus, "Create party") { [weak self] in
-      guard let self else { return }
-      let screen = PartyCreationController(store: self.store)
-      guard let source = self.createButton else {
-        self.presentScreen(screen, full: true)
-        return
-      }
-      self.presentExpanded(from: source, screen)
+      self?.createRoom()
     }
     createButton = create
     create.backgroundColor = TotiTheme.coral
@@ -58,7 +52,7 @@ final class PartyDiscoveryController: StackScreen {
     discoveryStore.objectWillChange.receive(on: DispatchQueue.main).sink { [weak self] _ in
       self?.refresh()
     }.store(in: &tokens)
-    Task { await discoveryStore.refresh(reorder: false) }
+    if !store.isOnlineMode { Task { await discoveryStore.refresh(reorder: false) } }
   }
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
@@ -75,16 +69,21 @@ final class PartyDiscoveryController: StackScreen {
   override func refresh() {
     guard isViewLoaded else { return }
     cardList.arrangedSubviews.forEach { $0.removeFromSuperview() }
-    if discoveryStore.loading {
+    if !store.isOnlineMode && discoveryStore.loading {
       let spinner = UIActivityIndicatorView(style: .medium)
       spinner.startAnimating()
       cardList.addArrangedSubview(spinner)
     }
-    if let error = discoveryStore.failure {
+    if !store.isOnlineMode, let error = discoveryStore.failure {
       cardList.addArrangedSubview(
         actionButton(error + " Try again", icon: .refresh) { [weak self] in self?.reloadRooms() })
     }
-    let visible = (store.library.roomDrafts.map(MusicRoomCatalog.room(from:)) + rooms).filter {
+    appendOnlineControls(to: cardList)
+    if store.isOnlineMode, let error = store.onlineCommunityRoomsError {
+      appendOnlineRetry(to: cardList, error: "Community room artwork could not be loaded. " + error)
+    }
+    let source = store.isOnlineMode ? store.loungeVoiceRooms + store.onlineCommunityRooms : (store.library.roomDrafts.map(MusicRoomCatalog.room(from:)) + rooms)
+    let visible = source.filter {
       room in
       !hidesRoom(room)
         && (category == nil || room.category == category)
@@ -92,7 +91,11 @@ final class PartyDiscoveryController: StackScreen {
           || (room.title + room.description).localizedCaseInsensitiveContains(query))
     }
     if visible.isEmpty {
-      cardList.addArrangedSubview(label("No rooms match. Try another genre or search."))
+      let unfiltered = category == nil && query.isEmpty
+      cardList.addArrangedSubview(label(unfiltered ? "No voice rooms yet. Create a room to start the conversation." : "No rooms match. Try another genre or search."))
+      cardList.addArrangedSubview(actionButton("Create a voice room", icon: .plus, primary: true) { [weak self] in
+        self?.createRoom()
+      })
     }
     let columns = traitCollection.preferredContentSizeCategory.isAccessibilityCategory ? 1 : 2
     for i in stride(from: 0, to: visible.count, by: columns) {
@@ -110,18 +113,52 @@ final class PartyDiscoveryController: StackScreen {
     return room.participants.contains { store.isCreatorBlocked($0.id) }
   }
   private func card(_ room: PartyRoom) -> UIView {
-    let button = musicRoomCard(room, animated: true) { [weak self] person in
-      guard let self else { return }
-      self.push(CreatorController(store: self.store, creator: .artist(person)))
+    let onPerson: ((PartyParticipant) -> Void)?
+    if room.isCommunityArtwork {
+      onPerson = nil
+    } else {
+      onPerson = { [weak self] person in
+        guard let self, self.isAccountContextCurrent else { return }
+        let creator = self.store.isOnlineMode ? UUID(uuidString: person.id).map(self.store.onlineCreator) ?? .artist(person) : .artist(person)
+        self.push(CreatorController(store: self.store, creator: creator))
+      }
     }
+    let button = musicRoomCard(room, animated: !room.isCommunityArtwork, onPerson: onPerson)
     button.addAction(
       UIAction { [weak self] _ in
-        guard let self else { return }
-        self.presentScreen(PartyRoomController(store: self.store, room: room), full: true)
+        guard let self, self.isAccountContextCurrent else { return }
+        let selected: PartyRoom
+        if room.isCommunityArtwork {
+          guard let current = self.store.onlineCommunityRooms.first(where: { $0.id == room.id }) else { return }
+          selected = current
+        } else if self.store.isOnlineMode {
+          guard let current = self.store.onlineRooms.first(where: { $0.id == room.id }), !self.hidesRoom(current) else {
+            self.message("This room is no longer available. Refresh Voice and try again.")
+            return
+          }
+          selected = current
+        } else {
+          selected = room
+        }
+        self.presentScreen(PartyRoomController(store: self.store, room: selected), full: true)
       }, for: .touchUpInside)
+    button.accessibilityIdentifier = "voice.room.cover." + room.id
     return button
   }
+  private func createRoom() {
+    guard isAccountContextCurrent else { return }
+    let screen = PartyCreationController(store: store)
+    guard let source = createButton else {
+      presentScreen(screen, full: true)
+      return
+    }
+    presentExpanded(from: source, screen)
+  }
   private func reloadRooms() {
+    if store.isOnlineMode {
+      Task { _ = await store.refreshOnline(); scroll.refreshControl?.endRefreshing() }
+      return
+    }
     guard !discoveryStore.loading else { return }
     scroll.refreshControl?.beginRefreshing()
     Task {
@@ -144,6 +181,7 @@ final class PartyDiscoveryController: StackScreen {
     }
   }
 }
+
 /// The voice-room card. `animated` is only for the live list; a saved report keeps the still card.
 @MainActor func musicRoomCard(
   _ room: PartyRoom, animated: Bool, stretches: Bool = false,
@@ -155,7 +193,8 @@ final class PartyDiscoveryController: StackScreen {
   button.isAccessibilityElement = true
   button.accessibilityTraits = .button
   button.accessibilityLabel =
-    "\(room.title), \(room.type.rawValue), \(room.onlineCount ?? 0) people"
+    "\(room.title), " + (room.isCommunityArtwork ? "illustrative community room" : "\(room.type.rawValue), "
+    + (room.onlineCount.map { "\($0) people" } ?? "\(room.participants.count) members"))
   let frame = UIView()
   frame.isUserInteractionEnabled = false
   frame.backgroundColor = .black
@@ -164,6 +203,7 @@ final class PartyDiscoveryController: StackScreen {
   frame.clipsToBounds = true
   frame.translatesAutoresizingMaskIntoConstraints = false
   let cover = TotiPhoto(asset: MusicPhotography.cover(for: room))
+  if room.isCommunityArtwork, let url = room.coverURL { cover.load(url) }
   frame.addSubview(cover)
   cover.pin(to: frame)
   let shade = UIView()
@@ -198,8 +238,12 @@ final class PartyDiscoveryController: StackScreen {
       }
     }
   }
-  people.addArrangedSubview(label("  \(room.onlineCount ?? 0)", 12, .white))
-  let caption = stack([title, people], spacing: 6)
+  people.addArrangedSubview(label("  " + (room.isCommunityArtwork ? "Room artwork" : (room.onlineCount.map { "\($0)" } ?? "\(room.participants.count) members")), 12, .white))
+  var captionViews: [UIView] = [title, people]
+  if room.isCommunityArtwork {
+    captionViews.insert(label("TOTI COMMUNITY", 10, .white), at: 0)
+  }
+  let caption = stack(captionViews, spacing: 6)
   caption.isUserInteractionEnabled = false
   shade.addSubview(caption)
   caption.pin(to: shade, insets: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8))
@@ -249,9 +293,11 @@ final class PartyDiscoveryController: StackScreen {
 }
 
 @MainActor private func avatar(_ participant: PartyParticipant, size: CGFloat) -> UIView {
-  TotiPhoto(
+  let photo = TotiPhoto(
     asset: participant.asset ?? MusicPhotography.creatorAvatar(for: participant.id),
     size: size, round: true)
+  if let url = participant.artworkURL { photo.load(url) }
+  return photo
 }
 
 private final class PartyCardControl: UIControl {
@@ -334,11 +380,15 @@ private final class SeatMeter: UIView {
 private final class PartySeatView: UIView {
   let participant: PartyParticipant
   var onOpen: (() -> Void)?
+  private let portrait: TotiPhoto
+  private var ownerAvatarAsset: String?
+  private var ownerAvatarImage: UIImage?
   private let meter = SeatMeter()
   private let micOff = UIImageView(image: TotiIcon.microphoneOffIvory.image(size: 18))
 
   init(participant: PartyParticipant, image: UIImage? = nil) {
     self.participant = participant
+    portrait = TotiPhoto(asset: participant.asset ?? MusicPhotography.creatorAvatar(for: participant.id), size: 62, round: true)
     super.init(frame: .zero)
     let ring = UIView()
     ring.backgroundColor = TotiTheme.coral.withAlphaComponent(0.55)
@@ -347,14 +397,9 @@ private final class PartySeatView: UIView {
     ring.layer.cornerRadius = 35
     ring.clipsToBounds = true
     ring.translatesAutoresizingMaskIntoConstraints = false
-    let photo: UIView
-    if let image {
-      let view = TotiPhoto(size: 62, round: true)
-      view.image = image
-      photo = view
-    } else {
-      photo = avatar(participant, size: 62)
-    }
+    let photo = portrait
+    if let image { photo.image = image }
+    else if let url = participant.artworkURL { photo.load(url) }
     photo.translatesAutoresizingMaskIntoConstraints = false
     photo.isAccessibilityElement = false
     ring.addSubview(photo)
@@ -397,6 +442,7 @@ private final class PartySeatView: UIView {
       micOff.bottomAnchor.constraint(equalTo: ring.bottomAnchor, constant: -6),
     ])
     isAccessibilityElement = true
+    accessibilityIdentifier = "voice.seat." + participant.id
     accessibilityCustomActions = [
       UIAccessibilityCustomAction(name: "Open \(participant.name)'s profile") { [weak self] _ in
         guard let open = self?.onOpen else { return false }
@@ -408,6 +454,15 @@ private final class PartySeatView: UIView {
   }
 
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+
+  func refreshOwnerAvatar(store: AppStore) {
+    let asset = store.ownerAvatarAsset
+    let image = store.ownerAvatarImage()
+    guard ownerAvatarAsset != asset || ownerAvatarImage !== image else { return }
+    ownerAvatarAsset = asset
+    ownerAvatarImage = image
+    store.configureOwnerAvatar(portrait)
+  }
 
   func apply(speaking: Bool, muted: Bool) {
     micOff.isHidden = !muted
@@ -521,7 +576,7 @@ private final class ReportPress: UILongPressGestureRecognizer {
 
 final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewDelegate {
   private struct RoomLine {
-    let id = UUID()
+    var id = UUID()
     var name: String
     var text: String
     var replyName: String?
@@ -541,6 +596,17 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   private var mutedSeatIDs: Set<String> = []
   private var speakingIDs: Set<String> = []
   private var speakClear: Task<Void, Never>?
+  private var conversationLoop: Task<Void, Never>?
+  private var conversationSequence = 0
+  private var roomVisible = false
+  private var hiddenLocalMessages: Set<UUID> = []
+  private let seatRow = UIStackView()
+  private var seatsWidth: NSLayoutConstraint?
+  private let entryGeneration = TotiBackend.shared.generation
+  private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
+  private var onlineJoined = false
+  private var onlineJoining = false
+  private var usesOnlineRoom: Bool { store.isOnlineMode && !room.isCommunityArtwork }
   init(store: AppStore, room: PartyRoom) {
     self.room = room
     super.init(store: store, title: room.title)
@@ -548,12 +614,12 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func build() {
     let me = PartyParticipant(
-      id: "local-owner", asset: MusicPhotography.creatorAvatar(for: "local-owner"),
+      id: "local-owner", asset: store.ownerAvatarAsset,
       name: store.library.profile.displayName)
     let others = Array(room.participants.prefix(3))
-    let visible = [me] + others
-    if let closed = others.first { mutedSeatIDs = [closed.id] }
-    let row = UIStackView()
+    let visible = usesOnlineRoom ? room.participants : [me] + others
+    if !usesOnlineRoom, let closed = others.first { mutedSeatIDs = [closed.id] }
+    let row = seatRow
     row.axis = .horizontal
     row.alignment = .top
     row.spacing = 8
@@ -581,6 +647,7 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     let peopleWidth = CGFloat(visible.count) * 78 + CGFloat(max(visible.count - 1, 0)) * 8
     let scrollerWidth = scroller.widthAnchor.constraint(equalToConstant: peopleWidth)
     scrollerWidth.priority = UILayoutPriority(999)
+    seatsWidth = scrollerWidth
     band.addSubview(lineup)
     lineup.translatesAutoresizingMaskIntoConstraints = false
     table.backgroundColor = .clear
@@ -600,6 +667,13 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     }
     speakerButton = speaker
     micButton = mic
+    if usesOnlineRoom {
+      speaker.setImage(TotiIcon.mutedIvory.image(size: 32), for: .normal)
+      speaker.accessibilityLabel = "Audio unavailable"
+      mic.setImage(TotiIcon.microphoneOffIvory.image(size: 32), for: .normal)
+      mic.accessibilityLabel = "Microphone unavailable"
+      input.isEnabled = false
+    }
     let send = iconButton(.send, "Send") { [weak self] in self?.send() }
     let gift = iconButton(.gift, "Send a gift") { [weak self] in self?.showGifts() }
     let tools = stack([speaker, mic], axis: .horizontal, spacing: 0)
@@ -649,12 +723,32 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
         equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -8),
       composer.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -6),
     ])
-    let connectionNotice = label("Local room · real-time voice is not connected.\nMessages stay in this room while it is open.", 14, TotiTheme.muted)
+    let connectionNotice = label(room.isCommunityArtwork ? "Illustrative conversation · messages stay in this room.\nLive audio is not connected." : (store.isOnlineMode ? "Room messages are stored online.\nLive audio is not connected." : "Local room · real-time voice is not connected.\nMessages stay in this room while it is open."), 14, TotiTheme.muted)
     connectionNotice.textAlignment = .center
     connectionNotice.frame = CGRect(x: 0, y: 0, width: 300, height: 64)
     table.tableHeaderView = connectionNotice
-    newMessages = actionButton("New messages", tone: .coral, compact: true) { [weak self] in
-      self?.scrollBottom()
+    if store.isOnlineMode && !room.isCommunityArtwork {
+      let refresh = UIRefreshControl()
+      refresh.addAction(UIAction { [weak self] _ in
+        guard let self, self.entryAccountIsCurrent else { return }
+        Task {
+          guard self.entryAccountIsCurrent else { return }
+          await self.store.loadOnlineThread(kind: "message", parentID: self.room.id)
+          guard self.entryAccountIsCurrent else { return }
+          self.table.refreshControl?.endRefreshing()
+        }
+      }, for: .valueChanged)
+      table.refreshControl = refresh
+    }
+    if room.isCommunityArtwork {
+      messages = room.participants.map {
+        RoomLine(name: $0.name, text: "Ready to talk about a favorite song?", replyName: nil, replyText: nil)
+      }
+    }
+    newMessages = actionButton(usesOnlineRoom ? "Load more messages" : "New messages", tone: .coral, compact: true) { [weak self] in
+      guard let self, self.entryAccountIsCurrent else { return }
+      if self.usesOnlineRoom { Task { guard self.entryAccountIsCurrent else { return }; await self.store.loadMoreOnline() } }
+      else { self.scrollBottom() }
     }
     newMessages.isHidden = true
     view.addSubview(newMessages)
@@ -668,23 +762,72 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
       barButton(iconButton(.info, "Party details") { [weak self] in self?.showInfo() }),
       barButton(iconButton(.share, "Share party") { [weak self] in self?.showShare() }),
     ]
+    if store.isOnlineMode && !room.isCommunityArtwork {
+      navigationItem.rightBarButtonItems?.append(barButton(iconButton(.logout, "Leave room") { [weak self] in
+        guard let self, self.entryAccountIsCurrent else { return }
+        Task {
+          guard self.entryGeneration == TotiBackend.shared.generation else { return }
+          let left = await self.store.leaveOnlineRoom(self.room)
+          guard self.entryAccountIsCurrent else { return }
+          if left {
+            self.onlineJoined = false
+            (self.navigationController ?? self).dismiss(animated: true)
+          } else { self.message(self.store.lastSaveError ?? "The room could not be left. Try again.") }
+        }
+      }))
+      onDismiss = { [weak self] in
+        guard let self, self.onlineJoined, self.entryGeneration == TotiBackend.shared.generation else { return }
+        Task { guard self.entryAccountIsCurrent else { return }; _ = await self.store.leaveOnlineRoom(self.room) }
+      }
+    }
     NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification).sink {
       [weak self] _ in self?.stop()
     }.store(in: &tokens)
+    NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification).sink {
+      [weak self] _ in self?.startConversation()
+    }.store(in: &tokens)
+  }
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    roomVisible = true
+    startConversation()
+    guard store.isOnlineMode, !room.isCommunityArtwork, !onlineJoined, !onlineJoining, entryGeneration == TotiBackend.shared.generation else { return }
+    onlineJoining = true
+    Task { [weak self] in
+      guard let self, self.entryAccountIsCurrent else { return }
+      let joined = await self.store.joinOnlineRoom(self.room)
+      guard self.entryAccountIsCurrent else { return }
+      self.onlineJoined = joined
+      if self.onlineJoined { await self.store.loadOnlineThread(kind: "message", parentID: self.room.id) }
+      guard self.entryAccountIsCurrent else { return }
+      self.onlineJoining = false
+      self.refresh()
+      if !self.onlineJoined { self.message(self.store.lastSaveError ?? "The room could not be joined. Return to Voice and retry.") }
+    }
   }
   private func openArtist(_ person: PartyParticipant) {
-    let creator =
-      person.id == "local-owner"
-      ? CreatorProfile.signedIn(store.library.profile) : .artist(person)
+    guard entryAccountIsCurrent else { return }
+    if room.isCommunityArtwork && person.id != "local-owner" {
+      push(CommunityRoomCharacterController(store: store, person: person, room: room))
+      return
+    }
+    let creator: CreatorProfile
+    if store.isOnlineMode, let id = UUID(uuidString: person.id) { creator = store.onlineCreator(id) }
+    else { creator = person.id == "local-owner" ? CreatorProfile.signedIn(store.library.profile) : .artist(person) }
     push(CreatorController(store: store, creator: creator))
   }
   private func showGifts() {
     let people = room.participants.filter { $0.id != "local-owner" && !store.isCreatorBlocked($0.id) }
       .map { GiftRecipient(id: $0.id, name: $0.name) }
-    openGifts(GiftContext(surface: .voiceRoom, sourceID: room.id, sourceTitle: room.title,
-                          recipients: people), picksRecipient: true)
+    let context = GiftContext(surface: .voiceRoom, sourceID: room.id, sourceTitle: room.title, recipients: people)
+    if store.isOnlineMode {
+      presentScreen(GiftsController(store: store, context: context, picksRecipient: true))
+    } else {
+      openGifts(context, picksRecipient: true)
+    }
   }
   private func toggleSpeaker() {
+    guard !usesOnlineRoom else { return }
     speakerOn.toggle()
     speakerButton?.setImage(
       (speakerOn ? TotiIcon.speakerIvory : .mutedIvory).image(size: 32), for: .normal)
@@ -696,6 +839,7 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     refreshSeats()
   }
   private func toggleMic() {
+    guard !usesOnlineRoom else { return }
     micOn.toggle()
     if micOn {
       mutedSeatIDs.remove("local-owner")
@@ -711,23 +855,60 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   private func refreshSeats() {
     for seat in seats {
       seat.apply(
-        speaking: speakingIDs.contains(seat.participant.id),
-        muted: mutedSeatIDs.contains(seat.participant.id))
+        speaking: !usesOnlineRoom && speakingIDs.contains(seat.participant.id),
+        muted: usesOnlineRoom || mutedSeatIDs.contains(seat.participant.id))
     }
   }
   private func showInfo() {
     let info = PartyInfoController(store: store, room: room)
     info.onResolved = { [weak self] in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       (self.navigationController ?? self).dismiss(animated: true)
     }
     presentScreen(info)
   }
   override func refresh() {
     guard isViewLoaded else { return }
-    let kept = messages.filter { !store.isCommentReported($0.id.uuidString) }
+    if entryAccountIsCurrent {
+      let ownerID = TotiBackend.shared.accountID?.uuidString.lowercased() ?? "local-owner"
+      for seat in seats where seat.participant.id == "local-owner" || seat.participant.id.lowercased() == ownerID {
+        seat.refreshOwnerAvatar(store: store)
+      }
+    }
+    if usesOnlineRoom {
+      guard entryGeneration == TotiBackend.shared.generation else {
+        messages = []; table.reloadData(); input.text = ""; input.isEnabled = false
+        return
+      }
+      let current = store.onlineRooms.first { $0.id == room.id }
+      input.isEnabled = onlineJoined && current != nil
+      let members = current?.participants ?? []
+      seatRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
+      seats = []
+      for member in members {
+        let seat = PartySeatView(participant: member)
+        if let owner = TotiBackend.shared.accountID, member.id.lowercased() == owner.uuidString.lowercased() {
+          seat.refreshOwnerAvatar(store: store)
+        }
+        seat.onOpen = { [weak self] in self?.openArtist(member) }
+        seats.append(seat)
+        seatRow.addArrangedSubview(seat)
+      }
+      seatsWidth?.constant = max(1, CGFloat(members.count) * 78 + CGFloat(max(0, members.count - 1)) * 8)
+      refreshSeats()
+      messages = store.onlineRoomMessages(room).map { item in
+        RoomLine(id: UUID(uuidString: item.id) ?? UUID(), name: item.author, text: item.text, replyName: nil, replyText: nil)
+      }
+      table.reloadData()
+      newMessages.isHidden = !store.onlineHasMore
+      if let header = table.tableHeaderView as? UILabel {
+        header.text = store.onlineReadError ?? (current == nil ? "This room is no longer available." : "Room messages are stored online. Live audio is not connected.")
+      }
+      return
+    }
+    let kept = messages.filter { !hiddenLocalMessages.contains($0.id) && !store.isCommentReported($0.id.uuidString) }
     guard kept.count != messages.count else { return }
-    if let reply, store.isCommentReported(reply.id.uuidString) { clearReply() }
+    if let reply, hiddenLocalMessages.contains(reply.id) || store.isCommentReported(reply.id.uuidString) { clearReply() }
     messages = kept
     table.reloadData()
   }
@@ -816,11 +997,13 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     let name = title.isEmpty ? "this party" : title
     let text = "Come listen with me in \(name). Open Voice and look for this party."
     dismissCard { [weak self] in
-      guard let self else { return }
+      guard let self, self.entryAccountIsCurrent else { return }
       Task { [weak self] in
-        guard let self else { return }
-        if await self.store.sendChatMessage(text, to: person) {
-          self.message("Invite saved in your chat with \(person.name). It stays on this device.")
+        guard let self, self.entryAccountIsCurrent else { return }
+        let sent = await self.store.sendChatMessage(text, to: person)
+        guard self.entryAccountIsCurrent else { return }
+        if sent {
+          self.message(self.store.isOnlineMode ? "Invitation message saved in your conversation with \(person.name)." : "Invite saved in your chat with \(person.name). It stays on this device.")
         } else {
           self.message(self.store.lastSaveError ?? "That invite could not be saved.")
         }
@@ -835,9 +1018,28 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   }
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    roomVisible = false
     stop()
   }
+  private func startConversation() {
+    guard room.isCommunityArtwork, roomVisible, conversationLoop == nil,
+      entryAccountIsCurrent, !room.participants.isEmpty else { return }
+    conversationLoop = Task { [weak self] in
+      while !Task.isCancelled {
+        do { try await Task.sleep(for: .seconds(3)) } catch { break }
+        guard let self, self.entryAccountIsCurrent, self.roomVisible else { break }
+        guard self.presentedViewController == nil,
+          self.navigationController?.topViewController === self else { continue }
+        let person = self.room.participants[self.conversationSequence % self.room.participants.count]
+        let text = VoiceRoomChatScript.lines[self.conversationSequence % VoiceRoomChatScript.lines.count]
+        self.conversationSequence += 1
+        self.append([RoomLine(name: person.name, text: text, replyName: nil, replyText: nil)])
+      }
+    }
+  }
   private func stop() {
+    conversationLoop?.cancel()
+    conversationLoop = nil
     speakClear?.cancel()
     speakingIDs = []
     refreshSeats()
@@ -858,6 +1060,7 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     markSpeaking(lines)
   }
   private func markSpeaking(_ lines: [RoomLine]) {
+    guard !usesOnlineRoom else { return }
     speakClear?.cancel()
     guard speakerOn else {
       speakingIDs = []
@@ -890,6 +1093,21 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   private func send() {
     let text = (input.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     guard !text.isEmpty, text.count <= 200, CreationValidation.isEnglish(text) else { return }
+    if usesOnlineRoom {
+      guard onlineJoined, entryGeneration == TotiBackend.shared.generation else { return }
+      Task { [weak self] in
+        guard let self, self.entryAccountIsCurrent else { return }
+        let sent = await self.store.sendOnlineRoomMessage(text, room: self.room)
+        guard self.entryAccountIsCurrent else { return }
+        if sent {
+          self.input.text = ""
+          self.clearReply()
+          self.refresh()
+          self.scrollBottom()
+        } else { self.message(self.store.lastSaveError ?? "Your message could not be sent. Try again.") }
+      }
+      return
+    }
     let quote = reply
     append([
       RoomLine(name: "You", text: text, replyName: quote?.name, replyText: quote?.text)
@@ -902,6 +1120,7 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     messages.count
   }
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    guard messages.indices.contains(indexPath.row) else { return UITableViewCell() }
     let line = messages[indexPath.row]
     let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
     cell.backgroundColor = .clear
@@ -956,11 +1175,26 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   }
   private func openMessageReport(id: String, name: String, text: String) {
     guard name != "You" else { return }
+    if room.isCommunityArtwork {
+      showCard([
+        label("Report comment", 22, title: true),
+        label(name + ": " + text, 15, TotiTheme.muted),
+        label("You can hide this illustrative message for this visit. No report will be submitted.", 14, TotiTheme.muted),
+        actionButton("Hide message", icon: .flag, tone: .danger) { [weak self] in
+          guard let self, self.entryAccountIsCurrent, let messageID = UUID(uuidString: id) else { return }
+          self.hiddenLocalMessages.insert(messageID)
+          self.dismissCard()
+          self.refresh()
+        },
+        actionButton("Cancel") { [weak self] in self?.dismissCard() }
+      ])
+      return
+    }
     showCard([
       label("Report comment", 22, title: true),
       label(name + ": " + text, 15, TotiTheme.muted),
       actionButton("Report", icon: .flag, tone: .danger) { [weak self] in
-        guard let self else { return }
+        guard let self, self.entryAccountIsCurrent else { return }
         self.dismissCard {
           self.presentScreen(
             SafetyController(
@@ -973,13 +1207,40 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     ])
   }
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard messages.indices.contains(indexPath.row), !usesOnlineRoom else { return }
     let line = messages[indexPath.row]
     reply = line
     replyChip.show(name: line.name, text: line.text)
     input.becomeFirstResponder()
   }
   deinit {
+    conversationLoop?.cancel()
     speakClear?.cancel()
+  }
+}
+
+final class CommunityRoomCharacterController: StackScreen {
+  private let person: PartyParticipant
+  private let room: PartyRoom
+  init(store: AppStore, person: PartyParticipant, room: PartyRoom) {
+    self.person = person
+    self.room = room
+    super.init(store: store, title: person.name)
+  }
+  required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+  override func build() {
+    super.build()
+    let photo = TotiPhoto(asset: person.asset)
+    if let url = person.artworkURL { photo.load(url) }
+    photo.isAccessibilityElement = true
+    photo.accessibilityLabel = "Portrait of " + person.name
+    photo.accessibilityIdentifier = "voice.character.portrait." + (person.asset ?? person.id)
+    photo.height(320)
+    photo.rounded(18)
+    content.addArrangedSubview(photo)
+    heading(person.name)
+    content.addArrangedSubview(label(room.title, 17, TotiTheme.plum))
+    content.addArrangedSubview(label("An illustrative character in the Toti room collection. The photograph is artwork, not a member account or a live attendee.", 14, TotiTheme.muted))
   }
 }
 
@@ -995,13 +1256,21 @@ final class PartyInfoController: StackScreen {
     super.build()
     heading("About this party")
     content.addArrangedSubview(label(room.description))
+    if room.isCommunityArtwork {
+      content.addArrangedSubview(label("Names, portraits and the conversation are illustrative. Room messages stay here while this room is open. Microphone and speaker controls change local state; live audio is not connected. Friend invitations use your Chats account.", 15, TotiTheme.muted))
+      content.addArrangedSubview(actionButton("Create a voice room", icon: .plus, primary: true) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.presentScreen(PartyCreationController(store: self.store), full: true)
+      })
+      return
+    }
     let count = room.participants.count
-    let people = count == 1 ? "1 person" : "\(count) people"
+    let people = store.isOnlineMode ? "\(count) members" : (count == 1 ? "1 person" : "\(count) people")
     content.addArrangedSubview(
       label(room.category.title + " · " + people, 15, TotiTheme.muted))
     content.addArrangedSubview(
       label(
-        "Voice in this room stays on this device. A live connection is not available.",
+        store.isOnlineMode ? "Live audio is unavailable. Room text messages are saved online." : "Voice in this room stays on this device. A live connection is not available.",
         15, TotiTheme.muted))
     let creator = blockTarget()
     content.addArrangedSubview(
@@ -1036,6 +1305,7 @@ final class PartyInfoController: StackScreen {
       })
   }
   private func blockTarget() -> CreatorProfile {
+    if store.isOnlineMode, let owner = store.onlineRoomOwner(room) { return owner }
     if let host = room.participants.first {
       return CreatorProfile(
         id: host.id, name: host.name, biography: room.title, avatarAsset: host.asset)
@@ -1046,6 +1316,8 @@ final class PartyInfoController: StackScreen {
 }
 
 final class PartyCreationController: StackScreen {
+  private let entryGeneration = TotiBackend.shared.generation
+  private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
   private var draft: VoiceRoomDraft
   init(store: AppStore, draft: VoiceRoomDraft = VoiceRoomDraft()) {
     self.draft = draft
@@ -1068,13 +1340,17 @@ final class PartyCreationController: StackScreen {
     content.addArrangedSubview(seats)
     content.addArrangedSubview(
       actionButton("Save party", icon: .voice, primary: true) { [weak self] in
-        guard let self else { return }
+        guard let self, self.entryAccountIsCurrent else { return }
+        if self.store.isOnlineMode { self.draft.partyType = PartyRoomType.voice.rawValue }
         self.draft.title = name.text ?? ""
         self.draft.description = description.text ?? ""
         self.draft.danceCategory = PartyCategory.allCases[max(0, category.index)].rawValue
         self.draft.seatCount = [4, 6, 8][max(0, seats.index)]
         Task {
-          if await self.store.saveRoom(self.draft) {
+          guard self.entryAccountIsCurrent else { return }
+          let saved = await self.store.saveRoom(self.draft)
+          guard self.entryAccountIsCurrent else { return }
+          if saved {
             self.dismissCollapsed()
           } else {
             self.message(
@@ -1086,12 +1362,17 @@ final class PartyCreationController: StackScreen {
     if store.library.roomDrafts.contains(where: { $0.id == draft.id }) {
       content.addArrangedSubview(
         actionButton("Delete party", icon: .trash) { [weak self] in
-          guard let self else { return }
+          guard let self, self.entryAccountIsCurrent else { return }
           self.confirm(
             "Delete party?", message: "This removes your saved party.", destructive: true,
             button: "Delete"
           ) {
-            Task { if await self.store.deleteRoom(self.draft.id) { self.dismissCollapsed() } }
+            Task {
+              guard self.entryAccountIsCurrent else { return }
+              let deleted = await self.store.deleteRoom(self.draft.id)
+              guard self.entryAccountIsCurrent else { return }
+              if deleted { self.dismissCollapsed() }
+            }
           }
         })
     }

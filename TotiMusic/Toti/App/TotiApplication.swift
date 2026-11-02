@@ -1,6 +1,8 @@
 import Combine
 import UIKit
 import WebKit
+import PDFKit
+import CryptoKit
 
 @main final class TotiAppDelegate: UIResponder, UIApplicationDelegate {
   func application(
@@ -54,7 +56,9 @@ final class TotiSceneDelegate: UIResponder, UIWindowSceneDelegate {
     backdrop.pin(to: window)
   }
   private func install(_ controller: UIViewController) {
+    TotiNavigation.prepare(controller, in: window.bounds)
     window.rootViewController = controller
+    window.layoutIfNeeded()
     window.sendSubviewToBack(backdrop)
   }
   func start() {
@@ -88,9 +92,14 @@ final class TotiSceneDelegate: UIResponder, UIWindowSceneDelegate {
     token = store.$accountExitRevision.dropFirst().receive(on: DispatchQueue.main).sink {
       [weak self] _ in self?.showEntry(welcome: false)
     }
-    Task {
-      await store.load()
+    if store.isOnlineMode {
+      // A saved guest session is reused only after the explicit login action.
       showEntry(welcome: true)
+    } else {
+      Task {
+        await store.load()
+        showEntry(welcome: true)
+      }
     }
   }
   func showEntry(welcome: Bool) {
@@ -99,7 +108,7 @@ final class TotiSceneDelegate: UIResponder, UIWindowSceneDelegate {
       guard let self else { return }
       self.install(TotiTabController(store: self.store))
     }
-    let nav = UINavigationController(rootViewController: entry)
+    let nav = TotiNavigationController(rootViewController: entry)
     TotiNavigation.style(nav)
     install(nav)
   }
@@ -181,14 +190,14 @@ final class TotiTabController: UIViewController, UINavigationControllerDelegate 
   override func viewDidLoad() {
     super.viewDidLoad()
     overrideUserInterfaceStyle = .light
-    view.backgroundColor = .clear
+    view.backgroundColor = TotiTheme.background
     view.clipsToBounds = false
     let screens: [UIViewController] = [
       LoungeController(store: store), PartyDiscoveryController(store: store),
       NotebookController(store: store), ChatsController(store: store), MeController(store: store),
     ]
     pages = screens.map {
-      let nav = UINavigationController(rootViewController: $0)
+      let nav = TotiNavigationController(rootViewController: $0)
       TotiNavigation.style(nav)
       nav.delegate = self
       nav.additionalSafeAreaInsets.bottom = 78
@@ -321,23 +330,26 @@ final class TotiTabController: UIViewController, UINavigationControllerDelegate 
   }
   private func showPage(_ next: Int) {
     guard children.isEmpty || next != index else { return }
-    if !children.isEmpty {
-      let old = pages[index]
-      old.willMove(toParent: nil)
-      old.view.removeFromSuperview()
-      old.removeFromParent()
-    }
+    let old = children.isEmpty ? nil : pages[index]
     index = next
     let nav = pages[next]
     addChild(nav)
     view.insertSubview(nav.view, at: 0)
     nav.view.pin(to: view)
+    let covered = nav.topViewController !== nav.viewControllers.first
+    applyDock(covered: covered, nav: nav)
+    TotiNavigation.prepare(nav, in: view.bounds)
+    view.layoutIfNeeded()
     nav.didMove(toParent: self)
+    // Keep the previous page attached until the destination has real laid-out content.
+    if let old {
+      old.willMove(toParent: nil)
+      old.view.removeFromSuperview()
+      old.removeFromParent()
+    }
     for (i, button) in buttons.arrangedSubviews.enumerated() {
       button.accessibilityTraits = i == next ? [.button, .selected] : .button
     }
-    let covered = nav.topViewController !== nav.viewControllers.first
-    applyDock(covered: covered, nav: nav)
   }
   func navigationController(
     _ navigationController: UINavigationController, willShow viewController: UIViewController,
@@ -379,6 +391,7 @@ final class EntryController: TotiScreen, UITextViewDelegate {
   private let content = UIStackView()
   private var welcome: Bool
   private var accepted = false
+  private var signingIn = false
   init(store: AppStore, welcome: Bool) {
     self.welcome = welcome
     super.init(store: store)
@@ -494,7 +507,7 @@ final class EntryController: TotiScreen, UITextViewDelegate {
     row.alignment = .top
     content.addArrangedSubview(row)
     content.addArrangedSubview(
-      actionButton("Let's listen", icon: .forward, tone: .coral) { [weak self] in self?.continueEntry() }
+      actionButton(signingIn ? "Logging in…" : "Log in", icon: .forward, tone: .coral) { [weak self] in self?.continueEntry() }
     )
   }
   private func agreementText() -> UITextView {
@@ -528,7 +541,7 @@ final class EntryController: TotiScreen, UITextViewDelegate {
       link[.link] = URL(string: "toti-agreement://agreement/\(document.rawValue)")
       link[.foregroundColor] = TotiTheme.plum
       link[.underlineStyle] = NSUnderlineStyle.single.rawValue
-      body.append(NSAttributedString(string: document.title, attributes: link))
+      body.append(NSAttributedString(string: document.linkTitle, attributes: link))
     }
     body.append(NSAttributedString(string: ".", attributes: base))
     text.attributedText = body
@@ -571,6 +584,7 @@ final class EntryController: TotiScreen, UITextViewDelegate {
     return AgreementDocument(rawValue: String(name))
   }
   private func continueEntry() {
+    guard !signingIn else { return }
     guard accepted else {
       askToAgree()
       return
@@ -620,7 +634,7 @@ final class EntryController: TotiScreen, UITextViewDelegate {
       link[.link] = URL(string: "toti-agreement://agreement/\(document.rawValue)")
       link[.foregroundColor] = TotiTheme.plum
       link[.underlineStyle] = NSUnderlineStyle.single.rawValue
-      body.append(NSAttributedString(string: document.title, attributes: link))
+      body.append(NSAttributedString(string: document.linkTitle, attributes: link))
     }
     body.append(NSAttributedString(string: " before you continue.", attributes: base))
     text.attributedText = body
@@ -632,8 +646,23 @@ final class EntryController: TotiScreen, UITextViewDelegate {
     return text
   }
   private func enterApp() {
+    guard !signingIn else { return }
+    signingIn = true
+    refresh()
+    view.isUserInteractionEnabled = false
     Task {
-      if await store.acceptUserAgreement() {
+      defer {
+        signingIn = false
+        view.isUserInteractionEnabled = true
+        refresh()
+      }
+      if store.isOnlineMode {
+        do {
+          try await TotiBackend.shared.signInAsGuest(agreementVersion: TotiUserAgreement.version)
+          if await store.refreshOnline() { onContinue?() }
+          else { message(store.onlineReadError ?? "Your account could not be loaded. Please try again.") }
+        } catch { message(error.localizedDescription) }
+      } else if await store.acceptUserAgreement() {
         onContinue?()
       } else {
         message(store.lastSaveError ?? "The agreements could not be saved. Please try again.")
@@ -641,83 +670,55 @@ final class EntryController: TotiScreen, UITextViewDelegate {
     }
   }
 }
-final class AgreementController: TotiScreen, WKNavigationDelegate {
+final class AgreementController: TotiScreen {
   let document: AgreementDocument
-  private var showingSavedCopy = false
+  private let pdf = PDFView()
+  private let spinner = UIActivityIndicatorView(style: .medium)
+  private var loadingTask: Task<Void, Never>?
+
   init(store: AppStore, document: AgreementDocument) {
     self.document = document
     super.init(store: store, title: document.title)
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func build() {
-    let configuration = WKWebViewConfiguration()
-    configuration.websiteDataStore = .nonPersistent()
-    let web = WKWebView(frame: .zero, configuration: configuration)
-    web.navigationDelegate = self
-    view.addSubview(web)
-    web.pin(to: view)
-    if let url = document.onlineURL {
-      web.load(URLRequest(url: url, timeoutInterval: 20))
-    } else {
-      loadSavedCopy(in: web)
-    }
+    pdf.autoScales = true
+    pdf.backgroundColor = TotiTheme.background
+    view.addSubview(pdf)
+    pdf.pin(to: view)
+    view.addSubview(spinner)
+    spinner.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+    ])
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Retry", style: .plain, target: self, action: #selector(loadPDF))
+    loadPDF()
   }
-  private func loadSavedCopy(in web: WKWebView) {
-    guard !showingSavedCopy else { return }
-    showingSavedCopy = true
-    navigationItem.prompt = "On-device agreement"
-    guard let url = document.fileURL else {
-      message("This agreement could not be opened.")
+  @objc private func loadPDF() {
+    loadingTask?.cancel()
+    guard let url = document.onlineURL, url.scheme == "https" else {
+      message("This agreement is unavailable. Please try again later.")
       return
     }
-    web.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
-  }
-  func webView(
-    _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-    decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-  ) {
-    guard let url = navigationAction.request.url else {
-      decisionHandler(.cancel)
-      return
-    }
-    if showingSavedCopy {
-      decisionHandler(url.isFileURL && url.standardizedFileURL == document.fileURL?.standardizedFileURL ? .allow : .cancel)
-      return
-    }
-    if navigationAction.targetFrame?.isMainFrame == false {
-      decisionHandler(url.scheme == "https" || url.absoluteString == "about:blank" ? .allow : .cancel)
-      return
-    }
-    guard let onlineURL = document.onlineURL else { decisionHandler(.cancel); return }
-    let documentPath = onlineURL.path
-    if url.scheme == "https", url.host == onlineURL.host,
-      url.path == documentPath || url.path.hasPrefix(documentPath + "/") {
-      decisionHandler(.allow)
-    } else {
-      decisionHandler(.cancel)
-      // A private document redirects to sign-in. Keep the agreement readable without an account.
-      if url.host == "accounts.google.com" {
-        loadSavedCopy(in: webView)
-      }
+    spinner.startAnimating()
+    loadingTask = Task { [weak self] in
+      guard let self else { return }
+      defer { self.spinner.stopAnimating() }
+      do {
+        let (data, response) = try await URLSession.shared.data(for: URLRequest(url: url, timeoutInterval: 30))
+        try Task.checkCancellation()
+        guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode),
+          response.url?.scheme == "https", data.count <= 5_000_000,
+          data.starts(with: Data("%PDF-".utf8)),
+          SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == self.document.expectedPDFHash,
+          let document = PDFDocument(data: data) else {
+          throw URLError(.cannotDecodeContentData)
+        }
+        self.pdf.document = document
+      } catch is CancellationError { }
+      catch { if !Task.isCancelled { self.message("The PDF could not be loaded. Check your connection and tap Retry.") } }
     }
   }
-  func webView(
-    _ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse,
-    decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
-  ) {
-    if navigationResponse.isForMainFrame,
-      let response = navigationResponse.response as? HTTPURLResponse,
-      !(200..<300).contains(response.statusCode) {
-      decisionHandler(.cancel)
-      loadSavedCopy(in: webView)
-      return
-    }
-    decisionHandler(.allow)
-  }
-  func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-    if (error as NSError).code != NSURLErrorCancelled { loadSavedCopy(in: webView) }
-  }
-  func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-    if (error as NSError).code != NSURLErrorCancelled { loadSavedCopy(in: webView) }
-  }
+  deinit { loadingTask?.cancel() }
 }

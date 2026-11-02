@@ -1,0 +1,176 @@
+{
+  "redRegression": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 1,
+        "passedTests": 0,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPayments \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 1,
+    "finishTime": 1793602401.382,
+    "passedTests": 0,
+    "result": "Failed",
+    "skippedTests": 0,
+    "startTime": 1793602357.731,
+    "statistics": [],
+    "testFailures": [
+      {
+        "failureText": "XCTAssertEqual failed: (\"400\") is not equal to (\"1200\") - A new 800-diamond transaction must not collide with the old ID 0",
+        "targetName": "totiPaymentTests",
+        "testIdentifier": 1,
+        "testIdentifierString": "StoreKit1PaymentTests/testReusedLocalIdentifierCreditsNewPurchaseAndPreservesLegacyWallet()",
+        "testIdentifierURL": "test://com.apple.xcode/Toti/totiPaymentTests/StoreKit1PaymentTests/testReusedLocalIdentifierCreditsNewPurchaseAndPreservesLegacyWallet",
+        "testName": "testReusedLocalIdentifierCreditsNewPurchaseAndPreservesLegacyWallet()"
+      }
+    ],
+    "title": "Test - totiPayments",
+    "topInsights": [],
+    "totalTestCount": 1
+  },
+  "service": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 22,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPayments \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1793602588.78,
+    "passedTests": 22,
+    "result": "Passed",
+    "skippedTests": 0,
+    "startTime": 1793602559.414,
+    "statistics": [],
+    "testFailures": [],
+    "title": "Test - totiPayments",
+    "topInsights": [
+      {
+        "category": "Longest Test Runs",
+        "impact": "15% of duration",
+        "text": "1 longest test run with outlier durations exceeding 1.79s (three standard deviations)"
+      }
+    ],
+    "totalTestCount": 22
+  },
+  "uiInitial": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 1,
+        "passedTests": 2,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPurchases \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 1,
+    "finishTime": 1793602899.029,
+    "passedTests": 2,
+    "result": "Failed",
+    "skippedTests": 0,
+    "startTime": 1793602646.157,
+    "statistics": [],
+    "testFailures": [
+      {
+        "failureText": "failed - Expected exists == true: \"Me\" Button",
+        "targetName": "totiPurchaseUITests",
+        "testIdentifier": 1,
+        "testIdentifierString": "PurchaseUITests/testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit()",
+        "testIdentifierURL": "test://com.apple.xcode/Toti/totiPurchaseUITests/PurchaseUITests/testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit",
+        "testName": "testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit()"
+      }
+    ],
+    "title": "Test - totiPurchases",
+    "topInsights": [],
+    "totalTestCount": 3
+  },
+  "nativeRerun": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "x86_64",
+          "deviceId": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+          "deviceName": "Toti UI Acceptance",
+          "modelName": "iPhone 17 Pro",
+          "osBuildNumber": "23A8464",
+          "osVersion": "26.0.1",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 0,
+        "passedTests": 1,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Test Scheme Action"
+        }
+      }
+    ],
+    "environmentDescription": "totiPurchases \u00b7 Built with macOS 15.7.2",
+    "expectedFailures": 0,
+    "failedTests": 0,
+    "finishTime": 1793603029.337,
+    "passedTests": 1,
+    "result": "Passed",
+    "skippedTests": 0,
+    "startTime": 1793602959.813,
+    "statistics": [],
+    "testFailures": [],
+    "title": "Test - totiPurchases",
+    "topInsights": [],
+    "totalTestCount": 1
+  },
+  "manualWalletPreservation": {
+    "unchanged": true,
+    "balance": 800,
+    "activityCount": 2,
+    "sha256": "150a40711dd41145e5b780a4ebbb46105768da85edcc318968a04db61713a154"
+  }
+}

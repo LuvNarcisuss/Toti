@@ -1,0 +1,170 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "5C46753D-4158-42F4-8081-F24235E62F26.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final agreement state_0_8E650A56-2292-4919-A7C9-16308CCC1549.png",
+        "timestamp" : 1793069057.393
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "D509D6A1-7588-4E8E-9843-776CF55D0F3F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Login - Toti - Privacy Policy_0_E8FF12A3-C372-49B1-B2F9-BED439792FAB.png",
+        "timestamp" : 1793069054.767
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "B951A9F5-8EF6-4B75-80DA-35FCB4078492.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Login - Toti - Terms of Service_0_B3144EF6-59BC-452C-B00A-0F11A3CF2EBE.png",
+        "timestamp" : 1793069047.17
+      }
+    ],
+    "testIdentifier" : "AgreementUITests/testLoginLocalAgreements()",
+    "testIdentifierURL" : "test://com.apple.xcode/Toti/totiUITests/AgreementUITests/testLoginLocalAgreements"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "E9B1C7CD-836F-45F0-B6B8-883733D6021C.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final agreement state_0_9E3B7C77-DC64-4721-AE1F-78E382842413.png",
+        "timestamp" : 1793069090.215
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "897816C2-41E4-44F4-BA36-1813AFB08841.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Reopened offline - Login - Toti - Privacy Policy_0_6E31DFDC-F5FF-4411-A12D-A50DBBAB824F.png",
+        "timestamp" : 1793069087.729
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "3F9FB5BB-E253-4C7D-BDAB-70425DA96117.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Offline - Login - Toti - Privacy Policy_0_639D746C-8C9E-411D-A360-2F1D697944EF.png",
+        "timestamp" : 1793069083.236
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "A61FCB6C-0E6D-4EC3-A545-375A2587BEE0.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Reopened offline - Login - Toti - Terms of Service_0_8E35BCEC-A284-420B-A2E9-F3250EB34E27.png",
+        "timestamp" : 1793069076.145
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "F7A66AD2-1EEB-4BE4-A5A0-A1FAB3F4A8FA.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Offline - Login - Toti - Terms of Service_0_06FB00EB-30E1-4F89-AEB5-33DBE343D698.png",
+        "timestamp" : 1793069071.623
+      }
+    ],
+    "testIdentifier" : "AgreementUITests/testLoginOfflineAgreements()",
+    "testIdentifierURL" : "test://com.apple.xcode/Toti/totiUITests/AgreementUITests/testLoginOfflineAgreements"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "1F54C879-35F1-40F6-9A16-B2524A24195A.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final agreement state_0_6DA82758-B7D3-42A4-BA46-711D7A2DC6BF.png",
+        "timestamp" : 1793069124.533
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "CA839A14-495A-4708-BD39-17839B31F612.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Settings - Toti - Privacy Policy_0_DFB55099-336F-43CB-AEF6-4E14F3A06E52.png",
+        "timestamp" : 1793069121.734
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "2B6DEDC6-983D-43DE-A743-6782053EB3D9.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Settings - Toti - Terms of Service_0_68E4476B-D8BA-4D86-8D99-EB68C5B48D2C.png",
+        "timestamp" : 1793069112.385
+      }
+    ],
+    "testIdentifier" : "AgreementUITests/testSettingsLocalAgreements()",
+    "testIdentifierURL" : "test://com.apple.xcode/Toti/totiUITests/AgreementUITests/testSettingsLocalAgreements"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "F0AE3499-3FFE-488F-AC8F-B1104BA8426C.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final agreement state_0_D30F267F-0E67-48AB-A5FD-6AECBD164861.png",
+        "timestamp" : 1793069170.569
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "5F7104F0-BDB4-45E9-8D95-3E18D6FEFFC9.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Reopened offline - Settings - Toti - Privacy Policy_0_CE703764-750F-4CBD-8532-6A1E99E63BE3.png",
+        "timestamp" : 1793069167.387
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "FE9849DE-404E-4377-B41A-4AB3C16372FF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Offline - Settings - Toti - Privacy Policy_0_50C52DE6-703C-44BE-AD89-4844E092FF7E.png",
+        "timestamp" : 1793069162.772
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "37CBACC7-BC5D-4B53-8EC0-9C2996C80B1C.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Reopened offline - Settings - Toti - Terms of Service_0_7FDDDABE-4043-4579-924C-CB4485792465.png",
+        "timestamp" : 1793069152.879
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+        "deviceName" : "Toti UI Acceptance",
+        "exportedFileName" : "2AC6D3B8-D8C2-4243-AA5C-EA46F9E2E629.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Offline - Settings - Toti - Terms of Service_0_E4102A9E-F6EE-42A0-9861-9656ADEDD734.png",
+        "timestamp" : 1793069148.093
+      }
+    ],
+    "testIdentifier" : "AgreementUITests/testSettingsOfflineAgreements()",
+    "testIdentifierURL" : "test://com.apple.xcode/Toti/totiUITests/AgreementUITests/testSettingsOfflineAgreements"
+  }
+]

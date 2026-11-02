@@ -1,0 +1,379 @@
+{
+  "runID": "20261027-000054",
+  "triggerUTC": "2026-10-26T16:00:54.981Z",
+  "commit": "79a981180642d791165a0e04488fe7269370e783",
+  "initialWorkingTree": "clean",
+  "scope": "Static inspection only. Build rejected before process creation. No application or XCTest execution.",
+  "simulator": {
+    "name": "Toti UI Acceptance",
+    "uuid": "98658066-C6E0-45B3-A1E7-E8FBD950F0DB",
+    "available": true,
+    "observedState": "Booted",
+    "runtime": "iOS 26.0",
+    "otherTestProcessesObserved": false
+  },
+  "products": [
+    {
+      "amount": 400,
+      "productID": "jezvdjvpoifednhy",
+      "type": "Consumable",
+      "referenceUSD": "0.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    },
+    {
+      "amount": 800,
+      "productID": "uylrrniaqxjtlaie",
+      "type": "Consumable",
+      "referenceUSD": "1.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    },
+    {
+      "amount": 2450,
+      "productID": "oqojxyitbbjeayzj",
+      "type": "Consumable",
+      "referenceUSD": "4.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    },
+    {
+      "amount": 5150,
+      "productID": "skrseirtauvvrsol",
+      "type": "Consumable",
+      "referenceUSD": "9.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    },
+    {
+      "amount": 10800,
+      "productID": "bqrdrlkrlfpzjmod",
+      "type": "Consumable",
+      "referenceUSD": "19.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    },
+    {
+      "amount": 29400,
+      "productID": "psqtqagzmiiyhncr",
+      "type": "Consumable",
+      "referenceUSD": "49.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    },
+    {
+      "amount": 63700,
+      "productID": "bzwmucutltusfxpv",
+      "type": "Consumable",
+      "referenceUSD": "99.99",
+      "identityMatches": true,
+      "priceMatches": true,
+      "runtimeStatus": "not run"
+    }
+  ],
+  "uniqueProductIDs": 7,
+  "assetCatalogEntryCount": 416,
+  "missingAssetCatalogSources": [],
+  "assetSubdirectories": [],
+  "schemes": {
+    "toti": [
+      "totiTests"
+    ],
+    "totiPayments": [
+      "totiPaymentTests"
+    ],
+    "totiUI": [
+      "totiUITests"
+    ],
+    "totiAppStore": [],
+    "totiPurchases": [
+      "totiPurchaseUITests"
+    ]
+  },
+  "testInventory": {
+    "Tests": [
+      {
+        "file": "TotiMusic/Tests/BundledResourceTests.swift",
+        "name": "testEveryCatalogImageAndLaunchColorLoads",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/BundledResourceTests.swift",
+        "name": "testFontsRegisterWithTheirOriginalNames",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/BundledResourceTests.swift",
+        "name": "testAgreementsAndCreditsRemainAvailableWithoutRetiredVideos",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testPostValidationAcceptsUnicodeAndCountsGraphemes",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testDraftDoesNotLeakIntoFeedAndPhotoRoundTrips",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testVisibilityRemovesBlockedAndReportedPostsWithoutDeletingData",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testCommentValidationAndPhotoBounds",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testSeedIDsStableAndNoInventedInteractions",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testSearchIncludesTopicAndAuthorAndIgnoresCase",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LoungeTests.swift",
+        "name": "testPhotoImportDownsamplesAndRejectsInvalidBytes",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LibraryMigrationTests.swift",
+        "name": "testLegacySnapshotWithoutNewStatesPreservesPrivateRecords",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LibraryMigrationTests.swift",
+        "name": "testUnreadableLibraryIsNeverSilentlyReplaced",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LibraryMigrationTests.swift",
+        "name": "testFailedSaveDoesNotEraseExistingFile",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/LibraryMigrationTests.swift",
+        "name": "testExplicitDeletionOnlyClearsOwnedRoot",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testUnicodeLimitsAllowFullDraftAndNeverTruncate",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testRoundTripPreservesPrivateNoteAndTimestamps",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testEditPreservesIdentityAndCreationDateWithoutAppending",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testInvalidSaveLeavesExistingStateUntouched",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testDuplicateCopiesAllTextWithSeparateIdentityAndUnpinnedState",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testSearchFiltersCategoryMoodAndBodyWithPinnedFirst",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/NotebookTests.swift",
+        "name": "testPostConversionKeepsLongTextAndDoesNotModifyOriginal",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/CommunityWorkflowTests.swift",
+        "name": "testPrivateNoteToSeparatePostAndInteractionsSurviveRelaunch",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/Tests/CommunityWorkflowTests.swift",
+        "name": "testReportedPostDisappearsFromFeedSavedAndAuthorProfile",
+        "runtimeStatus": "not run"
+      }
+    ],
+    "PaymentTests": [
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testConcurrentGiftSpendsPreserveBothDebits",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testGiftContextPersistsAndLegacyActivityStillDecodes",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testVoiceMemberAndEveryoneKeepRecipientMetadataWithoutMultiplyingPrice",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testGiftFailureInsufficientFundsAndInvalidTargetLeaveBalanceUnchanged",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testPurchaseCreditDuringGiftSaveKeepsBothChanges",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testPostAndVoiceEligibilityRejectsSelfBlockedAndMissingTargets",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testAllSevenPackagesCreditExactAmountsAndPersist",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testRepeatConsumablePurchasesCreditEachNewTransaction",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testCancellationDoesNotCreditAndNextPurchaseSucceeds",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testPaymentFailureDoesNotCredit",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testAskToBuyCreditsOnlyAfterApproval",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testFailedSaveRecoversOnObserverRestartAndDuplicateDoesNotCreditTwice",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testPartialCatalogRetryAndStaleCallbackCannotReplaceNewRequest",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testTimeoutCancelsRequestAndLateResultCannotReplaceRetry",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testSessionEndWhileLoadingPreventsDelayedPurchase",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testEmptyCatalogAndSanitizedErrorDiagnostics",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PaymentTests/StoreKit1PaymentTests.swift",
+        "name": "testAppleCatalogWithoutLocalStoreKitConfiguration",
+        "runtimeStatus": "not run"
+      }
+    ],
+    "UITests": [
+      {
+        "file": "TotiMusic/UITests/CommunityUITests.swift",
+        "name": "testFivePagesAndProfile",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/UITests/CommunityUITests.swift",
+        "name": "testLoungePostReplyAndPersistence",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/UITests/CommunityUITests.swift",
+        "name": "testNotebookExitSavePinAndConversion",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/UITests/CommunityUITests.swift",
+        "name": "testVoiceRoomCreationAndLocalMessage",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/UITests/CommunityUITests.swift",
+        "name": "testChatKeyboardAndLocalOutbox",
+        "runtimeStatus": "not run"
+      }
+    ],
+    "PurchaseUITests": [
+      {
+        "file": "TotiMusic/PurchaseUITests/PurchaseUITests.swift",
+        "name": "testSevenPurchasesPricesCancellationAndRelaunchHistory",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PurchaseUITests/PurchaseUITests.swift",
+        "name": "testPostGiftConfirmationCancellationDebitAndRelaunch",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PurchaseUITests/PurchaseUITests.swift",
+        "name": "testVoiceRecipientAndInsufficientFundsKeepBalance",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PurchaseUITests/PurchaseUITests.swift",
+        "name": "testLargeTextEveryoneConfirmationKeepsCancelAndSpendReachable",
+        "runtimeStatus": "not run"
+      },
+      {
+        "file": "TotiMusic/PurchaseUITests/PurchaseUITests.swift",
+        "name": "testNativePaymentSheetShowsProductPriceAndCancelsWithoutCredit",
+        "runtimeStatus": "not run"
+      }
+    ]
+  },
+  "executedTests": 0,
+  "build": "blocked by automatic approval review",
+  "runtimeScreenshots": 0,
+  "xcresultBundles": 0,
+  "findings": [
+    {
+      "kind": "stale test assertion",
+      "file": "TotiMusic/UITests/CommunityUITests.swift",
+      "lines": [
+        93,
+        94
+      ],
+      "detail": "Wallet assertions expect removed unavailable-purchases text and old voice-only gift wording; current wallet exposes seven catalog packages and post/voice gift wording. Static mismatch; not an observed XCTest failure."
+    },
+    {
+      "kind": "existing service gap",
+      "file": "TotiMusic/Toti/Features/Wallet/StoreKit1Purchasing.swift",
+      "detail": "Delivery trusts StoreKit 1 callbacks with product/quantity/transaction-ID checks and local durable deduplication. Cryptographic receipt validation and server refund reconciliation remain unimplemented, as already documented."
+    }
+  ]
+}

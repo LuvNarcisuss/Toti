@@ -1,11 +1,17 @@
 import Foundation
 
 struct LocalProfile: Codable, Equatable {
+    var backendVersion: Int? = nil
     var displayName = "Music lover"
     var biography = "Collecting songs, sharing stories."
     var avatarSymbol = "figure.dance"
     /// Optional so older libraries still decode. The photo file lives beside the library.
     var hasCustomAvatar: Bool? = nil
+    /// Online identities are optional for compatibility with independent local archives.
+    var avatarMediaRevisionID: UUID? = nil
+    var avatarPendingMediaRevisionID: UUID? = nil
+    var avatarMediaStatus: String? = nil
+    var avatarMediaFeedback: String? = nil
 }
 
 struct LocalVideo: Codable, Identifiable, Equatable {
@@ -47,6 +53,7 @@ enum RoomTopic: String, Codable, CaseIterable, Identifiable {
 }
 
 struct VoiceRoomDraft: Codable, Identifiable, Equatable {
+    var backendVersion: Int? = nil
     var id = UUID()
     var title = ""
     var description = ""

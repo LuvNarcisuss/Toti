@@ -1,6 +1,8 @@
 import AVFoundation
 import Combine
 import UIKit
+import PhotosUI
+import UniformTypeIdentifiers
 
 private func artistID(_ person: MusicConversation) -> String {
   person.creator?.id ?? person.id
@@ -256,11 +258,38 @@ private final class ChatInboxCell: UITableViewCell {
 
 final class ChatsController: TotiScreen, UITableViewDelegate, UITableViewDataSource {
   private let table = UITableView(frame: .zero, style: .plain)
+  private let emptyScroll = UIScrollView()
+  private let emptyContent = UIStackView()
+  private let welcomeContent = UIStackView()
+  private let noResultsContent = UIStackView()
+  private let recoveryContent = UIStackView()
+  private let emptyHeading = label("", 23, title: true)
+  private let emptyMessage = label("", 15, TotiTheme.muted)
   private let inboxFilters = BubbleTrack(
     titles: ["All", "Unread", "Pinned", "Drafts"], barHeight: 40)
   private var query = "", filter = ChatInboxFilter.all, searching = false
   private var searchButton: UIButton?
+  private var filteredInboxTop: NSLayoutConstraint?
+  private var plainInboxTop: NSLayoutConstraint?
+  private var openingFriend = false
+  private var headerWidth: CGFloat = 0
   private weak var openRow: ChatInboxCell?
+  private var inboxSnapshot: [MusicConversation] = []
+  private var friends: [MusicConversation] {
+    let directory = store.isOnlineMode ? store.onlinePeople : store.chatConversations
+    return directory.filter { person in
+      guard person.kind == .person, person.creator?.isLocalOwner != true,
+        !store.isCreatorBlocked(artistID(person)) else { return false }
+      return store.isOnlineMode ? (person.creator.map { store.isMutualProfile($0) } ?? false)
+        : store.followsChatPartner(person)
+    }
+  }
+  private var friendsWithoutChats: [MusicConversation] {
+    guard filter == .all else { return [] }
+    let existing = Set(store.chatConversations.filter { $0.kind == .person }.map { artistID($0).lowercased() })
+    return friends.filter { !existing.contains(artistID($0).lowercased())
+      && (query.isEmpty || $0.name.localizedCaseInsensitiveContains(query)) }
+  }
   private var conversations: [MusicConversation] {
     let listed = store.chatConversations.filter { c in
       let matches = query.isEmpty || (c.name + c.summary).localizedCaseInsensitiveContains(query)
@@ -287,39 +316,67 @@ final class ChatsController: TotiScreen, UITableViewDelegate, UITableViewDataSou
     table.separatorColor = TotiTheme.soft
     table.keyboardDismissMode = .interactive
     table.register(ChatInboxCell.self, forCellReuseIdentifier: ChatInboxCell.reuseID)
+    table.accessibilityIdentifier = "chats.list"
+    inboxFilters.accessibilityIdentifier = "chats.filters"
+    installOnlinePullToRefresh(on: table)
     inboxFilters.onSelect = { [weak self] index in
       guard let self, ChatInboxFilter.allCases.indices.contains(index) else { return }
       self.filter = ChatInboxFilter.allCases[index]
       self.openRow = nil
-      self.table.reloadData()
+      self.reloadInbox()
+      self.storyHeader()
+      self.updateEmptyState()
     }
     view.addSubview(inboxFilters)
     view.addSubview(table)
     inboxFilters.translatesAutoresizingMaskIntoConstraints = false
     table.translatesAutoresizingMaskIntoConstraints = false
+    let filteredTop = table.topAnchor.constraint(equalTo: inboxFilters.bottomAnchor, constant: 6)
+    filteredInboxTop = filteredTop
+    plainInboxTop = table.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6)
     NSLayoutConstraint.activate([
       inboxFilters.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6),
       inboxFilters.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
       inboxFilters.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      table.topAnchor.constraint(equalTo: inboxFilters.bottomAnchor, constant: 6),
+      filteredTop,
       table.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       table.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       table.bottomAnchor.constraint(equalTo: view.bottomAnchor),
     ])
     let search = iconButton(.search, "Search chats") { [weak self] in self?.toggleSearch() }
     searchButton = search
-    navigationItem.rightBarButtonItems = [
-      barButton(iconButton(.plus, "Add a friend") { [weak self] in self?.addFriend() }),
-      barButton(search),
-    ]
+    let add = iconButton(.plus, "Add a friend") { [weak self] in self?.addFriend() }
+    navigationItem.rightBarButtonItem = compactBarButtons([search, add])
     table.rowHeight = UITableView.automaticDimension
     table.estimatedRowHeight = 82
+    buildEmptyState()
   }
   override func refresh() {
     guard isViewLoaded else { return }
     openRow = nil
-    table.reloadData()
+    updateInboxFilters()
+    reloadInbox()
     storyHeader()
+    updateEmptyState()
+  }
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    emptyScroll.contentInset.bottom = max(24, view.safeAreaInsets.bottom)
+    if abs(headerWidth - table.bounds.width) > 0.5 {
+      headerWidth = table.bounds.width
+      storyHeader()
+    }
+  }
+  private func updateInboxFilters() {
+    let hasFriends = !friends.isEmpty
+    if !hasFriends, filter != .all {
+      filter = .all
+      inboxFilters.select(0, notify: false)
+    }
+    inboxFilters.isHidden = !hasFriends
+    filteredInboxTop?.isActive = false
+    plainInboxTop?.isActive = !hasFriends
+    filteredInboxTop?.isActive = hasFriends
   }
   private func toggleSearch() {
     guard let searchButton else { return }
@@ -329,9 +386,12 @@ final class ChatsController: TotiScreen, UITableViewDelegate, UITableViewDataSou
     }
     searching = true
     storyHeader()
+    updateEmptyState()
     expandSearch(from: searchButton, placeholder: "Search chats") { [weak self] text in
       self?.query = text
-      self?.table.reloadData()
+      self?.reloadInbox()
+      self?.storyHeader()
+      self?.updateEmptyState()
     } onClose: { [weak self] in
       guard let self else { return }
       self.searching = false
@@ -339,8 +399,314 @@ final class ChatsController: TotiScreen, UITableViewDelegate, UITableViewDataSou
       self.refresh()
     }
   }
+  private func chatStateCard(_ views: [UIView]) -> UIView {
+    let card = UIView()
+    card.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+    card.layer.cornerRadius = 24
+    card.layer.cornerCurve = .continuous
+    card.layer.borderWidth = 1
+    card.layer.borderColor = TotiTheme.line.cgColor
+    let column = stack(views, spacing: 14)
+    card.addSubview(column)
+    column.pin(to: card, insets: UIEdgeInsets(top: 22, left: 20, bottom: 22, right: 20))
+    return card
+  }
+  private func friendContact(_ friend: MusicConversation) -> UIButton {
+    let button = UIButton(type: .custom)
+    button.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+    button.layer.cornerRadius = 20
+    button.accessibilityLabel = "Chat with " + friend.name
+    button.accessibilityIdentifier = "chats.friend." + artistID(friend)
+    button.isAccessibilityElement = true
+    let copy = stack([label(friend.name, 17, title: true), label("Start a conversation", 13, TotiTheme.muted)], spacing: 4)
+    let arrow = UIImageView(image: TotiIcon.forward.image(size: 18))
+    arrow.contentMode = .scaleAspectFit
+    arrow.widthAnchor.constraint(equalToConstant: 18).isActive = true
+    let row = stack([conversationPortrait(friend, size: 48), copy, arrow], axis: .horizontal, spacing: 12)
+    row.alignment = .center
+    row.isUserInteractionEnabled = false
+    row.accessibilityElementsHidden = true
+    button.addSubview(row)
+    row.pin(to: button, insets: UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14))
+    button.addAction(UIAction { [weak self] _ in self?.openFriend(friend) }, for: .touchUpInside)
+    soften(button)
+    return button
+  }
+  private func openFriend(_ friend: MusicConversation) {
+    guard isAccountContextCurrent, !openingFriend, let creator = friend.creator else { return }
+    openingFriend = true
+    Task { [weak self] in
+      guard let self else { return }
+      defer { self.openingFriend = false }
+      guard self.isAccountContextCurrent else { return }
+      let opened = await self.store.openCreatorConversation(creator)
+      guard self.isAccountContextCurrent else { return }
+      guard opened else {
+        self.message(self.store.lastSaveError ?? "The conversation could not be opened. Please try again.")
+        return
+      }
+      guard let conversation = self.store.chatConversations.first(where: {
+        $0.creator?.id.lowercased() == creator.id.lowercased()
+      }) else {
+        self.message("Conversation opened. Pull to refresh Chats to load it.")
+        return
+      }
+      self.open(conversation)
+    }
+  }
+  private func buildEmptyState() {
+    emptyScroll.accessibilityIdentifier = "chats.empty"
+    emptyScroll.backgroundColor = .clear
+    emptyScroll.alwaysBounceVertical = true
+    emptyScroll.keyboardDismissMode = .onDrag
+    emptyScroll.contentInsetAdjustmentBehavior = .never
+    emptyScroll.automaticallyAdjustsScrollIndicatorInsets = false
+    view.addSubview(emptyScroll)
+    emptyScroll.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      emptyScroll.topAnchor.constraint(equalTo: table.topAnchor),
+      emptyScroll.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      emptyScroll.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      emptyScroll.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+    ])
+    installOnlinePullToRefresh(on: emptyScroll)
+    let content = emptyContent
+    content.axis = .vertical
+    emptyScroll.addSubview(content)
+    content.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      content.topAnchor.constraint(equalTo: emptyScroll.contentLayoutGuide.topAnchor, constant: 12),
+      content.leadingAnchor.constraint(equalTo: emptyScroll.contentLayoutGuide.leadingAnchor, constant: 16),
+      content.trailingAnchor.constraint(equalTo: emptyScroll.contentLayoutGuide.trailingAnchor, constant: -16),
+      content.bottomAnchor.constraint(equalTo: emptyScroll.contentLayoutGuide.bottomAnchor, constant: -24),
+      content.widthAnchor.constraint(equalTo: emptyScroll.frameLayoutGuide.widthAnchor, constant: -32),
+    ])
+    recoveryContent.axis = .vertical
+    recoveryContent.spacing = 10
+    emptyContent.spacing = 14
+    emptyContent.addArrangedSubview(recoveryContent)
+    welcomeContent.axis = .vertical
+    welcomeContent.spacing = 16
+    noResultsContent.axis = .vertical
+    noResultsContent.spacing = 16
+
+    let eyebrow = label("GOOD MUSIC. GOOD COMPANY.", 11, TotiTheme.plum)
+    let heading = label("Find your people.\nShare your sound.", 26, title: true)
+    heading.accessibilityTraits = .header
+    let detail = label(
+      "Find a friend, trade a favorite song and start a conversation.", 15,
+      TotiTheme.muted)
+    [eyebrow, heading, detail].forEach { $0.textAlignment = .center }
+    let find = actionButton("Find a friend", icon: .search, primary: true) { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      self.push(AddFriendController(store: self.store))
+    }
+    find.accessibilityIdentifier = "chats.find-friend"
+    let hero = chatStateCard([chatWelcomeArtwork(), eyebrow, heading, detail, find])
+    welcomeContent.addArrangedSubview(hero)
+    let section = label("More ways to connect", 18, title: true)
+    section.accessibilityTraits = .header
+    welcomeContent.addArrangedSubview(section)
+    welcomeContent.addArrangedSubview(chatWelcomeAction(
+      "Create a group", detail: "Bring your friends into one shared space.", icon: .chats,
+      identifier: "chats.create-group"
+    ) { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      self.push(CreateGroupController(store: self.store))
+    })
+    if store.isOnlineMode {
+      welcomeContent.addArrangedSubview(chatWelcomeAction(
+        "Group invitations", detail: "View invitations from your community.", icon: .send,
+        identifier: "chats.group-invitations"
+      ) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.push(OnlineInvitationsController(store: self.store, title: "Group invitations"))
+      })
+    } else {
+      welcomeContent.addArrangedSubview(chatWelcomeAction(
+        "Scan a friend code", detail: "An easy way to find someone you know.", icon: .video,
+        identifier: "chats.scan-friend"
+      ) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.presentScreen(FriendScanController(store: self.store), full: true)
+      })
+    }
+    let safetyTitle = label("Your space, your choice", 15, TotiTheme.plum, title: true)
+    let safetyDetail = label(
+      "Choose who you connect with. Report or block from a community profile.", 13,
+      TotiTheme.muted)
+    let safety = stack([safetyTitle, safetyDetail], spacing: 4)
+    safety.isLayoutMarginsRelativeArrangement = true
+    safety.layoutMargins = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+    welcomeContent.addArrangedSubview(safety)
+
+    let searchArt = UIImageView(image: TotiIcon.search.image(size: 48))
+    searchArt.contentMode = .scaleAspectFit
+    searchArt.isAccessibilityElement = false
+    searchArt.height(56)
+    emptyHeading.textAlignment = .center
+    emptyHeading.accessibilityTraits = .header
+    emptyMessage.textAlignment = .center
+    let reset = actionButton("Back to all chats", icon: .chats) { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      self.activeSearch?.dismiss()
+      self.query = ""
+      self.filter = .all
+      self.inboxFilters.select(0, notify: false)
+      self.refresh()
+    }
+    reset.accessibilityIdentifier = "chats.reset-filters"
+    noResultsContent.addArrangedSubview(chatStateCard([
+      searchArt, emptyHeading, emptyMessage, reset,
+    ]))
+  }
+  private func chatWelcomeArtwork() -> UIView {
+    let artwork = UIView()
+    artwork.isAccessibilityElement = false
+    artwork.height(88)
+    let chats = UIImageView(image: TotiIcon.chats.image(size: 80))
+    let music = UIImageView(image: TotiIcon.music.image(size: 34))
+    let sparkle = UIImageView(image: TotiIcon.sparkle.image(size: 26))
+    for image in [chats, music, sparkle] {
+      image.contentMode = .scaleAspectFit
+      image.isAccessibilityElement = false
+      image.translatesAutoresizingMaskIntoConstraints = false
+      artwork.addSubview(image)
+    }
+    NSLayoutConstraint.activate([
+      chats.widthAnchor.constraint(equalToConstant: 80),
+      chats.heightAnchor.constraint(equalToConstant: 80),
+      chats.centerXAnchor.constraint(equalTo: artwork.centerXAnchor),
+      chats.centerYAnchor.constraint(equalTo: artwork.centerYAnchor),
+      music.widthAnchor.constraint(equalToConstant: 34),
+      music.heightAnchor.constraint(equalToConstant: 34),
+      music.trailingAnchor.constraint(equalTo: chats.leadingAnchor, constant: 4),
+      music.bottomAnchor.constraint(equalTo: artwork.bottomAnchor, constant: -2),
+      sparkle.widthAnchor.constraint(equalToConstant: 26),
+      sparkle.heightAnchor.constraint(equalToConstant: 26),
+      sparkle.leadingAnchor.constraint(equalTo: chats.trailingAnchor),
+      sparkle.topAnchor.constraint(equalTo: artwork.topAnchor, constant: 2),
+    ])
+    return artwork
+  }
+  private func chatWelcomeAction(
+    _ title: String, detail: String, icon: TotiIcon, identifier: String,
+    action: @escaping () -> Void
+  ) -> UIButton {
+    let button = UIButton(type: .custom)
+    button.backgroundColor = .white.withAlphaComponent(0.92)
+    button.layer.cornerRadius = 22
+    button.layer.cornerCurve = .continuous
+    button.layer.borderWidth = 1
+    button.layer.borderColor = TotiTheme.line.cgColor
+    button.accessibilityLabel = title
+    button.accessibilityHint = detail
+    button.accessibilityIdentifier = identifier
+    let image = UIImageView(image: icon.image(size: 36))
+    let arrow = UIImageView(image: TotiIcon.forward.image(size: 18))
+    for (art, size) in [(image, CGFloat(36)), (arrow, CGFloat(18))] {
+      art.contentMode = .scaleAspectFit
+      art.isAccessibilityElement = false
+      art.widthAnchor.constraint(equalToConstant: size).isActive = true
+      art.heightAnchor.constraint(equalToConstant: size).isActive = true
+    }
+    let heading = label(title, 17, title: true)
+    let description = label(detail, 14, TotiTheme.muted)
+    heading.isAccessibilityElement = false
+    description.isAccessibilityElement = false
+    let copy = stack([heading, description], spacing: 4)
+    let row = stack([image, copy, arrow], axis: .horizontal, spacing: 12)
+    row.alignment = .center
+    row.isUserInteractionEnabled = false
+    button.addSubview(row)
+    row.pin(to: button, insets: UIEdgeInsets(top: 18, left: 18, bottom: 18, right: 18))
+    button.heightAnchor.constraint(greaterThanOrEqualToConstant: 88).isActive = true
+    button.addAction(UIAction { _ in action() }, for: .touchUpInside)
+    button.addAction(UIAction { [weak button] _ in button?.alpha = 0.72 }, for: .touchDown)
+    button.addAction(UIAction { [weak button] _ in button?.alpha = 1 },
+      for: [.touchUpInside, .touchUpOutside, .touchCancel, .touchDragExit])
+    return button
+  }
+  private func updateEmptyState() {
+    recoveryContent.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    appendOnlineRetry(to: recoveryContent, error: store.onlineReadError)
+    if store.isOnlineMode && store.onlineHasMore {
+      recoveryContent.addArrangedSubview(actionButton("Load more", icon: .forward) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        Task { await self.store.loadMoreOnline() }
+      })
+    }
+    recoveryContent.isHidden = recoveryContent.arrangedSubviews.isEmpty
+    let isEmpty = conversations.isEmpty && friendsWithoutChats.isEmpty
+    table.isHidden = isEmpty
+    emptyScroll.isHidden = !isEmpty
+    guard isEmpty else { return }
+    let showWelcome = store.chatConversations.isEmpty && filter == .all && !searching
+    let panel = showWelcome ? welcomeContent : noResultsContent
+    if emptyContent.arrangedSubviews.last !== panel {
+      emptyContent.arrangedSubviews.filter { $0 !== recoveryContent }.forEach {
+        emptyContent.removeArrangedSubview($0)
+        $0.removeFromSuperview()
+      }
+      emptyContent.addArrangedSubview(panel)
+      emptyScroll.setContentOffset(.zero, animated: false)
+    }
+    if searching {
+      emptyHeading.text = query.isEmpty ? "Find a conversation" : "No matching conversations"
+      emptyMessage.text = query.isEmpty
+        ? "Search your chats by name or message."
+        : "Try another name or a different word from your conversation."
+    } else {
+      switch filter {
+      case .all:
+        emptyHeading.text = "No conversations yet"
+        emptyMessage.text = "Find a friend to start your first conversation."
+      case .unread:
+        emptyHeading.text = "All caught up"
+        emptyMessage.text = "New unread conversations will appear here."
+      case .pinned:
+        emptyHeading.text = "Keep your favorites close"
+        emptyMessage.text = "Swipe a conversation and choose Pin to keep it at the top."
+      case .drafts:
+        emptyHeading.text = "A thought for later"
+        emptyMessage.text = "Messages you start writing will wait here as drafts."
+      }
+    }
+  }
   private func storyHeader() {
-    guard !searching else {
+    if store.isOnlineMode {
+      let column = stack(spacing: 10)
+      appendOnlineRetry(to: column, error: store.onlineReadError)
+      if !friendsWithoutChats.isEmpty {
+        column.addArrangedSubview(label("Friends", 20, title: true))
+        for friend in friendsWithoutChats { column.addArrangedSubview(friendContact(friend)) }
+      }
+      if friends.isEmpty {
+        column.addArrangedSubview(actionButton("Find a friend", icon: .plus) { [weak self] in
+          guard let self, self.isAccountContextCurrent else { return }
+          self.push(AddFriendController(store: self.store))
+        })
+      }
+      if store.onlineHasMore {
+        column.addArrangedSubview(actionButton("Load more", icon: .forward) { [weak self] in
+          guard let self else { return }
+          Task { await self.store.loadMoreOnline() }
+        })
+      }
+      column.addArrangedSubview(actionButton("Group invitations (\(store.onlineInvitations.count))", icon: .chats) { [weak self] in
+        guard let self else { return }
+        self.push(OnlineInvitationsController(store: self.store, title: "Group invitations"))
+      })
+      let header = UIView()
+      header.addSubview(column)
+      column.pin(to: header, insets: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
+      let width = max(280, table.bounds.width)
+      header.frame = CGRect(x: 0, y: 0, width: width, height: 1)
+      header.frame.size.height = header.systemLayoutSizeFitting(CGSize(width: width, height: 0), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height
+      table.tableHeaderView = header
+      return
+    }
+    guard !searching, store.chatConversations.contains(where: { $0.story != nil }) else {
       table.tableHeaderView = nil
       return
     }
@@ -397,13 +763,29 @@ final class ChatsController: TotiScreen, UITableViewDelegate, UITableViewDataSou
       guard let self else { return }
       self.dismissCard { self.presentScreen(FriendScanController(store: self.store), full: true) }
     }
-    showBottomPanel(stack([label("New", 22, title: true), group, add, scan], spacing: 12))
+    var actions: [UIView] = [label("New", 22, title: true), group, add, scan]
+    if store.isOnlineMode {
+      actions.append(actionButton("Group invitations", icon: .chats) { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        self.dismissCard { self.push(OnlineInvitationsController(store: self.store, title: "Group invitations")) }
+      })
+    }
+    showBottomPanel(stack(actions, spacing: 12))
+  }
+  /// Keep row counts, cells and selection on one snapshot while navigation lays out
+  /// before a queued relationship refresh reaches the screen.
+  private func reloadInbox() {
+    inboxSnapshot = conversations
+    table.reloadData()
   }
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    conversations.count
+    inboxSnapshot.count
   }
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let c = conversations[indexPath.row]
+    guard inboxSnapshot.indices.contains(indexPath.row) else {
+      return UITableViewCell(style: .default, reuseIdentifier: nil)
+    }
+    let c = inboxSnapshot[indexPath.row]
     let unread = store.chatUnreadCount(c)
     let detail =
       store.chatDraft(for: c).flatMap { $0.isEmpty ? nil : "Draft: " + $0 } ?? store.messages(
@@ -448,9 +830,12 @@ final class ChatsController: TotiScreen, UITableViewDelegate, UITableViewDataSou
       openRow = nil
       return
     }
-    open(conversations[indexPath.row])
+    guard inboxSnapshot.indices.contains(indexPath.row) else { return }
+    open(inboxSnapshot[indexPath.row])
   }
   private func open(_ c: MusicConversation) {
+    guard isAccountContextCurrent, !store.isCreatorBlocked(c.creator?.id ?? c.id),
+      store.chatConversations.contains(where: { $0.id == c.id }) else { return }
     Task { await store.markChatRead(c.id) }
     push(ConversationController(store: store, conversation: c))
   }
@@ -507,15 +892,17 @@ final class AddFriendController: StackScreen {
   }
   private func showResults() {
     results.arrangedSubviews.forEach { $0.removeFromSuperview() }
+    appendOnlineControls(to: results)
     let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
     guard !trimmed.isEmpty else {
       results.addArrangedSubview(label("Enter an artist ID.", 15, TotiTheme.muted))
       return
     }
-    let people = store.chatConversations.filter {
+    let people = (store.isOnlineMode ? store.onlinePeople : store.chatConversations).filter {
       $0.kind == .person && $0.creator?.isLocalOwner != true
         && (artistID($0).localizedCaseInsensitiveContains(trimmed)
-          || $0.id.localizedCaseInsensitiveContains(trimmed))
+          || $0.id.localizedCaseInsensitiveContains(trimmed)
+          || (store.isOnlineMode && $0.name.localizedCaseInsensitiveContains(trimmed)))
     }
     guard !people.isEmpty else {
       results.addArrangedSubview(label("No artist matches that ID.", 15, TotiTheme.muted))
@@ -543,13 +930,22 @@ final class AddFriendController: StackScreen {
     return row
   }
 }
-final class ConversationController: TotiScreen, UITableViewDataSource, UITextFieldDelegate {
+final class ConversationController: TotiScreen, UITableViewDataSource, UITextFieldDelegate, PHPickerViewControllerDelegate, UIDocumentPickerDelegate {
   let conversation: MusicConversation
   var entryNotice: String?
   private let table = UITableView(frame: .zero, style: .plain), input = field("Message")
   private let hint = label("", 12, TotiTheme.muted)
+  private var attachmentDraft: (id: UUID, data: Data, filename: String, kind: String)?
+  private var attachmentCaption: String?
+  private let attachmentRow = UIStackView()
+  private let attachmentName = label("", 13, TotiTheme.muted)
+  private weak var addAttachmentButton: UIButton?
+  private weak var sendButton: UIButton?
+  private var sendingAttachment = false
+  private var exportURL: URL?
   private var lastCount = 0
   private var draftTask: Task<Void, Never>?
+  private let entryGeneration = TotiBackend.shared.generation
   init(store: AppStore, conversation: MusicConversation) {
     self.conversation = conversation
     super.init(store: store, title: conversation.name)
@@ -557,6 +953,7 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    if store.isOnlineMode { Task { await store.loadOnlineThread(kind: "message", parentID: conversation.id) } }
     if let entryNotice {
       message(entryNotice)
       self.entryNotice = nil
@@ -568,13 +965,42 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
     table.separatorStyle = .none
     table.keyboardDismissMode = .interactive
     table.allowsSelection = false
+    if store.isOnlineMode {
+      let refresh = UIRefreshControl()
+      refresh.addAction(UIAction { [weak self] _ in
+        guard let self else { return }
+        Task { await self.store.loadOnlineThread(kind: "message", parentID: self.conversation.id); self.table.refreshControl?.endRefreshing() }
+      }, for: .valueChanged)
+      table.refreshControl = refresh
+    }
     view.addSubview(table)
     table.translatesAutoresizingMaskIntoConstraints = false
     input.text = store.chatDraft(for: conversation)
     input.delegate = self
     input.addAction(UIAction { [weak self] _ in self?.saveDraft() }, for: .editingChanged)
     let send = iconButton(.send, "Send") { [weak self] in self?.send() }
-    let bottom = stack([hint, stack([input, send], axis: .horizontal, spacing: 8)], spacing: 4)
+    let add = iconButton(.plus, "Add attachment") { [weak self] in self?.chooseAttachment() }
+    addAttachmentButton = add
+    sendButton = send
+    add.widthAnchor.constraint(equalToConstant: 44).isActive = true
+    send.widthAnchor.constraint(equalToConstant: 44).isActive = true
+    input.setContentHuggingPriority(.defaultLow, for: .horizontal)
+    input.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+    let composer = stack([input, send, add], axis: .horizontal, spacing: 8)
+    composer.alignment = .center
+    composer.accessibilityIdentifier = "chat.composer"
+    attachmentRow.axis = .horizontal
+    attachmentRow.alignment = .center
+    attachmentRow.spacing = 8
+    attachmentRow.addArrangedSubview(attachmentName)
+    attachmentRow.addArrangedSubview(iconButton(.close, "Remove attachment") { [weak self] in
+      guard let self, !self.sendingAttachment else { return }
+      guard self.attachmentCaption == nil else { self.message("Retry the pending attachment before removing it."); return }
+      self.attachmentDraft = nil
+      self.refresh()
+    })
+    attachmentRow.isHidden = true
+    let bottom = stack([hint, attachmentRow, composer], spacing: 4)
     view.addSubview(bottom)
     bottom.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
@@ -597,6 +1023,12 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
     }
     bottom.isHidden = conversation.kind == .activity
     if conversation.kind == .group {
+      if store.isOnlineMode {
+        navigationItem.rightBarButtonItem = barButton(iconButton(.more, "Group members") { [weak self] in
+          guard let self else { return }
+          self.push(OnlineGroupMembersController(store: self.store, conversation: self.conversation))
+        })
+      }
       let name = label(conversation.name, 15, title: true)
       name.numberOfLines = 1
       name.lineBreakMode = .byTruncatingTail
@@ -608,6 +1040,25 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
   }
   override func refresh() {
     guard isViewLoaded else { return }
+    if store.isOnlineMode, conversation.kind == .group,
+       let current = store.chatConversations.first(where: { $0.id == conversation.id }) {
+      let name = label(current.name, 15, title: true)
+      name.numberOfLines = 1
+      name.lineBreakMode = .byTruncatingTail
+      let identity = stack([conversationPortrait(current, size: 32), name], axis: .horizontal, spacing: 8)
+      identity.alignment = .center
+      navigationItem.titleView = identity
+    }
+    if store.isOnlineMode, store.onlineHasMore {
+      let older = actionButton("Load more messages", icon: .refresh) { [weak self] in
+        guard let self else { return }
+        Task { await self.store.loadMoreOnline() }
+      }
+      let header = UIView(frame: CGRect(x: 0, y: 0, width: max(280, table.bounds.width), height: 60))
+      header.addSubview(older)
+      older.pin(to: header, insets: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
+      table.tableHeaderView = header
+    } else if store.isOnlineMode { table.tableHeaderView = nil }
     let count = store.messages(for: conversation).count
     let nearBottom = table.contentSize.height - table.contentOffset.y - table.bounds.height < 100
     table.reloadData()
@@ -625,20 +1076,67 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
       : canSend
         ? "Send a hello. Follow each other to keep chatting."
         : "You can send more messages once you follow each other."
-    input.isEnabled = canSend
+    let canCompose = store.isOnlineMode ? store.chatConversations.contains { $0.id == conversation.id } : canSend
+    input.isEnabled = canCompose && !sendingAttachment && isAccountContextCurrent
+    addAttachmentButton?.isEnabled = input.isEnabled
+    sendButton?.isEnabled = canSend && input.isEnabled
+    attachmentRow.isHidden = attachmentDraft == nil
+    attachmentName.text = attachmentDraft.map { "\($0.filename) · " + ByteCountFormatter.string(fromByteCount: Int64($0.data.count), countStyle: .file) }
+    hint.isHidden = hint.text?.isEmpty != false
+    if store.isOnlineMode, !store.chatConversations.contains(where: { $0.id == conversation.id }) {
+      hint.text = "This conversation is no longer accessible. Refresh Chats to continue."
+      input.isEnabled = false
+      input.text = ""
+      draftTask?.cancel()
+    } else if store.isOnlineMode, let error = store.onlineReadError { hint.text = error }
+    addAttachmentButton?.isEnabled = input.isEnabled
+    sendButton?.isEnabled = canSend && input.isEnabled
+    hint.isHidden = hint.text?.isEmpty != false
+    if !isAccountContextCurrent { attachmentDraft = nil; attachmentRow.isHidden = true }
   }
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     store.messages(for: conversation).count
   }
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let message = store.messages(for: conversation)[indexPath.row]
+    let visibleMessages = store.messages(for: conversation)
+    guard visibleMessages.indices.contains(indexPath.row) else { return UITableViewCell() }
+    let message = visibleMessages[indexPath.row]
     let cell = UITableViewCell()
     cell.backgroundColor = .clear
     let text = label(message.text, 16)
     let meta = label(
-      message.author + " · " + message.time + (message.isPending == true ? " · Saved locally · Not delivered" : ""), 10,
+      message.author + " · " + message.time + (message.isPending == true ? (store.isOnlineMode ? " · Sending" : " · Saved locally · Not delivered") : (store.isOnlineMode ? " · Saved to conversation" : "")), 10,
       TotiTheme.muted)
     let bubble = stack([meta, text], spacing: 5)
+    if let reference = PostShareContent.reference(in: message.text) {
+      let open = actionButton("Open post", icon: .lounge, compact: true) { [weak self] in
+        self?.openSharedPost(id: reference.id, editorial: reference.editorial)
+      }
+      open.accessibilityIdentifier = "chat.shared.post." + reference.id.uuidString
+      bubble.addArrangedSubview(open)
+    }
+    if let attachment = message.attachment {
+      if attachment.kind == "image" {
+        let photo = UIImageView(image: TotiIcon.photo.image(size: 48))
+        photo.contentMode = .scaleAspectFit
+        photo.clipsToBounds = true
+        photo.backgroundColor = TotiTheme.soft
+        photo.height(150)
+        photo.widthAnchor.constraint(equalToConstant: 220).isActive = true
+        bubble.addArrangedSubview(photo)
+        Task { [weak self, weak photo] in
+          guard let self, self.isAccountContextCurrent else { return }
+          if let bytes = try? await TotiBackend.shared.chatAttachmentData(attachment), self.isAccountContextCurrent {
+            photo?.image = LoungePhotoImport.normalizedJPEG(bytes).flatMap(UIImage.init(data:))
+          }
+        }
+      }
+      bubble.addArrangedSubview(actionButton(attachment.kind == "image" ? "View photo" : attachment.filename,
+        icon: attachment.kind == "image" ? .photo : .notebook, compact: true) { [weak self] in
+        self?.openAttachment(attachment)
+      })
+      bubble.addArrangedSubview(label(ByteCountFormatter.string(fromByteCount: Int64(attachment.byteCount), countStyle: .file), 11, TotiTheme.muted))
+    }
     bubble.backgroundColor =
       message.isOwn
       ? TotiTheme.coral.withAlphaComponent(0.75) : UIColor.white.withAlphaComponent(0.9)
@@ -675,8 +1173,31 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
     push(CreatorController(store: store, creator: profile))
   }
   private func send() {
+    guard !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation else { return }
     draftTask?.cancel()
     let text = input.text ?? ""
+    if let draft = attachmentDraft {
+      guard !sendingAttachment else { return }
+      let caption = attachmentCaption ?? text
+      attachmentCaption = caption
+      sendingAttachment = true
+      refresh()
+      Task { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        let sent = await self.store.sendOnlineAttachment(draft.data, filename: draft.filename, kind: draft.kind,
+          messageID: draft.id, text: caption, conversation: self.conversation)
+        guard self.isAccountContextCurrent else { return }
+        self.sendingAttachment = false
+        if sent {
+          self.attachmentDraft = nil
+          self.attachmentCaption = nil
+          if self.input.text == caption { self.input.text = "" }
+        }
+        else { self.message(self.store.lastSaveError ?? "Attachment could not be sent. Your selection is still here.") }
+        self.refresh()
+      }
+      return
+    }
     guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
     Task {
       if await store.sendChatMessage(text, to: conversation) {
@@ -687,14 +1208,109 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
       }
     }
   }
+  private func chooseAttachment() {
+    guard isAccountContextCurrent, !sendingAttachment, input.isEnabled, presentedViewController == nil else { return }
+    guard store.isOnlineMode else { message("Sign in to send attachments."); return }
+    guard attachmentCaption == nil else { message("Retry the pending attachment before choosing another."); return }
+    view.endEditing(true)
+    let menu = UIAlertController(title: "Add attachment", message: "Choose a photo or a file up to 10 MB.", preferredStyle: .actionSheet)
+    menu.addAction(UIAlertAction(title: "Photo", style: .default) { [weak self] _ in
+      guard let self, self.isAccountContextCurrent else { return }
+      var configuration = PHPickerConfiguration(photoLibrary: .shared())
+      configuration.filter = .images
+      configuration.selectionLimit = 1
+      let picker = PHPickerViewController(configuration: configuration)
+      picker.delegate = self
+      self.present(picker, animated: true)
+    })
+    menu.addAction(UIAlertAction(title: "File", style: .default) { [weak self] _ in
+      guard let self, self.isAccountContextCurrent else { return }
+      let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.item], asCopy: true)
+      picker.allowsMultipleSelection = false
+      picker.delegate = self
+      self.present(picker, animated: true)
+    })
+    menu.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    menu.popoverPresentationController?.sourceView = addAttachmentButton
+    menu.popoverPresentationController?.sourceRect = addAttachmentButton?.bounds ?? .zero
+    present(menu, animated: true)
+  }
+
+  func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    picker.dismiss(animated: true)
+    guard isAccountContextCurrent, let item = results.first?.itemProvider else { return }
+    item.loadDataRepresentation(forTypeIdentifier: UTType.image.identifier) { [weak self] data, _ in
+      Task { @MainActor in
+        guard let self, self.isAccountContextCurrent else { return }
+        guard let data, data.count <= 32_000_000, let jpeg = LoungePhotoImport.normalizedJPEG(data) else {
+          self.message("This photo could not be prepared. Choose another photo."); return
+        }
+        self.attachmentDraft = (UUID(), jpeg, "Photo.jpg", "image")
+        self.refresh()
+      }
+    }
+  }
+
+  func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    if let exportURL { try? FileManager.default.removeItem(at: exportURL.deletingLastPathComponent()); self.exportURL = nil; return }
+    guard isAccountContextCurrent, let url = urls.first else { return }
+    let scoped = url.startAccessingSecurityScopedResource()
+    defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+    do {
+      let resource = try url.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey])
+      guard resource.isRegularFile == true, let size = resource.fileSize, size > 0, size <= 10_485_760 else {
+        message("Choose a file up to 10 MB."); return
+      }
+      let data = try Data(contentsOf: url)
+      guard data.count <= 10_485_760 else { message("Choose a file up to 10 MB."); return }
+      attachmentDraft = (UUID(), data, String(url.lastPathComponent.prefix(160)), "file")
+      refresh()
+    } catch { message("This file could not be opened. Try downloading it in Files first.") }
+  }
+
+  func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+    if let exportURL { try? FileManager.default.removeItem(at: exportURL.deletingLastPathComponent()); self.exportURL = nil }
+  }
+
+  private func openAttachment(_ attachment: ChatAttachment) {
+    guard isAccountContextCurrent, presentedViewController == nil else { return }
+    Task { [weak self] in
+      guard let self else { return }
+      do {
+        let data = try await TotiBackend.shared.chatAttachmentData(attachment)
+        guard self.isAccountContextCurrent, self.presentedViewController == nil else { return }
+        if attachment.kind == "image" {
+          guard let preview = LoungePhotoImport.normalizedJPEG(data), let image = UIImage(data: preview) else { self.message("This photo could not be opened."); return }
+          let photo = UIImageView(image: image)
+          photo.contentMode = .scaleAspectFit
+          photo.height(min(360, self.view.bounds.height * 0.45))
+          self.showCard([photo, actionButton("Close") { [weak self] in self?.dismissCard() }])
+        } else {
+          let directory = FileManager.default.temporaryDirectory.appendingPathComponent("TotiChat-" + UUID().uuidString, isDirectory: true)
+          try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+          let filename = (attachment.filename as NSString).lastPathComponent
+          guard !["", ".", ".."].contains(filename) else { throw TotiBackendError.invalidResponse }
+          let file = directory.appendingPathComponent(filename)
+          try data.write(to: file, options: [.atomic, .completeFileProtection])
+          self.exportURL = file
+          let picker = UIDocumentPickerViewController(forExporting: [file], asCopy: true)
+          picker.delegate = self
+          self.present(picker, animated: true)
+        }
+      } catch { if self.isAccountContextCurrent { self.message("This attachment is unavailable. Refresh the conversation or try again.") } }
+    }
+  }
+
   private func saveDraft() {
     draftTask?.cancel()
     let text = input.text ?? ""
     let id = conversation.id
     draftTask = Task { [weak self] in
       do { try await Task.sleep(for: .milliseconds(350)) } catch { return }
-      guard let self else { return }
-      if let creator = self.conversation.creator {
+      guard let self, !self.store.isOnlineMode || self.entryGeneration == TotiBackend.shared.generation else { return }
+      if self.store.isOnlineMode {
+        _ = await self.store.saveChatDraft(text, conversationID: id)
+      } else if let creator = self.conversation.creator {
         _ = await self.store.saveCreatorMessageDraft(text, creator: creator)
       } else {
         _ = await self.store.saveChatDraft(text, conversationID: id)
@@ -707,7 +1323,10 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
     let text = input.text ?? ""
     let id = conversation.id
     Task {
-      if let creator = conversation.creator {
+      guard !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation else { return }
+      if store.isOnlineMode {
+        _ = await store.saveChatDraft(text, conversationID: id)
+      } else if let creator = conversation.creator {
         _ = await store.saveCreatorMessageDraft(text, creator: creator)
       } else {
         _ = await store.saveChatDraft(text, conversationID: id)
@@ -715,6 +1334,8 @@ final class ConversationController: TotiScreen, UITableViewDataSource, UITextFie
     }
   }
   private func call(video: Bool) {
+    guard isAccountContextCurrent, presentedViewController == nil else { return }
+    view.endEditing(true)
     presentScreen(
       CallController(
         store: store, name: conversation.name,
@@ -799,7 +1420,7 @@ final class CreateGroupController: TotiScreen {
   }
 
   private var friends: [MusicConversation] {
-    store.chatConversations.filter {
+    (store.isOnlineMode ? store.onlinePeople : store.chatConversations).filter {
       $0.kind == .person && $0.creator?.isLocalOwner != true && store.followsChatPartner($0)
     }
   }
@@ -880,7 +1501,7 @@ final class CreateGroupController: TotiScreen {
       guard let self else { return }
       if let conversation = await self.store.createChatGroup(with: chosen) {
         let screen = ConversationController(store: self.store, conversation: conversation)
-        screen.entryNotice = "This group is saved on this device."
+        screen.entryNotice = self.store.isOnlineMode ? "Group created. Invitees can join after accepting their invitations." : "This group is saved on this device."
         guard var stack = self.navigationController?.viewControllers else { return }
         stack.removeAll { $0 === self }
         stack.append(screen)
@@ -899,7 +1520,7 @@ final class FaceToFaceController: StackScreen {
     heading("Face to face")
     content.addArrangedSubview(
       label(
-        "A nearby group match is not available. Choose at least two friends to save a group on this device.",
+        store.isOnlineMode ? "Nearby matching is unavailable. Choose friends in Create a group to send invitations." : "A nearby group match is not available. Choose at least two friends to save a group on this device.",
         16, TotiTheme.muted))
   }
 }
@@ -1026,7 +1647,7 @@ final class FriendScanController: TotiScreen, AVCaptureMetadataOutputObjectsDele
   }
 
   private func artist(matching token: String) -> MusicConversation? {
-    store.chatConversations.first {
+    (store.isOnlineMode ? store.onlinePeople : store.chatConversations).first {
       $0.kind == .person && $0.creator?.isLocalOwner != true
         && ($0.id.caseInsensitiveCompare(token) == .orderedSame
           || artistID($0).caseInsensitiveCompare(token) == .orderedSame)
@@ -1066,5 +1687,73 @@ final class FriendScanController: TotiScreen, AVCaptureMetadataOutputObjectsDele
     card.addArrangedSubview(photo)
     card.addArrangedSubview(name)
     card.addArrangedSubview(button)
+  }
+}
+
+final class OnlineInvitationsController: StackScreen {
+  override func refresh() {
+    guard isViewLoaded else { return }
+    clear()
+    appendOnlineControls()
+    content.addArrangedSubview(label("Joining a group gives you access to new messages after you accept. An invitation alone does not share message history.", 15, TotiTheme.muted))
+    if store.onlineInvitations.isEmpty { heading("No pending invitations") }
+    for invitation in store.onlineInvitations {
+      let identity = label(invitation.string("name") ?? "Group invitation", 19, title: true)
+      let accept = actionButton("Accept", icon: .check, primary: true) { [weak self] in
+        guard let self else { return }
+        self.save { await self.store.respondToOnlineInvitation(invitation.id, accept: true) }
+      }
+      let decline = actionButton("Decline", icon: .close) { [weak self] in
+        guard let self else { return }
+        self.save { await self.store.respondToOnlineInvitation(invitation.id, accept: false) }
+      }
+      let actions = stack([accept, decline], axis: .horizontal, spacing: 10)
+      actions.distribution = .fillEqually
+      content.addArrangedSubview(stack([identity, label(invitation.id.uuidString, 11, TotiTheme.muted), actions], spacing: 10))
+    }
+  }
+}
+
+final class OnlineGroupMembersController: StackScreen {
+  private let conversation: MusicConversation
+  init(store: AppStore, conversation: MusicConversation) {
+    self.conversation = conversation
+    super.init(store: store, title: "Group members")
+  }
+  required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
+  override func refresh() {
+    guard isViewLoaded else { return }
+    clear()
+    heading(conversation.name)
+    appendOnlineControls()
+    guard store.chatConversations.contains(where: { $0.id == conversation.id }) else {
+      content.addArrangedSubview(label("This group is no longer accessible.", 16, TotiTheme.muted))
+      return
+    }
+    let owner = store.onlineConversationIsOwned(conversation.id)
+    for member in store.onlineConversationMembers(conversation.id) {
+      let identity = stack([roundPortrait(asset: member.avatarAsset, size: 44, personID: member.id),
+                            label(member.name, 17, title: true)], axis: .horizontal, spacing: 12)
+      identity.alignment = .center
+      content.addArrangedSubview(identity)
+      if owner, !member.isLocalOwner {
+        content.addArrangedSubview(actionButton("Remove member", icon: .block) { [weak self] in
+          guard let self else { return }
+          self.confirm("Remove this member?", message: "They will lose access to this group's messages.", destructive: true, button: "Remove") {
+            self.save { await self.store.removeOnlineConversationMember(member.id, conversationID: self.conversation.id) }
+          }
+        })
+      }
+    }
+    content.addArrangedSubview(actionButton("Leave group", icon: .logout) { [weak self] in
+      guard let self else { return }
+      self.confirm("Leave group?", message: "You will lose access to this group's messages.", destructive: true, button: "Leave") {
+        Task {
+          if await self.store.leaveOnlineConversation(self.conversation.id) {
+            self.navigationController?.popToRootViewController(animated: true)
+          } else { self.message(self.store.lastSaveError ?? "The group could not be left. Please try again.") }
+        }
+      }
+    })
   }
 }

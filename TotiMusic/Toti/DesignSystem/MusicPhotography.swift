@@ -27,6 +27,10 @@ enum MusicPhotography {
   }
 
   static func cover(for room: PartyRoom) -> String {
+    if room.isCommunityArtwork, let asset = room.coverAsset,
+      ["RoomCoverHipHop", "RoomCoverKPop", "RoomCoverJazz", "RoomCoverFreestyle", "MusicPianoRoom", "MusicProductionRoom"].contains(asset) {
+      return asset
+    }
     let covers = [
       "hip-hop-crew": "RoomCoverHipHop", "k-pop-combo": "RoomCoverKPop",
       "jazz-afterhours": "RoomCoverJazz", "freestyle-circle": "RoomCoverFreestyle",

@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "usage": "Authored editorial identities with illustrative licensed photography. Not authenticated member accounts. Nationality is not inferred from appearance.",
+  "authors": [
+    {
+      "authorID": "ava-bennett",
+      "name": "Ava Bennett",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000001",
+      "portraitAsset": "EditorialAvaMusic",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/music-authors-20261102/EditorialAvaMusic.jpg",
+      "sha256": "f004684c507788f9311c0dc86179e566ad9cc2b3d1304839089fab86e6ea237a",
+      "bytes": 142813,
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Editorial music portrait · EditorialAvaMusic",
+          "author": "cottonbro studio",
+          "sourceURL": "https://www.pexels.com/photo/6875741/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ],
+      "illustrativeStatistics": {
+        "likes": 86,
+        "saves": 19,
+        "following": 34,
+        "followers": 127
+      }
+    },
+    {
+      "authorID": "ethan-cole",
+      "name": "Ethan Cole",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000002",
+      "portraitAsset": "EditorialEthanMusic",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/music-authors-20261102/EditorialEthanMusic.jpg",
+      "sha256": "449e7a3205eadbd149ee0f4771f3ad94c0c85aa8c99e131bdc73b4374fd49f26",
+      "bytes": 170546,
+      "dimensions": [
+        900,
+        1349
+      ],
+      "credits": [
+        {
+          "title": "Editorial music portrait · EditorialEthanMusic",
+          "author": "Ron Lach",
+          "sourceURL": "https://www.pexels.com/photo/10301838/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ],
+      "illustrativeStatistics": {
+        "likes": 64,
+        "saves": 27,
+        "following": 52,
+        "followers": 93
+      }
+    },
+    {
+      "authorID": "chloe-reed",
+      "name": "Chloe Reed",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000003",
+      "portraitAsset": "EditorialChloeMusic",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/music-authors-20261102/EditorialChloeMusic.jpg",
+      "sha256": "a627cf94779b7a159e0bba0fd5694812ecd29cdbcb731fb72a81d23b8fd8d152",
+      "bytes": 73994,
+      "dimensions": [
+        900,
+        1125
+      ],
+      "credits": [
+        {
+          "title": "Editorial music portrait · EditorialChloeMusic",
+          "author": "Chris S",
+          "sourceURL": "https://www.pexels.com/photo/16160052/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ],
+      "illustrativeStatistics": {
+        "likes": 39,
+        "saves": 8,
+        "following": 68,
+        "followers": 74
+      }
+    },
+    {
+      "authorID": "emily-hayes",
+      "name": "Emily Hayes",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000004",
+      "portraitAsset": "EditorialEmilyMusic",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/music-authors-20261102/EditorialEmilyMusic.jpg",
+      "sha256": "a0d730ac47f64d9e7223a4cce693d8726c029fe81759f9cd5f2192010cca8bee",
+      "bytes": 51195,
+      "dimensions": [
+        900,
+        600
+      ],
+      "credits": [
+        {
+          "title": "Editorial music portrait · EditorialEmilyMusic",
+          "author": "cottonbro studio",
+          "sourceURL": "https://www.pexels.com/photo/7087168/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ],
+      "illustrativeStatistics": {
+        "likes": 112,
+        "saves": 36,
+        "following": 41,
+        "followers": 186
+      }
+    },
+    {
+      "authorID": "grace-miller",
+      "name": "Grace Miller",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000005",
+      "portraitAsset": "EditorialGraceMusic",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/music-authors-20261102/EditorialGraceMusic.jpg",
+      "sha256": "2eec50683c2571de01b309e3b7e04f23f45c4ee9e168d8cf316497a10835a636",
+      "bytes": 129545,
+      "dimensions": [
+        900,
+        1350
+      ],
+      "credits": [
+        {
+          "title": "Editorial music portrait · EditorialGraceMusic",
+          "author": "cottonbro studio",
+          "sourceURL": "https://www.pexels.com/photo/7095490/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ],
+      "illustrativeStatistics": {
+        "likes": 153,
+        "saves": 14,
+        "following": 87,
+        "followers": 241
+      }
+    },
+    {
+      "authorID": "sophie-brooks",
+      "name": "Sophie Brooks",
+      "postID": "16f40c60-5dc2-4db5-bf99-000000000006",
+      "portraitAsset": "EditorialSophieMusic",
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/music-authors-20261102/EditorialSophieMusic.jpg",
+      "sha256": "f28acf6837e58d74274a638c88a24a07b454a0b20a31d0be6dd67f02918c76fd",
+      "bytes": 37252,
+      "dimensions": [
+        900,
+        600
+      ],
+      "credits": [
+        {
+          "title": "Editorial music portrait · EditorialSophieMusic",
+          "author": "Andrea Piacquadio",
+          "sourceURL": "https://www.pexels.com/photo/3915965/",
+          "licenseURL": "https://www.pexels.com/license/"
+        }
+      ],
+      "illustrativeStatistics": {
+        "likes": 47,
+        "saves": 12,
+        "following": 29,
+        "followers": 82
+      }
+    }
+  ],
+  "statisticsUsage": "Fixed illustrative presentation figures authorized for editorial profiles. Not actual member engagement, relationships, incoming follows or online presence."
+}

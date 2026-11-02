@@ -10,3 +10,67 @@ xcuserdata/
 
 # Python resource preparation/test caches.
 __pycache__/
+
+# Source media remains local; runtime media is fetched from verified HTTPS URLs.
+/Assets/
+/TotiMusic/Assets/
+
+# CI-restored public Supabase resources are disposable build inputs.
+/.ci/
+/TotiMusic/BuildAssets/
+
+# Generated resource directories may also be created inside the working tree.
+RemoteAssetCache/
+RemoteResources/
+FlatAssets.xcassets/
+
+# Local credentials and service configuration never belong in Git.
+.env
+.env.*
+!.env.example
+
+# Keep accidental media exports out of future commits.
+*.[aA][aA][cC]
+*.[aA][vV][iI]
+*.[aA][vV][iI][fF]
+*.[bB][mM][pP]
+*.[fF][lL][aA][cC]
+*.[gG][iI][fF]
+*.[hH][eE][iI][cC]
+*.[hH][eE][iI][fF]
+*.[iI][cC][oO]
+*.[jJ][pP][eE][gG]
+*.[jJ][pP][gG]
+*.[mM][44][aA]
+*.[mM][44][vV]
+*.[mM][kK][vV]
+*.[mM][oO][vV]
+*.[mM][pP][33]
+*.[mM][pP][44]
+*.[oO][tT][fF]
+*.[pP][dD][fF]
+*.[pP][nN][gG]
+*.[sS][vV][gG]
+*.[tT][iI][fF]
+*.[tT][iI][fF][fF]
+*.[tT][tT][fF]
+*.[wW][aA][vV]
+*.[wW][eE][bB][mM]
+*.[wW][eE][bB][pP]
+*.[wW][oO][fF][fF]
+*.[wW][oO][fF][fF][22]
+
+# Build/test bundles and archive exports.
+*.xcresult/
+*.xcarchive/
+*.ipa
+*.dSYM/
+
+# Preserve the actual pinned SDK resolution without versioning workspace user data.
+!TotiMusic/Toti.xcodeproj/project.xcworkspace/
+TotiMusic/Toti.xcodeproj/project.xcworkspace/*
+!TotiMusic/Toti.xcodeproj/project.xcworkspace/xcshareddata/
+TotiMusic/Toti.xcodeproj/project.xcworkspace/xcshareddata/*
+!TotiMusic/Toti.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+TotiMusic/Toti.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/*
+!TotiMusic/Toti.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

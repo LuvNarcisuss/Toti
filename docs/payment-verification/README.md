@@ -52,18 +52,18 @@ The application has no production free-credit or bypass path. UI tests pair fres
 
 ## Screenshots
 
-- [Loaded catalog](catalog.png)
-- [App confirmation](purchase-confirmation.png)
-- [Seven completed purchases](seven-purchases.png)
-- [Native Xcode StoreKit sheet](native-payment-sheet.png)
-- [Native-sheet cancellation](native-cancellation.png)
-- [Injected StoreKit cancellation](storekit-cancellation.png)
-- [Balance and history after relaunch](relaunch-balance.png)
+- [Loaded catalog](../../Assets/Screenshots__payment-verification__catalog.png)
+- [App confirmation](../../Assets/Screenshots__payment-verification__purchase-confirmation.png)
+- [Seven completed purchases](../../Assets/Screenshots__payment-verification__seven-purchases.png)
+- [Native Xcode StoreKit sheet](../../Assets/Screenshots__payment-verification__native-payment-sheet.png)
+- [Native-sheet cancellation](../../Assets/Screenshots__payment-verification__native-cancellation.png)
+- [Injected StoreKit cancellation](../../Assets/Screenshots__payment-verification__storekit-cancellation.png)
+- [Balance and history after relaunch](../../Assets/Screenshots__payment-verification__relaunch-balance.png)
 - [System accessibility evidence](native-sheet-hierarchy.txt), [attachment provenance](attachment-manifest.json)
 
 Screenshots were opened and visually inspected. System-owned controls may use the simulator's language; Toti-authored copy remains English.
 
-The final application was reinstalled and launched on Toti UI Acceptance (PID 61142); [launch screenshot](final-launch.png). This direct launch uses no local StoreKit fixture. To interactively test local payments, run the `toti` scheme from Xcode.
+The final application was reinstalled and launched on Toti UI Acceptance (PID 61142); [launch screenshot](../../Assets/Screenshots__payment-verification__final-launch.png). This direct launch uses no local StoreKit fixture. To interactively test local payments, run the `toti` scheme from Xcode.
 
 ## Repeating the checks
 

@@ -2,6 +2,8 @@ import Combine
 import UIKit
 
 final class SafetyController: StackScreen {
+  private let entryGeneration = TotiBackend.shared.generation
+  private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
   let target: ContentSafetyTarget
   var recordingInformation: String?
   private var reporting: Bool
@@ -29,7 +31,7 @@ final class SafetyController: StackScreen {
     if !reporting {
       content.addArrangedSubview(
         actionButton("Report " + target.kind.rawValue.lowercased(), icon: .flag) { [weak self] in
-          guard let self else { return }
+          guard let self, self.entryAccountIsCurrent else { return }
           self.reporting = true
           self.title = "Report"
           self.installStudioChrome()
@@ -38,16 +40,19 @@ final class SafetyController: StackScreen {
         })
       content.addArrangedSubview(
         actionButton("Block " + target.creator.name, icon: .block) { [weak self] in
-          guard let self else { return }
+          guard let self, self.entryAccountIsCurrent else { return }
           self.confirm(
             "Block this creator?",
             message:
               "Their posts, comments and voice rooms will be hidden. You can unblock them from Blocked in Settings.",
             destructive: true, button: "Block"
           ) { [weak self] in
-            guard let self else { return }
+            guard let self, self.entryAccountIsCurrent else { return }
             Task {
-              if await self.store.blockCreator(self.target.creator) {
+              guard self.entryAccountIsCurrent else { return }
+              let blocked = await self.store.blockCreator(self.target.creator)
+              guard self.entryAccountIsCurrent else { return }
+              if blocked {
                 self.closeAfterAction()
               } else {
                 self.message(self.store.lastSaveError ?? "Please try again.")
@@ -65,17 +70,20 @@ final class SafetyController: StackScreen {
     content.addArrangedSubview(details)
     content.addArrangedSubview(
       label(
-        "Reports stay on this device and are not submitted. Remove one from Reported in Settings.",
+        store.isOnlineMode ? "Reports are submitted to Toti. Submission does not mean a review has been completed." : "Reports stay on this device and are not submitted. Remove one from Reported in Settings.",
         14, TotiTheme.muted))
     content.addArrangedSubview(
-      actionButton("Save report", icon: .flag, primary: true) { [weak self] in
-        guard let self else { return }
+      actionButton(store.isOnlineMode ? "Submit report" : "Save report", icon: .flag, primary: true) { [weak self] in
+        guard let self, self.entryAccountIsCurrent else { return }
         let reason = selected
         let note = details.text ?? ""
         Task {
-          if await self.store.saveContentReport(self.target, reason: reason, details: note) {
+          guard self.entryAccountIsCurrent else { return }
+          let submitted = await self.store.saveContentReport(self.target, reason: reason, details: note)
+          guard self.entryAccountIsCurrent else { return }
+          if submitted {
             self.view.endEditing(true)
-            self.closeAfterAction(note: "Report saved")
+            self.closeAfterAction(note: self.store.isOnlineMode ? "Report submitted" : "Report saved")
           } else {
             self.message(self.store.lastSaveError ?? "Your report could not be saved. Please try again.")
           }
@@ -115,23 +123,43 @@ final class WalletController: StackScreen {
     image.contentMode = .scaleAspectFit
     image.height(76)
     content.addArrangedSubview(image)
-    let balance = heading("\(store.wallet.snapshot.diamonds.formatted()) Diamonds")
+    let balance = heading(store.wallet.isServerWalletUnavailable ? "— Diamonds" : "\(store.wallet.snapshot.diamonds.formatted()) Diamonds")
     balance.accessibilityIdentifier = "wallet.balance"
-    balance.accessibilityValue = String(store.wallet.snapshot.diamonds)
+    balance.accessibilityValue = store.wallet.isServerWalletUnavailable ? "Balance unavailable" : String(store.wallet.snapshot.diamonds)
     content.addArrangedSubview(
       label(
-        "Send a little appreciation. Use diamonds for local gifts on posts and in voice rooms. Messages and replies are free.",
+        store.wallet.isLocalStoreKitTesting
+          ? "Local test balance and purchase history. Your online account remains signed in."
+          : store.wallet.isServerWalletUnavailable
+          ? "Your online balance is not available yet. Previous on-device diamonds remain separate in your local archive."
+          : "Send a little appreciation. Use diamonds for local gifts on posts and in voice rooms. Messages and replies are free.",
         15, TotiTheme.muted))
-    if let status = store.wallet.catalog.message {
+    if store.wallet.isLocalStoreKitTesting {
+      let status = label("Local StoreKit testing · No real charges. Test diamonds stay on this device for this account and cannot be spent online.", 15, TotiTheme.muted)
+      status.accessibilityIdentifier = "wallet.localTesting.notice"
+      content.addArrangedSubview(status)
+    }
+    if let error = store.wallet.localTestingError {
+      content.addArrangedSubview(label(error, 15, TotiTheme.muted))
+    }
+    if store.wallet.isServerWalletUnavailable {
+      let status = label("Purchases and gifts are temporarily unavailable. You cannot buy or spend diamonds right now.", 15, TotiTheme.muted)
+      status.accessibilityIdentifier = "wallet.payments.unavailable"
+      content.addArrangedSubview(status)
+    } else if let status = store.wallet.catalog.message {
       let statusLabel = label(status, 14, TotiTheme.muted)
       statusLabel.accessibilityIdentifier = "wallet.catalog.status"
       content.addArrangedSubview(statusLabel)
     }
-    if store.wallet.catalog.canRetry {
+    if !store.wallet.isServerWalletUnavailable && (store.wallet.catalog.canRetry || store.wallet.localTestingError != nil) {
       let retry = actionButton("Retry prices") { [weak self] in self?.store.wallet.retryProducts() }
       retry.accessibilityIdentifier = "wallet.catalog.retry"
       retry.isEnabled = !store.wallet.isBusy
       content.addArrangedSubview(retry)
+    }
+    heading("Add diamonds")
+    if store.wallet.isServerWalletUnavailable {
+      content.addArrangedSubview(label("USD reference prices are shown below. Final prices will come from the App Store when purchases are available.", 14, TotiTheme.muted))
     }
     let packages = WalletCatalog.packages(for: .diamonds)
     for start in stride(from: 0, to: packages.count, by: 3) {
@@ -139,12 +167,12 @@ final class WalletController: StackScreen {
       row.distribution = .fillEqually
       let end = min(start + 3, packages.count)
       for package in packages[start..<end] {
-        let price = store.wallet.priceText(for: package)
+        let price = store.wallet.isServerWalletUnavailable ? "\(package.price) USD\nUnavailable" : store.wallet.priceText(for: package)
         let priceNote = "Price: \(price)"
         let b = actionButton(
           package.amountText + "\n" + price, icon: .diamond, axis: .vertical
         ) { [weak self] in
-          guard let self, self.store.wallet.canPurchase(package) else { return }
+          guard let self, !self.store.wallet.isServerWalletUnavailable, self.store.wallet.canPurchase(package) else { return }
           self.confirm(
             "Add \(package.amountText) diamonds", message: priceNote,
             button: "Continue"
@@ -156,7 +184,8 @@ final class WalletController: StackScreen {
           }
         }
         b.accessibilityIdentifier = "wallet.package.\(package.amount)"
-        b.isEnabled = store.wallet.canPurchase(package)
+        if store.wallet.isServerWalletUnavailable { b.caption.numberOfLines = 0 }
+        b.isEnabled = !store.wallet.isServerWalletUnavailable && store.wallet.canPurchase(package)
         row.addArrangedSubview(b)
       }
       for _ in 0..<(3 - (end - start)) {
@@ -167,13 +196,19 @@ final class WalletController: StackScreen {
       content.addArrangedSubview(row)
     }
     heading("Activity")
-    if store.wallet.snapshot.activity.isEmpty {
+    if store.wallet.isServerWalletUnavailable {
+      let status = label("Online transaction history is not available yet. Previous on-device transactions remain in your local archive.", 15, TotiTheme.muted)
+      status.accessibilityIdentifier = "wallet.activity.unavailable"
+      content.addArrangedSubview(status)
+    } else if store.wallet.snapshot.activity.isEmpty {
       content.addArrangedSubview(label("No transactions yet.", 15, TotiTheme.muted))
     }
-    for item in store.wallet.snapshot.activity {
-      let activity = label(item.title)
-      activity.accessibilityIdentifier = "wallet.activity.\(item.id)"
-      content.addArrangedSubview(activity)
+    if !store.wallet.isServerWalletUnavailable {
+      for item in store.wallet.snapshot.activity {
+        let activity = label(item.title)
+        activity.accessibilityIdentifier = "wallet.activity.\(item.id)"
+        content.addArrangedSubview(activity)
+      }
     }
     #if DEBUG
     content.addArrangedSubview(actionButton("Copy store diagnostics") { [weak self] in
@@ -279,6 +314,7 @@ enum GiftBurst {
 
 extension TotiScreen {
   func openGifts(_ context: GiftContext, picksRecipient: Bool = false) {
+    guard !store.isOnlineMode else { message("Gifts are not available yet."); return }
     if let reason = store.giftUnavailableReason(context) { message(reason); return }
     let gifts = GiftsController(store: store, context: context, picksRecipient: picksRecipient)
     presentScreen(gifts)
@@ -320,7 +356,11 @@ final class GiftsController: StackScreen {
     guard isViewLoaded else { return }
     clear()
     heading(context.sourceTitle)
-    content.addArrangedSubview(label("Gifts create an effect and a record on this device. They are not delivered to another person or added to their balance.", 14, TotiTheme.muted))
+    if store.isOnlineMode {
+      content.addArrangedSubview(label("Gifts are not available yet.", 16, TotiTheme.muted))
+    } else {
+      content.addArrangedSubview(label("Gifts create an effect and a record on this device. They are not delivered to another person or added to their balance.", 14, TotiTheme.muted))
+    }
     if picksRecipient {
       content.addArrangedSubview(label("For", 15, TotiTheme.muted))
       let names = ["Everyone"] + context.recipients.map(\.name)
@@ -333,9 +373,9 @@ final class GiftsController: StackScreen {
     let recipient = label("For: " + selection.recipientText, 15)
     recipient.accessibilityIdentifier = "gift.recipients"
     content.addArrangedSubview(recipient)
-    let balance = label("\(store.wallet.snapshot.diamonds.formatted()) diamonds", 20)
+    let balance = label(store.isOnlineMode ? "Balance unavailable" : "\(store.wallet.snapshot.diamonds.formatted()) diamonds", 20)
     balance.accessibilityIdentifier = "gift.balance"
-    balance.accessibilityValue = String(store.wallet.snapshot.diamonds)
+    balance.accessibilityValue = store.isOnlineMode ? "Balance unavailable" : String(store.wallet.snapshot.diamonds)
     content.addArrangedSubview(balance)
     let topUp = actionButton("Add diamonds", icon: .diamond) { [weak self] in
       guard let self else { return }; self.push(WalletController(store: self.store))
@@ -347,7 +387,7 @@ final class GiftsController: StackScreen {
       status.accessibilityIdentifier = "gift.outcome"
       content.addArrangedSubview(status)
     }
-    let unavailable = store.giftUnavailableReason(selection)
+    let unavailable = store.isOnlineMode ? "Sending gifts is temporarily unavailable." : store.giftUnavailableReason(selection)
     if let unavailable { content.addArrangedSubview(label(unavailable, 14, TotiTheme.muted)) }
     let quantities = StudioChoice(items: ["1 gift", "5 gifts", "10 gifts"], index: [1, 5, 10].firstIndex(of: quantity) ?? 0)
     quantities.onChange = { [weak self] next in self?.quantity = [1, 5, 10][next]; self?.refresh() }
@@ -384,7 +424,7 @@ final class GiftsController: StackScreen {
   }
 
   private func confirmGift(_ gift: MusicGift) {
-    guard !saving, !store.wallet.isBusy else { return }
+    guard !store.isOnlineMode, !saving, !store.wallet.isBusy else { return }
     let selected = selection
     let count = quantity
     let cost = gift.diamonds * count

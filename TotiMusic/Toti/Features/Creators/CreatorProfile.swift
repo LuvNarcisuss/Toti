@@ -90,3 +90,31 @@ struct CreatorStatistics {
         return Self(likes: 0, saves: 0, following: following, followers: followers)
     }
 }
+
+/// Received engagement belongs to the author's published works, not the viewer's collections.
+enum TotiProfileMetric: String, CaseIterable {
+    case likes = "Likes", saves = "Saves", following = "Following", followers = "Followers"
+
+    var field: String {
+        switch self {
+        case .likes: return "like_count"
+        case .saves: return "save_count"
+        case .following: return "following_count"
+        case .followers: return "follower_count"
+        }
+    }
+
+    func value(in statistics: CreatorStatistics) -> Int {
+        switch self {
+        case .likes: return statistics.likes
+        case .saves: return statistics.saves
+        case .following: return statistics.following
+        case .followers: return statistics.followers
+        }
+    }
+}
+
+func totiProfileCollectionCount(_ count: Int, noun: String = "post", suffix: String = "loaded") -> String {
+    let text = "\(count) " + noun + (count == 1 ? "" : "s")
+    return suffix.isEmpty ? text : text + " " + suffix
+}
