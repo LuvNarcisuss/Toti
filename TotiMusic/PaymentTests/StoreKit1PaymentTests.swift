@@ -47,7 +47,7 @@ final class StoreKit1PaymentTests: XCTestCase {
         enablePersistence()
         await purchasing.start()
         if waitForCatalog {
-            try await eventually("Seven localized StoreKit products load") { self.prices.count == 7 }
+            try await eventually("Nine localized StoreKit products load") { self.prices.count == 9 }
         }
     }
 
@@ -253,15 +253,16 @@ final class StoreKit1PaymentTests: XCTestCase {
         XCTAssertNotNil(store.giftUnavailableReason(voice))
     }
 
-    func testAllSevenPackagesCreditExactAmountsAndPersist() async throws {
+    func testAllNinePackagesCreditExactAmountsAndPersist() async throws {
         let expected: [(String, Int)] = [
             ("jezvdjvpoifednhy", 400), ("uylrrniaqxjtlaie", 800),
             ("oqojxyitbbjeayzj", 2450), ("skrseirtauvvrsol", 5150),
-            ("bqrdrlkrlfpzjmod", 10800), ("psqtqagzmiiyhncr", 29400),
+            ("bqrdrlkrlfpzjmod", 10800), ("qcrxcepelpjfskbi", 16800),
+            ("psqtqagzmiiyhncr", 29400), ("fwcwwzfkbeawlbql", 42700),
             ("bzwmucutltusfxpv", 63700)
         ]
         var total = 0
-        let expectedPrices = ["$0.99", "$1.99", "$4.99", "$9.99", "$19.99", "$49.99", "$99.99"]
+        let expectedPrices = ["$0.99", "$1.99", "$4.99", "$9.99", "$19.99", "$29.99", "$49.99", "$69.99", "$99.99"]
         for (index, tier) in expected.enumerated() {
             let (id, amount) = tier
             XCTAssertEqual(prices[id], expectedPrices[index])
@@ -274,13 +275,13 @@ final class StoreKit1PaymentTests: XCTestCase {
             XCTAssertEqual(saved.diamonds, total)
             print("PAYMENT_PASS \(id) +\(amount), balance=\(total), price=\(prices[id] ?? "missing")")
         }
-        XCTAssertEqual(ledger.diamonds, 112700)
-        XCTAssertEqual(ledger.creditedTransactionIDs.count, 7)
+        XCTAssertEqual(ledger.diamonds, 172200)
+        XCTAssertEqual(ledger.creditedTransactionIDs.count, 9)
         try await eventually("Fulfilled transactions are finished") { SKPaymentQueue.default().transactions.isEmpty }
         await purchasing.stop()
         try await startService()
-        XCTAssertEqual(ledger.diamonds, 112700)
-        XCTAssertEqual(ledger.activity.count, 7)
+        XCTAssertEqual(ledger.diamonds, 172200)
+        XCTAssertEqual(ledger.activity.count, 9)
     }
 
     func testRepeatConsumablePurchasesCreditEachNewTransaction() async throws {
@@ -527,7 +528,7 @@ final class StoreKit1PaymentTests: XCTestCase {
         XCTAssertEqual(purchasing.catalog.phase, .loading, "Old callback must not end the new request")
         fetcher.deliver(2, .success(.init(products: response.products, invalidProductIDs: [])))
         XCTAssertEqual(purchasing.catalog.phase, .ready)
-        XCTAssertEqual(prices.count, 7)
+        XCTAssertEqual(prices.count, 9)
     }
 
     func testTimeoutCancelsRequestAndLateResultCannotReplaceRetry() async throws {
@@ -573,7 +574,7 @@ final class StoreKit1PaymentTests: XCTestCase {
         fetcher.deliver(0, .success(.init(products: [], invalidProductIDs: Array(WalletCatalog.productIDs))))
         XCTAssertEqual(purchasing.catalog.phase, .unavailable)
         XCTAssertTrue(prices.isEmpty)
-        XCTAssertEqual(purchasing.catalog.invalidIDs.count, 7)
+        XCTAssertEqual(purchasing.catalog.invalidIDs.count, 9)
         purchasing.retryProducts()
         fetcher.deliver(1, .failure(NSError(domain: "CatalogTest", code: 42, userInfo: [NSLocalizedDescriptionKey: "secret receipt", "receipt-data": "private"])))
         XCTAssertEqual(purchasing.catalog.phase, .failed)
@@ -637,8 +638,8 @@ final class CatalogAvailabilityTests: XCTestCase {
         let attachment = XCTAttachment(string: detail)
         attachment.lifetime = .keepAlways
         add(attachment)
-        guard response.products.count == 7 else {
-            throw XCTSkip("Apple did not return all seven products. See catalog attachment; this is not a sandbox purchase pass.")
+        guard response.products.count == 9 else {
+            throw XCTSkip("Apple did not return all nine products. See catalog attachment; this is not a sandbox purchase pass.")
         }
     }
 }

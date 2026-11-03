@@ -9,10 +9,12 @@ Configured on 2026-10-26 from the supplied purchase catalog screenshot (40617780
 | 2,450 | 4.99 | `oqojxyitbbjeayzj` |
 | 5,150 | 9.99 | `skrseirtauvvrsol` |
 | 10,800 | 19.99 | `bqrdrlkrlfpzjmod` |
+| 16,800 | 29.99 | `qcrxcepelpjfskbi` |
 | 29,400 | 49.99 | `psqtqagzmiiyhncr` |
+| 42,700 | 69.99 | `fwcwwzfkbeawlbql` |
 | 63,700 | 99.99 | `bzwmucutltusfxpv` |
 
-`Toti/App/TotiIdentity.swift` owns the product identifiers. `WalletCatalog` defines the matching seven diamond/price tiers. The earlier unconfigured 16,800 and 42,600 diamond tiers are removed. Reference USD prices do not determine the charge: the wallet displays localized prices from `SKProduct.price` and `priceLocale`.
+`Toti/App/TotiIdentity.swift` owns the product identifiers. `WalletCatalog` defines nine matching diamond/price tiers as of 2026-11-03. The added 16,800 and 42,700 tiers have newly allocated 16-letter IDs and await App Store Connect registration. See [the complete current product information](diamond-product-catalog.md). Historical seven-tier test results below do not cover this expansion. Reference USD prices do not determine the charge: the wallet displays localized prices from `SKProduct.price` and `priceLocale`.
 
 ## Payment path
 
@@ -60,3 +62,7 @@ Gift confirmation describes local effects and records only, not remote delivery 
 Gift debits and StoreKit credits share the same serialized persistence queue. The UI rejects overlapping spends and prevents session exit while a wallet action is in flight. Failed saves do not publish a new balance or effect. Gift confirmation uses a system alert for long recipient lists and accessibility text; the picker opens at the large sheet detent. Saving disables Close and interactive dismissal.
 
 The original concurrent-spend regression reproduced two successful calls yielding only one debit and one history entry. The repaired path preserves both debits; interleaved purchase credits are also covered by local StoreKit tests. See `gift-verification/README.md` for this change's final evidence and limits.
+
+## Online Guest local gift repair (2026-11-03)
+
+Debug simulator accounts using the explicit local StoreKit flag can now spend their account-scoped test diamonds on local Voice gift effects and records. The picker, eligibility checks and wallet use the same readiness boundary as local purchases; material rooms participate in recipient validation and the current account is excluded. The existing serialized atomic ledger remains the debit authority. Production gifts and recipient payouts remain unavailable. See [focused verification](payment-verification/local-voice-gifts-20261103.md).

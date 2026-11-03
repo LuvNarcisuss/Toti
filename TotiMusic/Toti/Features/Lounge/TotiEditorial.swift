@@ -88,7 +88,7 @@ struct TotiEditorialAuthor {
 /// Fixed editorial figures are presentation metadata, never real member engagement.
 extension TotiEditorialAuthor {
     var presentationStatistics: CreatorStatistics? {
-        Self.presentationFigures[id]
+        Self.presentationFigures[id] ?? Self.voiceFigures[id]
     }
 
     private static let presentationFigures: [String: CreatorStatistics] = [
@@ -103,7 +103,7 @@ extension TotiEditorialAuthor {
 
 extension OnlineEditorialPost {
     var editorialAuthor: TotiEditorialAuthor {
-        TotiEditorialAuthor.catalog[id.uuidString.lowercased()] ?? .publisher
+        TotiEditorialAuthor.catalog[id.uuidString.lowercased()] ?? TotiEditorialAuthor.voicePostAuthors[id.uuidString.lowercased()] ?? .publisher
     }
 }
 
@@ -305,8 +305,12 @@ final class TotiEditorialProfileController: StackScreen {
         guard isViewLoaded, isAccountContextCurrent else { return }
         clear()
         let statistics = author.presentationStatistics
+        let portrait = TotiPhoto(asset: author.portraitAsset, size: 92, round: true)
+        portrait.isAccessibilityElement = true
+        portrait.accessibilityLabel = "Portrait of " + author.name
+        portrait.accessibilityIdentifier = "voice.character.portrait." + author.portraitAsset
         content.addArrangedSubview(totiProfileIdentityCard(
-            photo: TotiPhoto(asset: author.portraitAsset, size: 92, round: true),
+            photo: portrait,
             name: author.name, biography: author.biography, eyebrow: "EDITORIAL AUTHOR",
             metrics: totiProfileMetrics(TotiProfileMetric.allCases.map { metric in
                 (metric.rawValue, statistics.map { metric.value(in: $0) })
@@ -326,9 +330,10 @@ final class TotiEditorialProfileController: StackScreen {
             content.addArrangedSubview(label("This author is blocked. Unblock to see their posts.", 16, TotiTheme.muted))
             return
         }
-        heading("Works")
         let works = store.onlineEditorialPosts.filter { $0.editorialAuthor.id == author.id }
-        content.addArrangedSubview(label(totiProfileCollectionCount(works.count), 12, TotiTheme.muted))
+        let categories = StudioChoice(items: ["Works (\(works.count))"])
+        categories.accessibilityIdentifier = "editorial.profile.categories"
+        content.addArrangedSubview(categories)
         if works.isEmpty, store.onlineEditorialError == nil {
             content.addArrangedSubview(label("New stories will appear here.", 16, TotiTheme.muted))
         }
@@ -388,7 +393,7 @@ final class TotiEditorialProfileController: StackScreen {
             let blocked = try TotiEditorialPreferences.storage().read().blockedAuthorIDs.contains(author.id)
             confirm((blocked ? "Unblock " : "Block ") + author.name + "?",
                 message: blocked ? "Their editorial posts will be visible again. Following is not restored automatically."
-                    : "Their editorial posts will be hidden on this device. You can unblock them in Editorial preferences in Settings.",
+                    : "Their editorial posts will be hidden on this device. You can unblock them from Blocked in Settings.",
                 destructive: !blocked, button: blocked ? "Unblock" : "Block") { [weak self] in
                 guard let self, self.isAccountContextCurrent else { return }
                 do {
@@ -411,9 +416,19 @@ final class TotiEditorialProfileController: StackScreen {
 }
 
 /// Editorial preferences are account-scoped device data, never member relationships.
+struct TotiEditorialRoomReport: Codable, Equatable {
+    let title: String
+    let reason: ContentReportReason
+    let details: String
+    let savedAt: Date
+}
+
 struct TotiEditorialPreferenceState: Codable, Equatable {
     var followedAuthorIDs: Set<String> = []
     var blockedAuthorIDs: Set<String> = []
+    // Optional fields preserve decoding of existing author-only preference files.
+    var blockedRoomTitles: [String: String]?
+    var roomReports: [String: TotiEditorialRoomReport]?
     // Retain previously saved drafts for compatibility; no editorial messaging route exposes them.
     var drafts: [String: String] = [:]
 }
@@ -470,7 +485,7 @@ final class TotiEditorialPreferencesController: StackScreen {
         content.addArrangedSubview(label("Follow and block preferences apply to this account on this device. Open an author to change them.", 14, TotiTheme.muted))
         do {
             let state = try TotiEditorialPreferences.storage().read()
-            let authors = TotiEditorialAuthor.catalog.values.sorted { $0.name < $1.name }
+            let authors = TotiEditorialAuthor.allAuthors
             for author in authors {
                 let blocked = state.blockedAuthorIDs.contains(author.id)
                 let following = state.followedAuthorIDs.contains(author.id)
@@ -554,7 +569,7 @@ final class TotiEditorialDetailController: StackScreen, UITextViewDelegate {
             editor.isEditable = false; sendButton?.isEnabled = false; return
         }
         guard !preferences.blockedAuthorIDs.contains(author.id) else {
-            article.addArrangedSubview(label("This author's posts are hidden. Unblock them in Editorial preferences in Settings."))
+            article.addArrangedSubview(label("This author's posts are hidden. Unblock them from Blocked in Settings."))
             editor.isEditable = false; sendButton?.isEnabled = false; return
         }
         editor.isEditable = true
@@ -574,6 +589,13 @@ final class TotiEditorialDetailController: StackScreen, UITextViewDelegate {
         header.alignment = accessibleLayout ? .fill : .center
         if !accessibleLayout { follow.widthAnchor.constraint(equalToConstant: 110).isActive = true }
         article.addArrangedSubview(header)
+        let report = actionButton("Report post", icon: .flag, compact: true) { [weak self] in self?.openReport(targetID: nil) }
+        report.accessibilityIdentifier = "post.safety.report"
+        let block = actionButton("Block author", icon: .block, compact: true) { [weak self] in self?.blockPostAuthor() }
+        block.accessibilityIdentifier = "post.safety.block"
+        let safety = stack([report, block], axis: accessibleLayout ? .vertical : .horizontal, spacing: 8)
+        safety.distribution = .fillEqually
+        article.addArrangedSubview(safety)
         article.addArrangedSubview(label("TOTI EDITORIAL", 11, TotiTheme.plum))
         article.addArrangedSubview(label(post.topic.uppercased(), 12, TotiTheme.muted))
         article.addArrangedSubview(label(post.title, 26, title: true))
@@ -725,20 +747,26 @@ final class TotiEditorialDetailController: StackScreen, UITextViewDelegate {
     }
     private func showOptions() {
         guard isAccountContextCurrent else { return }
-        showCard([label("Post options", 22, title: true),
-            actionButton("Report post", icon: .flag) { [weak self] in self?.dismissCard { self?.openReport(targetID: nil) } },
-            actionButton("Block author", icon: .block, tone: .danger) { [weak self] in
-                self?.dismissCard { [weak self] in
-                    self?.confirm("Block this author?", message: "Their editorial posts will be hidden on this device. Unblock them in Editorial preferences in Settings.", destructive: true, button: "Block") {
-                        guard let self, self.isAccountContextCurrent else { return }
-                        do {
-                            let id = self.post.editorialAuthor.id
-                            try TotiEditorialPreferences.storage().update { $0.blockedAuthorIDs.insert(id); $0.followedAuthorIDs.remove(id) }
-                            self.store.objectWillChange.send(); self.refresh()
-                        } catch { self.message("The block preference could not be saved.") }
-                    }
-                }
-            }, actionButton("Close") { [weak self] in self?.dismissCard() }])
+        let report = actionButton("Report post", icon: .flag) { [weak self] in self?.dismissCard { self?.openReport(targetID: nil) } }
+        report.accessibilityIdentifier = "post.options.report"
+        let block = actionButton("Block author", icon: .block, tone: .danger) { [weak self] in self?.dismissCard { self?.blockPostAuthor() } }
+        block.accessibilityIdentifier = "post.options.block"
+        showCard([label("Post options", 22, title: true), report, block,
+            actionButton("Close") { [weak self] in self?.dismissCard() }])
+    }
+    private func blockPostAuthor() {
+        guard isAccountContextCurrent else { return }
+        confirm("Block this author?", message: "Their editorial posts will be hidden on this device. Unblock them from Blocked in Settings.", destructive: true, button: "Block") { [weak self] in
+            guard let self, self.isAccountContextCurrent else { return }
+            do {
+                let id = self.post.editorialAuthor.id
+                try TotiEditorialPreferences.storage().update { $0.blockedAuthorIDs.insert(id); $0.followedAuthorIDs.remove(id) }
+                self.store.objectWillChange.send()
+                if let navigation = self.navigationController, navigation.viewControllers.first !== self {
+                    navigation.popViewController(animated: true)
+                } else { self.dismiss(animated: true) }
+            } catch { self.message("The block preference could not be saved.") }
+        }
     }
     private func openReport(targetID: UUID?) {
         guard isAccountContextCurrent else { return }
@@ -941,4 +969,139 @@ final class PostShareController: StackScreen {
 func postDetailCounts(likes: Int, saves: Int, replies: Int) -> String {
     "\(likes) " + (likes == 1 ? "like" : "likes") + " · \(saves) " + (saves == 1 ? "save" : "saves")
         + " · \(replies) " + (replies == 1 ? "reply" : "replies")
+}
+
+// Stable room identities share authored profiles with their published editorial works.
+extension TotiEditorialAuthor {
+    static let voiceAuthors: [String: TotiEditorialAuthor] = [
+        "PortraitVoiceAvery": .init(id: "voice-avery", name: "Avery", portraitAsset: "PortraitVoiceAvery", biography: "Pop hooks, late buses and headphones on the way home."),
+        "PortraitVoiceEmma": .init(id: "voice-emma", name: "Emma", portraitAsset: "PortraitVoiceEmma", biography: "Live vocals and the quiet minute before a chorus."),
+        "PortraitVoiceChloe": .init(id: "voice-chloe", name: "Chloe", portraitAsset: "PortraitVoiceChloe", biography: "Building a listening shelf, one record at a time."),
+        "PortraitVoiceOliver": .init(id: "voice-oliver", name: "Oliver", portraitAsset: "PortraitVoiceOliver", biography: "Soul records, warm bass and unhurried evenings."),
+        "PortraitVoiceLiam": .init(id: "voice-liam", name: "Liam", portraitAsset: "PortraitVoiceLiam", biography: "Guitar sketches and songs with room to breathe."),
+        "PortraitVoiceJack": .init(id: "voice-jack", name: "Jack", portraitAsset: "PortraitVoiceJack", biography: "Mostly here to listen and discover new voices."),
+        "PortraitVoiceSophie": .init(id: "voice-sophie", name: "Sophie", portraitAsset: "PortraitVoiceSophie", biography: "Jazz piano, loose timing and conversations after the set."),
+        "PortraitVoiceGrace": .init(id: "voice-grace", name: "Grace", portraitAsset: "PortraitVoiceGrace", biography: "Bass lines, tiny venues and generous rhythm sections."),
+        "PortraitVoiceElla": .init(id: "voice-ella", name: "Ella", portraitAsset: "PortraitVoiceElla", biography: "Brass melodies and records for rainy afternoons."),
+        "PortraitVoiceMia": .init(id: "voice-mia", name: "Mia", portraitAsset: "PortraitVoiceMia", biography: "Acoustic guitar and words scribbled between chords."),
+        "PortraitVoiceRuby": .init(id: "voice-ruby", name: "Ruby", portraitAsset: "PortraitVoiceRuby", biography: "Collecting ideas before sharing a first song."),
+        "PortraitVoiceLucy": .init(id: "voice-lucy", name: "Lucy", portraitAsset: "PortraitVoiceLucy", biography: "Folk harmonies, fingerpicking and Sunday rehearsals."),
+        "PortraitVoiceHazel": .init(id: "voice-hazel", name: "Hazel", portraitAsset: "PortraitVoiceHazel", biography: "Piano miniatures and small changes in a familiar melody."),
+        "PortraitVoiceNoah": .init(id: "voice-noah", name: "Noah", portraitAsset: "PortraitVoiceNoah", biography: "Learning to hear the space between notes."),
+        "PortraitVoiceLucas": .init(id: "voice-lucas", name: "Lucas", portraitAsset: "PortraitVoiceLucas", biography: "Strings, acoustic sessions and melodies without a deadline."),
+        "PortraitVoiceTheo": .init(id: "voice-theo", name: "Theo", portraitAsset: "PortraitVoiceTheo", biography: "Drum machines, soft synths and sounds from the street."),
+        "PortraitVoiceFinn": .init(id: "voice-finn", name: "Finn", portraitAsset: "PortraitVoiceFinn", biography: "Electronic textures and finding a groove in repetition."),
+        "PortraitVoiceOwen": .init(id: "voice-owen", name: "Owen", portraitAsset: "PortraitVoiceOwen", biography: "Listening first. A few unfinished ideas for later."),
+    ]
+    static let voicePostAuthors: [String: TotiEditorialAuthor] = [
+        "8cba132e-766b-55e8-a935-6ea3e5559a5d": voiceAuthors["PortraitVoiceAvery"]!,
+        "38575e18-05f1-5c01-b465-c085f281b6e8": voiceAuthors["PortraitVoiceAvery"]!,
+        "66e80c10-ad26-551a-ae87-0d2838a0ec36": voiceAuthors["PortraitVoiceEmma"]!,
+        "b77a95c1-66de-5871-b83a-20586ed0a89e": voiceAuthors["PortraitVoiceOliver"]!,
+        "6c5013b1-7ebd-5ed7-9123-826ce2c1fb17": voiceAuthors["PortraitVoiceLiam"]!,
+        "ac2b3e08-5e6a-502c-8d5c-b606b373b38e": voiceAuthors["PortraitVoiceLiam"]!,
+        "40b53b81-362f-5943-afe5-7ebe2eb56f8a": voiceAuthors["PortraitVoiceSophie"]!,
+        "6fa04482-b1e2-5013-a854-c0b6bb0a80df": voiceAuthors["PortraitVoiceSophie"]!,
+        "0afb1e84-26af-5718-9f78-bc7ba2d5fb04": voiceAuthors["PortraitVoiceGrace"]!,
+        "73f082b2-6926-54f1-b1a0-63631428b5c7": voiceAuthors["PortraitVoiceElla"]!,
+        "e95be06f-503a-5adc-b1e9-4c66ccb2ec9d": voiceAuthors["PortraitVoiceMia"]!,
+        "da77fe29-1a98-58f7-827a-0bae0f1b68a6": voiceAuthors["PortraitVoiceLucy"]!,
+        "e717fbae-9103-5de3-bd85-9def0df97ed3": voiceAuthors["PortraitVoiceLucy"]!,
+        "46614ba1-ffad-547f-af28-9b16568a43ba": voiceAuthors["PortraitVoiceHazel"]!,
+        "43ab7c40-0eef-531a-a5b6-65cd9e4cbbb3": voiceAuthors["PortraitVoiceLucas"]!,
+        "eef6085b-9725-5bcb-89de-cbd2b09645d4": voiceAuthors["PortraitVoiceTheo"]!,
+        "baf51159-7f87-5ef1-9585-ca5fa147f4e7": voiceAuthors["PortraitVoiceTheo"]!,
+        "67bab46c-38f6-5f73-b829-c503bbc8bcb3": voiceAuthors["PortraitVoiceFinn"]!,
+    ]
+    static let voiceFigures: [String: CreatorStatistics] = [
+        "voice-avery": .init(likes: 23, saves: 3, following: 18, followers: 17),
+        "voice-emma": .init(likes: 40, saves: 10, following: 42, followers: 46),
+        "voice-chloe": .init(likes: 0, saves: 0, following: 7, followers: 75),
+        "voice-oliver": .init(likes: 74, saves: 24, following: 61, followers: 104),
+        "voice-liam": .init(likes: 91, saves: 31, following: 29, followers: 133),
+        "voice-jack": .init(likes: 0, saves: 0, following: 12, followers: 162),
+        "voice-sophie": .init(likes: 125, saves: 45, following: 84, followers: 191),
+        "voice-grace": .init(likes: 142, saves: 3, following: 36, followers: 220),
+        "voice-ella": .init(likes: 159, saves: 10, following: 23, followers: 9),
+        "voice-mia": .init(likes: 176, saves: 17, following: 47, followers: 38),
+        "voice-ruby": .init(likes: 0, saves: 0, following: 5, followers: 67),
+        "voice-lucy": .init(likes: 20, saves: 31, following: 58, followers: 96),
+        "voice-hazel": .init(likes: 37, saves: 38, following: 31, followers: 125),
+        "voice-noah": .init(likes: 0, saves: 0, following: 9, followers: 154),
+        "voice-lucas": .init(likes: 71, saves: 3, following: 64, followers: 183),
+        "voice-theo": .init(likes: 88, saves: 10, following: 73, followers: 212),
+        "voice-finn": .init(likes: 105, saves: 17, following: 26, followers: 1),
+        "voice-owen": .init(likes: 0, saves: 0, following: 4, followers: 30),
+    ]
+    static var allAuthors: [TotiEditorialAuthor] {
+        Dictionary((Array(catalog.values) + Array(voiceAuthors.values)).map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first }).values.sorted { $0.name < $1.name }
+    }
+}
+
+// Material rooms have no member owner. Their safety preferences stay account-scoped on device.
+extension TotiScreen {
+    @discardableResult
+    func appendEditorialRoomSafety(to content: UIStackView, reporting: Bool) -> Bool {
+        guard store.isOnlineMode else { return false }
+        do {
+            let state = try TotiEditorialPreferences.storage().read()
+            let titles = reporting ? (state.roomReports ?? [:]).mapValues(\.title) : (state.blockedRoomTitles ?? [:])
+            guard !titles.isEmpty else { return false }
+            content.addArrangedSubview(label(reporting ? "Room reports saved on this device" : "Blocked room artwork", 20, title: true))
+            for (id, title) in titles.sorted(by: { $0.value < $1.value }) {
+                if reporting, let report = state.roomReports?[id] {
+                    content.addArrangedSubview(label(title + " · " + report.reason.rawValue + "\nNot submitted for online review.", 14, TotiTheme.muted))
+                }
+                let action = reporting ? "Remove report" : "Unblock"
+                let button = actionButton(action + " · " + title, icon: reporting ? .flag : .block) { [weak self] in
+                    guard let self, self.isAccountContextCurrent else { return }
+                    self.confirm(action + "?", message: "This room can appear again unless another safety preference hides it. This change stays on this device.", button: action) { [weak self] in
+                        guard let self, self.isAccountContextCurrent else { return }
+                        do {
+                            try TotiEditorialPreferences.storage().update {
+                                if reporting { $0.roomReports?[id] = nil }
+                                else { $0.blockedRoomTitles?[id] = nil }
+                            }
+                            self.store.objectWillChange.send()
+                            self.refresh()
+                        } catch { self.message("Your change could not be saved. Please try again.") }
+                    }
+                }
+                button.accessibilityIdentifier = (reporting ? "voice.report.remove." : "voice.block.remove.") + id
+                content.addArrangedSubview(button)
+            }
+            return true
+        } catch {
+            content.addArrangedSubview(label("Room safety preferences could not be read. Your saved data has been kept.", 14, TotiTheme.muted))
+            return true
+        }
+    }
+}
+
+extension TotiScreen {
+    @discardableResult
+    func appendBlockedEditorialAuthors(to content: UIStackView) -> Bool {
+        guard store.isOnlineMode else { return false }
+        do {
+            let state = try TotiEditorialPreferences.storage().read()
+            let authors = TotiEditorialAuthor.allAuthors.filter { state.blockedAuthorIDs.contains($0.id) }
+            guard !authors.isEmpty else { return false }
+            content.addArrangedSubview(label("Blocked editorial authors", 20, title: true))
+            for author in authors {
+                let button = actionButton("Unblock · " + author.name, icon: .block) { [weak self] in
+                    guard let self, self.isAccountContextCurrent else { return }
+                    self.confirm("Unblock " + author.name + "?", message: "Their editorial posts will appear again on this device. Following is not restored automatically.", button: "Unblock") { [weak self] in
+                        guard let self, self.isAccountContextCurrent else { return }
+                        do {
+                            try TotiEditorialPreferences.storage().update { $0.blockedAuthorIDs.remove(author.id) }
+                            self.store.objectWillChange.send(); self.refresh()
+                        } catch { self.message("Your change could not be saved. Please try again.") }
+                    }
+                }
+                button.accessibilityIdentifier = "editorial.block.remove." + author.id
+                content.addArrangedSubview(button)
+            }
+            return true
+        } catch { return false } // The room preference section already displays a shared-file read error.
+    }
 }

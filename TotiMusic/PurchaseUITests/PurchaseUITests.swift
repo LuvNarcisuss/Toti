@@ -37,17 +37,17 @@ final class PurchaseUITests: XCTestCase {
         session?.resetToDefaultState()
     }
 
-    func testSevenPurchasesPricesCancellationAndRelaunchHistory() async throws {
+    func testNinePurchasesPricesCancellationAndRelaunchHistory() async throws {
         try await openWallet()
         try await expectBalance(0)
-        let tiers = [(400, "$0.99"), (800, "$1.99"), (2450, "$4.99"), (5150, "$9.99"), (10800, "$19.99"), (29400, "$49.99"), (63700, "$99.99")]
+        let tiers = [(400, "$0.99"), (800, "$1.99"), (2450, "$4.99"), (5150, "$9.99"), (10800, "$19.99"), (16800, "$29.99"), (29400, "$49.99"), (42700, "$69.99"), (63700, "$99.99")]
         var balance = 0
         for (amount, price) in tiers {
             let package = app.buttons["wallet.package.\(amount)"]
             try await require(package, "enabled == true")
             XCTAssertTrue(package.label.contains(price), "Expected \(price), got \(package.label)")
             try reveal(package)
-            if amount == 400 { capture("Seven loaded StoreKit offers") }
+            if amount == 400 { capture("Nine loaded StoreKit offers") }
             package.tap()
             try await require(app.buttons["Continue"], "exists == true")
             XCTAssertTrue(app.staticTexts["Price: \(price)"].exists)
@@ -57,16 +57,16 @@ final class PurchaseUITests: XCTestCase {
             try await expectBalance(balance)
             try await require(app.buttons["wallet.package.\(amount)"], "enabled == true")
         }
-        XCTAssertEqual(balance, 112700)
-        XCTAssertEqual(session.allTransactions().filter { $0.state == .purchased }.count, 7)
-        capture("Seven completed purchases")
+        XCTAssertEqual(balance, 172200)
+        XCTAssertEqual(session.allTransactions().filter { $0.state == .purchased }.count, 9)
+        capture("Nine completed purchases")
         let first = app.buttons["wallet.package.400"]
         try reveal(first)
         first.tap()
         try await require(app.buttons["Cancel"], "exists == true")
         app.buttons["Cancel"].tap()
-        try await expectBalance(112700)
-        XCTAssertEqual(session.allTransactions().count, 7)
+        try await expectBalance(172200)
+        XCTAssertEqual(session.allTransactions().count, 9)
 
         if #available(iOS 17.0, *) {
             try await session.setSimulatedError(.generic(.userCancelled), forAPI: .purchase)
@@ -76,16 +76,63 @@ final class PurchaseUITests: XCTestCase {
             try await require(app.staticTexts["Purchase canceled. You have not been charged."], "exists == true")
             capture("StoreKit cancellation")
             app.buttons["OK"].tap()
-            try await expectBalance(112700)
+            try await expectBalance(172200)
             session.resetToDefaultState()
             session.disableDialogs = true
         }
 
         app.terminate()
         try await openWallet()
-        try await expectBalance(112700)
-        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.activity.")).count, 7)
+        try await expectBalance(172200)
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.activity.")).count, 9)
         capture("Persisted balance and history after relaunch")
+    }
+
+    func testOnlineGuestLocalVoiceGiftDebitCancelAndRelaunch() async throws {
+        try XCTSkipUnless(app.launchEnvironment["TOTI_GUEST_ACCEPTANCE"] != nil, "Requires the authorized retained Guest.")
+        continueAfterFailure = false
+        try await openWallet()
+        let package = app.buttons["wallet.package.400"]
+        try await require(package, "enabled == true")
+        try reveal(package); package.tap(); app.buttons["Continue"].tap()
+        try await expectBalance(400)
+        app.buttons["Back"].tap(); app.buttons["Voice"].tap()
+        let room = app.buttons["voice.room.cover.community-artwork:c2e04cc7-7e49-594b-a7f1-aef8007eea95"]
+        try reveal(room); room.tap()
+        try await require(app.buttons["Send a gift"], "exists == true")
+        app.buttons["Send a gift"].tap()
+        let rose = app.buttons["gift.item.rose"]
+        try await require(rose, "enabled == true")
+        XCTAssertGreaterThan(app.scrollViews["gift.scroll"].frame.minY, app.frame.height * 0.4)
+        capture("Half-height Voice gift picker")
+        app.buttons["Avery"].tap()
+        XCTAssertEqual(app.staticTexts["gift.recipients"].label, "For: Avery")
+        try reveal(rose); rose.tap()
+        try await require(app.buttons["Spend 10 diamonds"], "exists == true")
+        app.alerts.buttons["Cancel"].tap()
+        try await require(app.staticTexts["gift.balance"], "value == '400'")
+        try reveal(rose); rose.tap(); app.buttons["Spend 10 diamonds"].tap()
+        try await require(app.scrollViews["gift.scroll"], "exists == false")
+        capture("Voice room after the gift picker closes")
+        app.buttons["Send a gift"].tap()
+        try await require(app.staticTexts["gift.balance"], "value == '390'")
+        let five = app.buttons["5 gifts"]
+        try reveal(five); five.tap()
+        try reveal(rose); rose.tap(); app.buttons["Spend 50 diamonds"].tap()
+        try await require(app.scrollViews["gift.scroll"], "exists == false")
+        app.buttons["Send a gift"].tap()
+        try await require(app.staticTexts["gift.balance"], "value == '340'")
+        let galaxy = app.buttons["gift.item.galaxy"]
+        try reveal(galaxy); galaxy.tap()
+        try await require(app.alerts["Not enough diamonds"], "exists == true")
+        app.alerts.buttons["Cancel"].tap()
+        try await require(app.staticTexts["gift.balance"], "value == '340'")
+        capture("Local Voice gift debits and insufficient funds")
+        app.terminate()
+        try await openWallet()
+        try await expectBalance(340)
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.activity.")).count, 3)
+        capture("Local gift ledger survives relaunch")
     }
 
     func testPostGiftConfirmationCancellationDebitAndRelaunch() async throws {
@@ -170,9 +217,13 @@ final class PurchaseUITests: XCTestCase {
         rose.tap()
         try await require(app.buttons["Spend 50 diamonds"], "exists == true")
         app.buttons["Spend 50 diamonds"].tap()
-        try await require(app.staticTexts["gift.balance"], "value == '350'")
-        XCTAssertEqual(app.staticTexts["gift.recipients"].label, "For: Maya")
-        capture("Voice gift after top up keeps selected recipient")
+        try await require(app.scrollViews["gift.scroll"], "exists == false")
+        app.buttons["Close"].tap()
+        app.buttons["Me"].tap()
+        app.buttons["Wallet"].tap()
+        try await expectBalance(350)
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Maya")).firstMatch.exists)
+        capture("Voice gift recipient recorded after returning to the room")
     }
 
     func testLargeTextEveryoneConfirmationKeepsCancelAndSpendReachable() async throws {
@@ -324,14 +375,23 @@ final class PurchaseUITests: XCTestCase {
     }
 
     private func reveal(_ element: XCUIElement) throws {
-        let scroll = app.scrollViews.firstMatch
+        let gifts = app.scrollViews["gift.scroll"]
+        let scroll = gifts.exists ? gifts : app.scrollViews.firstMatch
         for _ in 0..<8 {
             // Query geometry before tapping: XCTest can throw while computing a
             // hit point for a control whose accessibility snapshot is updating.
             let frame = element.frame
             let viewport = scroll.frame.intersection(app.frame).insetBy(dx: 4, dy: 8)
             if !frame.isEmpty, !frame.isNull, !frame.isInfinite, viewport.contains(frame) { return }
-            if frame.midY < viewport.midY { scroll.swipeDown() }
+            if gifts.exists {
+                // Short, controlled drags avoid overshooting a row in the half-height sheet.
+                let distance = frame.minY < viewport.minY
+                    ? viewport.minY - frame.minY + 12
+                    : viewport.maxY - frame.maxY - 12
+                let delta = max(-viewport.height * 0.4, min(viewport.height * 0.4, distance))
+                let start = scroll.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5))
+                start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: 0, dy: delta)))
+            } else if frame.midY < viewport.midY { scroll.swipeDown() }
             else { scroll.swipeUp() }
         }
         XCTFail("Purchase control is not reachable: \(element)")

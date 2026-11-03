@@ -1,0 +1,380 @@
+{
+  "profiles": [
+    {
+      "id": "voice-avery",
+      "name": "Avery",
+      "portraitAsset": "PortraitVoiceAvery",
+      "biography": "Pop hooks, late buses and headphones on the way home.",
+      "likes": 23,
+      "saves": 3,
+      "following": 18,
+      "followers": 17,
+      "works": [
+        "8cba132e-766b-55e8-a935-6ea3e5559a5d",
+        "38575e18-05f1-5c01-b465-c085f281b6e8"
+      ]
+    },
+    {
+      "id": "voice-emma",
+      "name": "Emma",
+      "portraitAsset": "PortraitVoiceEmma",
+      "biography": "Live vocals and the quiet minute before a chorus.",
+      "likes": 40,
+      "saves": 10,
+      "following": 42,
+      "followers": 46,
+      "works": [
+        "66e80c10-ad26-551a-ae87-0d2838a0ec36"
+      ]
+    },
+    {
+      "id": "voice-chloe",
+      "name": "Chloe",
+      "portraitAsset": "PortraitVoiceChloe",
+      "biography": "Building a listening shelf, one record at a time.",
+      "likes": 0,
+      "saves": 0,
+      "following": 7,
+      "followers": 75,
+      "works": []
+    },
+    {
+      "id": "voice-oliver",
+      "name": "Oliver",
+      "portraitAsset": "PortraitVoiceOliver",
+      "biography": "Soul records, warm bass and unhurried evenings.",
+      "likes": 74,
+      "saves": 24,
+      "following": 61,
+      "followers": 104,
+      "works": [
+        "b77a95c1-66de-5871-b83a-20586ed0a89e"
+      ]
+    },
+    {
+      "id": "voice-liam",
+      "name": "Liam",
+      "portraitAsset": "PortraitVoiceLiam",
+      "biography": "Guitar sketches and songs with room to breathe.",
+      "likes": 91,
+      "saves": 31,
+      "following": 29,
+      "followers": 133,
+      "works": [
+        "6c5013b1-7ebd-5ed7-9123-826ce2c1fb17",
+        "ac2b3e08-5e6a-502c-8d5c-b606b373b38e"
+      ]
+    },
+    {
+      "id": "voice-jack",
+      "name": "Jack",
+      "portraitAsset": "PortraitVoiceJack",
+      "biography": "Mostly here to listen and discover new voices.",
+      "likes": 0,
+      "saves": 0,
+      "following": 12,
+      "followers": 162,
+      "works": []
+    },
+    {
+      "id": "voice-sophie",
+      "name": "Sophie",
+      "portraitAsset": "PortraitVoiceSophie",
+      "biography": "Jazz piano, loose timing and conversations after the set.",
+      "likes": 125,
+      "saves": 45,
+      "following": 84,
+      "followers": 191,
+      "works": [
+        "40b53b81-362f-5943-afe5-7ebe2eb56f8a",
+        "6fa04482-b1e2-5013-a854-c0b6bb0a80df"
+      ]
+    },
+    {
+      "id": "voice-grace",
+      "name": "Grace",
+      "portraitAsset": "PortraitVoiceGrace",
+      "biography": "Bass lines, tiny venues and generous rhythm sections.",
+      "likes": 142,
+      "saves": 3,
+      "following": 36,
+      "followers": 220,
+      "works": [
+        "0afb1e84-26af-5718-9f78-bc7ba2d5fb04"
+      ]
+    },
+    {
+      "id": "voice-ella",
+      "name": "Ella",
+      "portraitAsset": "PortraitVoiceElla",
+      "biography": "Brass melodies and records for rainy afternoons.",
+      "likes": 159,
+      "saves": 10,
+      "following": 23,
+      "followers": 9,
+      "works": [
+        "73f082b2-6926-54f1-b1a0-63631428b5c7"
+      ]
+    },
+    {
+      "id": "voice-mia",
+      "name": "Mia",
+      "portraitAsset": "PortraitVoiceMia",
+      "biography": "Acoustic guitar and words scribbled between chords.",
+      "likes": 176,
+      "saves": 17,
+      "following": 47,
+      "followers": 38,
+      "works": [
+        "e95be06f-503a-5adc-b1e9-4c66ccb2ec9d"
+      ]
+    },
+    {
+      "id": "voice-ruby",
+      "name": "Ruby",
+      "portraitAsset": "PortraitVoiceRuby",
+      "biography": "Collecting ideas before sharing a first song.",
+      "likes": 0,
+      "saves": 0,
+      "following": 5,
+      "followers": 67,
+      "works": []
+    },
+    {
+      "id": "voice-lucy",
+      "name": "Lucy",
+      "portraitAsset": "PortraitVoiceLucy",
+      "biography": "Folk harmonies, fingerpicking and Sunday rehearsals.",
+      "likes": 20,
+      "saves": 31,
+      "following": 58,
+      "followers": 96,
+      "works": [
+        "da77fe29-1a98-58f7-827a-0bae0f1b68a6",
+        "e717fbae-9103-5de3-bd85-9def0df97ed3"
+      ]
+    },
+    {
+      "id": "voice-hazel",
+      "name": "Hazel",
+      "portraitAsset": "PortraitVoiceHazel",
+      "biography": "Piano miniatures and small changes in a familiar melody.",
+      "likes": 37,
+      "saves": 38,
+      "following": 31,
+      "followers": 125,
+      "works": [
+        "46614ba1-ffad-547f-af28-9b16568a43ba"
+      ]
+    },
+    {
+      "id": "voice-noah",
+      "name": "Noah",
+      "portraitAsset": "PortraitVoiceNoah",
+      "biography": "Learning to hear the space between notes.",
+      "likes": 0,
+      "saves": 0,
+      "following": 9,
+      "followers": 154,
+      "works": []
+    },
+    {
+      "id": "voice-lucas",
+      "name": "Lucas",
+      "portraitAsset": "PortraitVoiceLucas",
+      "biography": "Strings, acoustic sessions and melodies without a deadline.",
+      "likes": 71,
+      "saves": 3,
+      "following": 64,
+      "followers": 183,
+      "works": [
+        "43ab7c40-0eef-531a-a5b6-65cd9e4cbbb3"
+      ]
+    },
+    {
+      "id": "voice-theo",
+      "name": "Theo",
+      "portraitAsset": "PortraitVoiceTheo",
+      "biography": "Drum machines, soft synths and sounds from the street.",
+      "likes": 88,
+      "saves": 10,
+      "following": 73,
+      "followers": 212,
+      "works": [
+        "eef6085b-9725-5bcb-89de-cbd2b09645d4",
+        "baf51159-7f87-5ef1-9585-ca5fa147f4e7"
+      ]
+    },
+    {
+      "id": "voice-finn",
+      "name": "Finn",
+      "portraitAsset": "PortraitVoiceFinn",
+      "biography": "Electronic textures and finding a groove in repetition.",
+      "likes": 105,
+      "saves": 17,
+      "following": 26,
+      "followers": 1,
+      "works": [
+        "67bab46c-38f6-5f73-b829-c503bbc8bcb3"
+      ]
+    },
+    {
+      "id": "voice-owen",
+      "name": "Owen",
+      "portraitAsset": "PortraitVoiceOwen",
+      "biography": "Listening first. A few unfinished ideas for later.",
+      "likes": 0,
+      "saves": 0,
+      "following": 4,
+      "followers": 30,
+      "works": []
+    }
+  ],
+  "posts": [
+    {
+      "id": "8cba132e-766b-55e8-a935-6ea3e5559a5d",
+      "authorID": "voice-avery",
+      "title": "The hook on the way home",
+      "body": "A four-note pop hook feels different when its last note lands just after the beat. Hum it over a walking rhythm and listen for the version that stays with you.",
+      "topic": "Making music",
+      "photo_asset": "LoungeVinylListening"
+    },
+    {
+      "id": "38575e18-05f1-5c01-b465-c085f281b6e8",
+      "authorID": "voice-avery",
+      "title": "Leave the second verse open",
+      "body": "Keep the first verse busy and strip the second back to voice and a soft pulse. The chorus can feel bigger without adding another instrument.",
+      "topic": "Making music",
+      "photo_asset": "LoungeStudioMixing"
+    },
+    {
+      "id": "66e80c10-ad26-551a-ae87-0d2838a0ec36",
+      "authorID": "voice-emma",
+      "title": "A breath before the chorus",
+      "body": "Try leaving one full breath before a vocal chorus. A small pause gives the next line room to land, especially when the melody starts quietly.",
+      "topic": "Making music",
+      "photo_asset": "LoungeConcertLights"
+    },
+    {
+      "id": "b77a95c1-66de-5871-b83a-20586ed0a89e",
+      "authorID": "voice-oliver",
+      "title": "The warm side of a record",
+      "body": "Listen to the bass beneath a soul vocal before following the melody. A held note and a gentle drum fill can carry an entire phrase.",
+      "topic": "Making music",
+      "photo_asset": "LoungeVinylListening"
+    },
+    {
+      "id": "6c5013b1-7ebd-5ed7-9123-826ce2c1fb17",
+      "authorID": "voice-liam",
+      "title": "An open string between chords",
+      "body": "Let one guitar string ring while the chord around it changes. That shared note can make a rough verse feel connected without another layer.",
+      "topic": "Making music",
+      "photo_asset": "LoungeGuitarRehearsal"
+    },
+    {
+      "id": "ac2b3e08-5e6a-502c-8d5c-b606b373b38e",
+      "authorID": "voice-liam",
+      "title": "Keep the first guitar take",
+      "body": "Record two versions of a short guitar phrase: one careful and one relaxed. Compare the rhythm before deciding which performance has more to say.",
+      "topic": "Making music",
+      "photo_asset": "LoungeMusicCorner"
+    },
+    {
+      "id": "40b53b81-362f-5943-afe5-7ebe2eb56f8a",
+      "authorID": "voice-sophie",
+      "title": "The piano does not answer yet",
+      "body": "Play a jazz phrase that ends away from home. Leave two beats for the bass or drums before answering it with another chord.",
+      "topic": "Making music",
+      "photo_asset": "LoungePianoMelody"
+    },
+    {
+      "id": "6fa04482-b1e2-5013-a854-c0b6bb0a80df",
+      "authorID": "voice-sophie",
+      "title": "A quieter last chorus",
+      "body": "Try the last chorus below the volume of the first. Keep the harmony warm and let the rhythm section carry the energy instead of playing harder.",
+      "topic": "Making music",
+      "photo_asset": "LoungeStudioMixing"
+    },
+    {
+      "id": "0afb1e84-26af-5718-9f78-bc7ba2d5fb04",
+      "authorID": "voice-grace",
+      "title": "Let the bass start the conversation",
+      "body": "Build a short bass line with one deliberate pause. Invite the next instrument to fill that space rather than doubling every note.",
+      "topic": "Making music",
+      "photo_asset": "LoungeStudioMixing"
+    },
+    {
+      "id": "73f082b2-6926-54f1-b1a0-63631428b5c7",
+      "authorID": "voice-ella",
+      "title": "Three notes for a rainy afternoon",
+      "body": "Choose three notes for a brass melody. Change the length of each note before changing the pitches, and keep the phrase easy to breathe.",
+      "topic": "Making music",
+      "photo_asset": "LoungeMusicCorner"
+    },
+    {
+      "id": "e95be06f-503a-5adc-b1e9-4c66ccb2ec9d",
+      "authorID": "voice-mia",
+      "title": "A verse around one open chord",
+      "body": "Start an acoustic verse with a single open chord. Move the picking pattern under the words until the lyric finds its own pace.",
+      "topic": "Making music",
+      "photo_asset": "LoungeGuitarRehearsal"
+    },
+    {
+      "id": "da77fe29-1a98-58f7-827a-0bae0f1b68a6",
+      "authorID": "voice-lucy",
+      "title": "The harmony under the line",
+      "body": "Sing a folk melody once by itself, then add a softer voice underneath. Keep the harmony moving only where the words need a little warmth.",
+      "topic": "Making music",
+      "photo_asset": "LoungeMusicCorner"
+    },
+    {
+      "id": "e717fbae-9103-5de3-bd85-9def0df97ed3",
+      "authorID": "voice-lucy",
+      "title": "Sunday fingerpicking",
+      "body": "Try a steady thumb pattern with a melody that arrives a little late. Let the bass stay patient while the upper strings find their way.",
+      "topic": "Making music",
+      "photo_asset": "LoungeGuitarRehearsal"
+    },
+    {
+      "id": "46614ba1-ffad-547f-af28-9b16568a43ba",
+      "authorID": "voice-hazel",
+      "title": "A piano question in four bars",
+      "body": "Write four bars that end with a question. Repeat the same shape with a softer answer and leave the sustain pedal up long enough to hear the silence.",
+      "topic": "Making music",
+      "photo_asset": "LoungePianoMelody"
+    },
+    {
+      "id": "43ab7c40-0eef-531a-a5b6-65cd9e4cbbb3",
+      "authorID": "voice-lucas",
+      "title": "Save the strings for the lift",
+      "body": "Leave the strings out of the first verse. Introduce one sustained note at the next chorus before deciding whether the arrangement needs anything more.",
+      "topic": "Making music",
+      "photo_asset": "LoungeMusicCorner"
+    },
+    {
+      "id": "eef6085b-9725-5bcb-89de-cbd2b09645d4",
+      "authorID": "voice-theo",
+      "title": "A rhythm from the crossing",
+      "body": "Turn a familiar street rhythm into a drum-machine pattern. Keep a little unevenness in the first version so its origin does not disappear.",
+      "topic": "Making music",
+      "photo_asset": "LoungeStudioMixing"
+    },
+    {
+      "id": "baf51159-7f87-5ef1-9585-ca5fa147f4e7",
+      "authorID": "voice-theo",
+      "title": "One synth, three distances",
+      "body": "Play the same synth line dry, close and far away. Change only the space around it, then choose the version that leaves room for the drums.",
+      "topic": "Making music",
+      "photo_asset": "LoungeConcertLights"
+    },
+    {
+      "id": "67bab46c-38f6-5f73-b829-c503bbc8bcb3",
+      "authorID": "voice-finn",
+      "title": "Let the loop breathe",
+      "body": "Run a short electronic loop and remove one sound on every fourth pass. A missing hit can make the return feel stronger than another layer.",
+      "topic": "Making music",
+      "photo_asset": "LoungeStudioMixing"
+    }
+  ],
+  "provenance": "Authored editorial profiles and illustrative figures. No Auth accounts or fabricated reaction records."
+}

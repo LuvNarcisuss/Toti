@@ -25,7 +25,7 @@ Date: 2026-11-02. The user requested different music-person photographs for Voic
 
 ## Shared identity and image rendering
 
-The authenticated room-material response supplies each character's asset name and public URL. `CommunityVoiceRoom.room` creates one stable `PartyParticipant` per room/index. Voice cards and seats use that participant's asset and artworkURL; `openArtist` passes the same participant to `CommunityRoomCharacterController`, which uses the same two image references. There is no separate profile fallback mapping to drift from the seat. Stable accessibility identifiers were added for the seat and character photograph to verify this route. Character portraits remain illustrative photography, not Auth identities or evidence of live attendance.
+The authenticated room-material response supplies each character's asset name and public URL. `CommunityVoiceRoom.room` creates one stable `PartyParticipant` per room/index. Voice cards and seats use that participant's asset and artworkURL; `openArtist` passes the same participant to `CommunityRoomProfileController`, which uses the same two image references. There is no separate profile fallback mapping to drift from the seat. Stable accessibility identifiers were added for the seat and character photograph to verify this route. Character portraits remain illustrative photography, not Auth identities or evidence of live attendance.
 
 The signed-in user's seat continues to use `AppStore.configureOwnerAvatar`, matching Me and preserving the last approved uploaded avatar. Actual member avatars and retained Guest profiles were not modified. This update does not create accounts, member relationships or RTC sessions.
 
@@ -52,3 +52,13 @@ Static validation confirmed 18 distinct valid JPEGs, all source/manifest mapping
 ![Current room with matching music portraits](backend/voice-portrait-evidence-20261102/pop-room.png)
 
 ![Avery profile using the same photograph](backend/voice-portrait-evidence-20261102/avery-profile.png)
+
+
+## Profile navigation correction — 2026-11-03
+
+Material seats previously opened a portrait-only character information page. They now open CommunityRoomProfileController with the same identity card and metric layout used by Me/member profiles, the exact seat photograph/name, and a Works (0) empty state. These material identities have no authored posts or Auth account; unavailable relationship statistics display an em dash, and no member messaging or fabricated social relationships are offered. Actual UUID members in any room follow the authenticated CreatorController route. The current account and local-owner seat open Me. Material routing now checks the participant ID prefix instead of routing every non-owner in a material room to the character page.
+
+The existing portrait UI case now also asserts the shared identity card and Works empty state. Static route/diff inspection passed; the updated case was not run and this change was not built. Earlier portrait-only runtime evidence above predates the correction.
+
+
+The 2026-11-03 content expansion supersedes the empty material-profile route above: the eighteen known room authors now use the same TotiEditorialProfileController as their post-author badges, with varied authored metadata and works. Unknown future material identities retain the safe empty-profile fallback. See [profile content and verification](voice-author-profile-content.md).

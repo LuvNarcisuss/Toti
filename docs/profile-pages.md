@@ -90,3 +90,8 @@ The Lounge footer creation control is a bare generated plus icon aligned to the 
 
 
 Me collection counts now appear only in Works (n), Liked (n) and Saved (n) chips. Standalone post-count rows and the explanatory Liked/Saved paragraphs were removed. Works uses the authenticated profile post total; outgoing reaction counts traverse the authorized pages and include editorial reactions, so the first loaded page is not presented as the total. Unread counts display an em dash until acknowledged. Chip updates preserve selection, scroll position and stable accessibility identifiers. This adjustment has static verification only.
+
+
+## Grouped Settings — 2026-11-03
+
+Settings places all ordinary actions, including Retry pending changes when available, in one rounded container with a single divider between adjacent rows. Individual rows have no separate fill, border or rounded shell, including when enabled state changes. Log out and Delete account remain separate controls below the container with their existing confirmations and actions. Row visibility, ordering, generated icons and accessible labels are preserved. Static diff and route inspection only; no build or runtime verification was performed for this layout update.

@@ -83,9 +83,16 @@ final class PartyDiscoveryController: StackScreen {
       appendOnlineRetry(to: cardList, error: "Community room artwork could not be loaded. " + error)
     }
     let source = store.isOnlineMode ? store.loungeVoiceRooms + store.onlineCommunityRooms : (store.library.roomDrafts.map(MusicRoomCatalog.room(from:)) + rooms)
+    let materialSafety = store.isOnlineMode ? try? TotiEditorialPreferences.storage().read() : nil
+    if store.isOnlineMode && materialSafety == nil {
+      cardList.addArrangedSubview(label("Room safety preferences could not be read. Room artwork is hidden until they can be opened.", 14, TotiTheme.muted))
+    }
     let visible = source.filter {
       room in
-      !hidesRoom(room)
+      (!room.isCommunityArtwork || (materialSafety != nil
+        && materialSafety?.blockedRoomTitles?[room.id] == nil
+        && materialSafety?.roomReports?[room.id] == nil))
+        && !hidesRoom(room)
         && (category == nil || room.category == category)
         && (query.isEmpty
           || (room.title + room.description).localizedCaseInsensitiveContains(query))
@@ -807,8 +814,16 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   }
   private func openArtist(_ person: PartyParticipant) {
     guard entryAccountIsCurrent else { return }
-    if room.isCommunityArtwork && person.id != "local-owner" {
-      push(CommunityRoomCharacterController(store: store, person: person, room: room))
+    if person.id == "local-owner" || (store.isOnlineMode && UUID(uuidString: person.id) == TotiBackend.shared.accountID && TotiBackend.shared.accountID != nil) {
+      push(MeController(store: store))
+      return
+    }
+    if room.isCommunityArtwork && person.id.hasPrefix("community-artwork:") {
+      if let asset = person.asset, let author = TotiEditorialAuthor.voiceAuthors[asset] {
+        push(TotiEditorialProfileController(store: store, author: author))
+      } else {
+        push(CommunityRoomProfileController(store: store, person: person, room: room))
+      }
       return
     }
     let creator: CreatorProfile
@@ -817,14 +832,23 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
     push(CreatorController(store: store, creator: creator))
   }
   private func showGifts() {
-    let people = room.participants.filter { $0.id != "local-owner" && !store.isCreatorBlocked($0.id) }
+    let people = room.participants.filter { $0.id != "local-owner" && (!store.isOnlineMode || UUID(uuidString: $0.id) != TotiBackend.shared.accountID) && !store.isCreatorBlocked($0.id) }
       .map { GiftRecipient(id: $0.id, name: $0.name) }
     let context = GiftContext(surface: .voiceRoom, sourceID: room.id, sourceTitle: room.title, recipients: people)
-    if store.isOnlineMode {
-      presentScreen(GiftsController(store: store, context: context, picksRecipient: true))
-    } else {
-      openGifts(context, picksRecipient: true)
+    if !store.isOnlineMode, let reason = store.giftUnavailableReason(context) {
+      message(reason)
+      return
     }
+    let gifts = GiftsController(store: store, context: context, picksRecipient: true)
+    gifts.onGiftSaved = { [weak self] gift, quantity in
+      guard let self, self.entryAccountIsCurrent, self.viewIfLoaded?.window != nil else { return }
+      GiftBurst.show(gift: gift, quantity: quantity, in: self.view, coversWindow: false)
+    }
+    presentScreen(gifts)
+    let sheet = gifts.navigationController?.sheetPresentationController
+    sheet?.detents = [.medium()]
+    sheet?.selectedDetentIdentifier = .medium
+    sheet?.prefersScrollingExpandsWhenScrolledToEdge = false
   }
   private func toggleSpeaker() {
     guard !usesOnlineRoom else { return }
@@ -1219,7 +1243,7 @@ final class PartyRoomController: TotiScreen, UITableViewDataSource, UITableViewD
   }
 }
 
-final class CommunityRoomCharacterController: StackScreen {
+final class CommunityRoomProfileController: StackScreen {
   private let person: PartyParticipant
   private let room: PartyRoom
   init(store: AppStore, person: PartyParticipant, room: PartyRoom) {
@@ -1230,17 +1254,35 @@ final class CommunityRoomCharacterController: StackScreen {
   required init?(coder: NSCoder) { fatalError("init(coder:) is unavailable") }
   override func build() {
     super.build()
-    let photo = TotiPhoto(asset: person.asset)
+    scroll.accessibilityIdentifier = "voice.profile." + person.id
+  }
+  override func refresh() {
+    guard isViewLoaded, isAccountContextCurrent else { return }
+    clear()
+    let photo = TotiPhoto(asset: person.asset, size: 92, round: true)
     if let url = person.artworkURL { photo.load(url) }
     photo.isAccessibilityElement = true
     photo.accessibilityLabel = "Portrait of " + person.name
     photo.accessibilityIdentifier = "voice.character.portrait." + (person.asset ?? person.id)
-    photo.height(320)
-    photo.rounded(18)
-    content.addArrangedSubview(photo)
-    heading(person.name)
-    content.addArrangedSubview(label(room.title, 17, TotiTheme.plum))
-    content.addArrangedSubview(label("An illustrative character in the Toti room collection. The photograph is artwork, not a member account or a live attendee.", 14, TotiTheme.muted))
+    content.addArrangedSubview(totiProfileIdentityCard(
+      photo: photo, name: person.name, biography: room.title, eyebrow: "VOICE COLLECTION",
+      metrics: totiProfileMetrics([("Likes", nil), ("Saves", nil), ("Following", nil), ("Followers", nil)])))
+    content.addArrangedSubview(label("Illustrative room profile. This portrait is artwork; member activity and messaging are unavailable.", 12, TotiTheme.muted))
+    let works = StudioChoice(items: ["Works (0)"])
+    works.accessibilityIdentifier = "voice.profile.categories"
+    content.addArrangedSubview(works)
+    let empty = UIView()
+    empty.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+    empty.layer.cornerRadius = 24
+    empty.layer.borderWidth = 1
+    empty.layer.borderColor = TotiTheme.line.cgColor
+    let copy = stack([
+      label("No posts yet.", 23, TotiTheme.plum, title: true),
+      label("There are no published posts for this profile.", 15, TotiTheme.muted),
+    ], spacing: 12)
+    empty.addSubview(copy)
+    copy.pin(to: empty, insets: UIEdgeInsets(top: 20, left: 18, bottom: 20, right: 18))
+    content.addArrangedSubview(empty)
   }
 }
 
@@ -1255,6 +1297,7 @@ final class PartyInfoController: StackScreen {
   override func build() {
     super.build()
     heading("About this party")
+    if room.isCommunityArtwork { appendMaterialSafetyActions() }
     content.addArrangedSubview(label(room.description))
     if room.isCommunityArtwork {
       content.addArrangedSubview(label("Names, portraits and the conversation are illustrative. Room messages stay here while this room is open. Microphone and speaker controls change local state; live audio is not connected. Friend invitations use your Chats account.", 15, TotiTheme.muted))
@@ -1283,6 +1326,7 @@ final class PartyInfoController: StackScreen {
         safety.onResolved = self.onResolved
         self.push(safety)
       })
+    if creator.isLocalOwner || (store.isOnlineMode && UUID(uuidString: creator.id) == TotiBackend.shared.accountID) { return }
     content.addArrangedSubview(
       actionButton("Block " + creator.name, icon: .block) { [weak self] in
         guard let self else { return }
@@ -1303,6 +1347,49 @@ final class PartyInfoController: StackScreen {
           }
         }
       })
+  }
+  private func appendMaterialSafetyActions() {
+    let block = actionButton("Block room", icon: .block) { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      self.confirm("Block this room?", message: "Hide this room artwork for your account on this device. You can unblock it from Blocked in Settings.", destructive: true, button: "Block") { [weak self] in
+        guard let self, self.isAccountContextCurrent else { return }
+        do {
+          try TotiEditorialPreferences.storage().update {
+            var rooms = $0.blockedRoomTitles ?? [:]
+            rooms[self.room.id] = self.room.title
+            $0.blockedRoomTitles = rooms
+          }
+          self.store.objectWillChange.send()
+          let leave = self.onResolved
+          self.dismiss(animated: true) { leave?() }
+        } catch { self.message("This room could not be blocked. Please try again.") }
+      }
+    }
+    block.accessibilityIdentifier = "voice.info.block"
+    content.addArrangedSubview(block)
+    let report = actionButton("Report room", icon: .flag) { [weak self] in
+      guard let self, self.isAccountContextCurrent else { return }
+      let safety = SafetyController(store: self.store,
+        target: .party(id: self.room.id, title: self.room.title, detail: self.room.description), reporting: true)
+      safety.saveLocalReport = { [weak self] reason, details in
+        guard let self, self.isAccountContextCurrent else { return false }
+        let note = details.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard note.count <= 500 else { self.store.noteSaveError("Use up to 500 characters."); return false }
+        do {
+          try TotiEditorialPreferences.storage().update {
+            var reports = $0.roomReports ?? [:]
+            reports[self.room.id] = TotiEditorialRoomReport(title: self.room.title, reason: reason, details: note, savedAt: Date())
+            $0.roomReports = reports
+          }
+          self.store.objectWillChange.send()
+          return true
+        } catch { self.store.noteSaveError("Your report could not be saved. Please try again."); return false }
+      }
+      safety.onResolved = self.onResolved
+      self.push(safety)
+    }
+    report.accessibilityIdentifier = "voice.info.report"
+    content.addArrangedSubview(report)
   }
   private func blockTarget() -> CreatorProfile {
     if store.isOnlineMode, let owner = store.onlineRoomOwner(room) { return owner }

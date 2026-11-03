@@ -190,6 +190,7 @@ enum StudioTone { case primary, quiet, coral, pink, danger }
 
 /// Painted control. UIButton configuration adopts the system button chrome, so actions draw their own fill, type, and icon.
 final class StudioButton: UIControl {
+  var isGroupedRow = false { didSet { paint() } }
   let caption = UILabel()
   let iconView = UIImageView()
   private let tone: StudioTone
@@ -302,9 +303,10 @@ final class StudioButton: UIControl {
       fill = TotiTheme.dangerFill
       ink = TotiTheme.dangerInk
     }
-    backgroundColor = fill
+    backgroundColor = isGroupedRow ? .clear : fill
     caption.textColor = ink
-    layer.borderWidth = tone == .quiet ? 1 : 0
+    layer.cornerRadius = isGroupedRow ? 0 : (compact ? 16 : 22)
+    layer.borderWidth = !isGroupedRow && tone == .quiet ? 1 : 0
     layer.borderColor = TotiTheme.line.cgColor
   }
   @objc private func pressDown() {

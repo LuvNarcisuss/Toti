@@ -1,5 +1,7 @@
 # Toti backend deployment and implementation record
 
+Voice author works (2026-11-03): source 017 deployed as `toti_voice_editorial_profiles`, version `20261103023157`, adding eighteen authored music posts. No Auth accounts, reactions or relationships were generated. See [profile content and verification](../voice-author-profile-content.md).
+
 Authorized fixture deletion (2026-11-02): only member post `48c301f2-2dcc-4964-93bd-b2ea67e75bc4`, owned by retained Guest `d1ae68c2-d6eb-495c-bf2b-a1b4b430a629`, was soft-deleted using the existing deleted_at/version semantics. Exact owner/kind/body predicates scoped the update; readback confirmed removal. Accounts and unrelated fixtures remain.
 
 Profile reaction collections (2026-11-02): source 016 deployed as `toti_profile_reaction_collections`, version `20261102091252`. The authenticated reader pages only the caller's outgoing likes/saves and reuses the authorized post document. No tables, content, relationships or access grants were broadened. See [Me Liked/Saved behavior and verification](../profile-liked-collection.md).

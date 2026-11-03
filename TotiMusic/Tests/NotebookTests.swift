@@ -235,6 +235,28 @@ final class ChatAttachmentOnlineAcceptanceTests: XCTestCase {
 }
 
 final class EditorialPreferenceStorageTests: XCTestCase {
+  func testRoomSafetyPreservesLegacyPreferencesAndSurvivesReload() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: root) }
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    let storage = TotiEditorialPreferenceStorage(fileURL: root.appendingPathComponent("preferences.json"))
+    let legacy = Data(#"{"followedAuthorIDs":["ava-bennett"],"blockedAuthorIDs":[],"drafts":{"ava-bennett":"Keep this"}}"#.utf8)
+    try legacy.write(to: storage.fileURL)
+    XCTAssertNil(try storage.read().roomReports)
+    try storage.update {
+      $0.blockedRoomTitles = ["community-artwork:room": "Music room"]
+      $0.roomReports = ["community-artwork:room": TotiEditorialRoomReport(title: "Music room", reason: .spam, details: "Unwanted content", savedAt: Date())]
+    }
+    let saved = try storage.read()
+    XCTAssertEqual(saved.blockedRoomTitles?["community-artwork:room"], "Music room")
+    XCTAssertEqual(saved.roomReports?["community-artwork:room"]?.details, "Unwanted content")
+    XCTAssertEqual(saved.drafts["ava-bennett"], "Keep this")
+    XCTAssertTrue(saved.followedAuthorIDs.contains("ava-bennett"))
+    try storage.update { $0.blockedRoomTitles?.removeAll(); $0.roomReports?.removeAll() }
+    XCTAssertTrue(try storage.read().roomReports?.isEmpty == true)
+    XCTAssertEqual(try storage.read().drafts, saved.drafts)
+  }
+
   func testPreferencesAndPrivateDraftSurviveReloadWithoutCrossingAccounts() throws {
     let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     defer { try? FileManager.default.removeItem(at: root) }

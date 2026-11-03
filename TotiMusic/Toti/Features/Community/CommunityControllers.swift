@@ -6,6 +6,8 @@ final class SafetyController: StackScreen {
   private var entryAccountIsCurrent: Bool { !store.isOnlineMode || entryGeneration == TotiBackend.shared.generation }
   let target: ContentSafetyTarget
   var recordingInformation: String?
+  var saveLocalReport: ((ContentReportReason, String) -> Bool)?
+  private var submitsOnline: Bool { store.isOnlineMode && saveLocalReport == nil }
   private var reporting: Bool
   /// Keeps the reason and details while a report form is open. Store updates must not rebuild it.
   private var reportFormReady = false
@@ -70,20 +72,22 @@ final class SafetyController: StackScreen {
     content.addArrangedSubview(details)
     content.addArrangedSubview(
       label(
-        store.isOnlineMode ? "Reports are submitted to Toti. Submission does not mean a review has been completed." : "Reports stay on this device and are not submitted. Remove one from Reported in Settings.",
+        submitsOnline ? "Reports are submitted to Toti. Submission does not mean a review has been completed." : "Reports stay on this device and are not submitted. Remove one from Reported in Settings.",
         14, TotiTheme.muted))
     content.addArrangedSubview(
-      actionButton(store.isOnlineMode ? "Submit report" : "Save report", icon: .flag, primary: true) { [weak self] in
+      actionButton(submitsOnline ? "Submit report" : "Save report", icon: .flag, primary: true) { [weak self] in
         guard let self, self.entryAccountIsCurrent else { return }
         let reason = selected
         let note = details.text ?? ""
         Task {
           guard self.entryAccountIsCurrent else { return }
-          let submitted = await self.store.saveContentReport(self.target, reason: reason, details: note)
+          let submitted: Bool
+          if let saveLocalReport = self.saveLocalReport { submitted = saveLocalReport(reason, note) }
+          else { submitted = await self.store.saveContentReport(self.target, reason: reason, details: note) }
           guard self.entryAccountIsCurrent else { return }
           if submitted {
             self.view.endEditing(true)
-            self.closeAfterAction(note: self.store.isOnlineMode ? "Report submitted" : "Report saved")
+            self.closeAfterAction(note: self.submitsOnline ? "Report submitted" : "Report saved on this device")
           } else {
             self.message(self.store.lastSaveError ?? "Your report could not be saved. Please try again.")
           }
@@ -235,13 +239,14 @@ func giftIcon(for gift: MusicGift) -> TotiIcon {
 
 /// Gift artwork on the full-screen film. It does not take taps.
 enum GiftBurst {
-  static func show(gift: MusicGift, quantity: Int, in host: UIView) {
-    let canvas = host.window ?? host
+  static func show(gift: MusicGift, quantity: Int, in host: UIView, coversWindow: Bool = true) {
+    let canvas = coversWindow ? (host.window ?? host) : host
     let stage = UIView(frame: canvas.bounds)
     stage.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     stage.isUserInteractionEnabled = false
     stage.backgroundColor = .clear
     stage.isAccessibilityElement = true
+    stage.accessibilityIdentifier = "gift.effect"
     stage.accessibilityLabel = quantity > 1 ? "\(gift.name), \(quantity)" : gift.name
     canvas.addSubview(stage)
     let icon = giftIcon(for: gift)
@@ -329,6 +334,7 @@ final class GiftsController: StackScreen {
   private var outcome: String?
   let context: GiftContext
   let picksRecipient: Bool
+  var onGiftSaved: ((MusicGift, Int) -> Void)?
 
   init(store: AppStore, context: GiftContext, picksRecipient: Bool = false) {
     self.context = context
@@ -339,6 +345,8 @@ final class GiftsController: StackScreen {
 
   override func build() {
     super.build()
+    scroll.accessibilityIdentifier = "gift.scroll"
+    store.wallet.prepareProducts()
     store.wallet.objectWillChange.receive(on: DispatchQueue.main).sink { [weak self] _ in
       self?.refresh()
     }.store(in: &tokens)
@@ -353,10 +361,10 @@ final class GiftsController: StackScreen {
   }
 
   override func refresh() {
-    guard isViewLoaded else { return }
+    guard isViewLoaded, isAccountContextCurrent else { return }
     clear()
     heading(context.sourceTitle)
-    if store.isOnlineMode {
+    if store.isOnlineMode && !store.wallet.isLocalStoreKitTesting {
       content.addArrangedSubview(label("Gifts are not available yet.", 16, TotiTheme.muted))
     } else {
       content.addArrangedSubview(label("Gifts create an effect and a record on this device. They are not delivered to another person or added to their balance.", 14, TotiTheme.muted))
@@ -373,9 +381,9 @@ final class GiftsController: StackScreen {
     let recipient = label("For: " + selection.recipientText, 15)
     recipient.accessibilityIdentifier = "gift.recipients"
     content.addArrangedSubview(recipient)
-    let balance = label(store.isOnlineMode ? "Balance unavailable" : "\(store.wallet.snapshot.diamonds.formatted()) diamonds", 20)
+    let balance = label(store.wallet.isServerWalletUnavailable ? "Balance unavailable" : "\(store.wallet.snapshot.diamonds.formatted()) diamonds", 20)
     balance.accessibilityIdentifier = "gift.balance"
-    balance.accessibilityValue = store.isOnlineMode ? "Balance unavailable" : String(store.wallet.snapshot.diamonds)
+    balance.accessibilityValue = store.wallet.isServerWalletUnavailable ? "Balance unavailable" : String(store.wallet.snapshot.diamonds)
     content.addArrangedSubview(balance)
     let topUp = actionButton("Add diamonds", icon: .diamond) { [weak self] in
       guard let self else { return }; self.push(WalletController(store: self.store))
@@ -387,7 +395,7 @@ final class GiftsController: StackScreen {
       status.accessibilityIdentifier = "gift.outcome"
       content.addArrangedSubview(status)
     }
-    let unavailable = store.isOnlineMode ? "Sending gifts is temporarily unavailable." : store.giftUnavailableReason(selection)
+    let unavailable = store.giftUnavailableReason(selection)
     if let unavailable { content.addArrangedSubview(label(unavailable, 14, TotiTheme.muted)) }
     let quantities = StudioChoice(items: ["1 gift", "5 gifts", "10 gifts"], index: [1, 5, 10].firstIndex(of: quantity) ?? 0)
     quantities.onChange = { [weak self] next in self?.quantity = [1, 5, 10][next]; self?.refresh() }
@@ -424,7 +432,7 @@ final class GiftsController: StackScreen {
   }
 
   private func confirmGift(_ gift: MusicGift) {
-    guard !store.isOnlineMode, !saving, !store.wallet.isBusy else { return }
+    guard isAccountContextCurrent, !saving, !store.wallet.isBusy else { return }
     let selected = selection
     let count = quantity
     let cost = gift.diamonds * count
@@ -436,18 +444,27 @@ final class GiftsController: StackScreen {
       return
     }
     confirmGiftAction("Confirm gift", message: "\(count) × \(gift.name)\nFor: \(selected.recipientText)\nTotal: \(cost) diamonds\nBalance after: \(store.wallet.snapshot.diamonds - cost) diamonds\n\nThis spends diamonds for a local effect and record only. No gift or funds are delivered to the recipient.", button: "Spend \(cost) diamonds") { [weak self] in
-      guard let self, !self.saving else { return }
+      guard let self, self.isAccountContextCurrent, !self.saving, !self.store.wallet.isBusy else { return }
       self.setSaving(true)
       self.outcome = nil
       self.refresh()
       Task {
         let error = await self.store.giveGift(gift, quantity: count, context: selected)
         self.setSaving(false)
+        guard self.isAccountContextCurrent else { return }
         if let error { self.outcome = error }
         else {
           self.outcome = "Gift saved on this device · \(cost) diamonds spent."
-          GiftBurst.show(gift: gift, quantity: count, in: self.view)
           UIAccessibility.post(notification: .announcement, argument: self.outcome)
+          if let onGiftSaved = self.onGiftSaved {
+            // The originating room owns the effect after the picker is fully dismissed.
+            self.setSaving(true)
+            (self.navigationController ?? self).dismiss(animated: true) {
+              onGiftSaved(gift, count)
+            }
+            return
+          }
+          GiftBurst.show(gift: gift, quantity: count, in: self.view)
         }
         self.refresh()
       }

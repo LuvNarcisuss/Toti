@@ -84,6 +84,21 @@ final class CommunityUITests: XCTestCase {
     element.typeText(value)
   }
 
+  func testMemberPostSafetyActionsAndCancellation() {
+    tap("Read & reply")
+    XCTAssertTrue(app.buttons["post.safety.report"].exists)
+    XCTAssertTrue(app.buttons["post.safety.block"].exists)
+    tap("post.safety.block"); tap("Cancel")
+    tap("post.safety.report")
+    XCTAssertTrue(app.buttons["Save report"].waitForExistence(timeout: 10))
+    tap("Close")
+    tap("Post options")
+    XCTAssertTrue(app.buttons["Report post"].exists)
+    XCTAssertTrue(app.buttons["Block author"].exists)
+    tap("Close")
+    capture("Member post visible safety actions")
+  }
+
   func testFivePagesAndProfile() {
     for page in ["Lounge", "Voice", "Notebook", "Chats", "Me"] {
       tap(page)
@@ -99,7 +114,7 @@ final class CommunityUITests: XCTestCase {
     let balance = app.staticTexts["wallet.balance"]
     XCTAssertTrue(balance.waitForExistence(timeout: 5))
     XCTAssertEqual(balance.value as? String, "0", "Opening Wallet must not grant starting credit")
-    for amount in [400, 800, 2450, 5150, 10800, 29400, 63700] {
+    for amount in [400, 800, 2450, 5150, 10800, 16800, 29400, 42700, 63700] {
       XCTAssertTrue(app.buttons["wallet.package.\(amount)"].exists)
     }
     XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "Messages and replies are free.")).firstMatch.exists)

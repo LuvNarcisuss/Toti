@@ -46,6 +46,8 @@ final class WalletStore: ObservableObject {
         canUsePurchaseService && !isBusy && prices[package.storeProductID] != nil
     }
 
+    var canSendLocalGifts: Bool { canUsePurchaseService }
+
     var diagnostics: String { purchasing.diagnostics }
     var hasUnfinishedTransactions: Bool { purchasing.hasUnfinishedTransactions }
     func retryProducts() {
@@ -107,7 +109,7 @@ final class WalletStore: ObservableObject {
     }
 
     func send(_ gift: MusicGift, quantity: Int, context: GiftContext) async -> String? {
-        guard !requiresServerVerification else { return "Purchases and gifts are unavailable until server verification is configured." }
+        guard canSendLocalGifts else { return "The wallet is unavailable. No diamonds were spent. Reopen the wallet and try again." }
         guard !isBusy else { return "Please wait for the current request to finish." }
         guard context.isValid, (1...99).contains(quantity) else {
             return "Please check the recipient and quantity. No diamonds were spent."

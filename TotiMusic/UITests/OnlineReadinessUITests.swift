@@ -45,8 +45,8 @@ final class OnlineReadinessUITests: XCTestCase {
         XCTAssertFalse(app.buttons["wallet.catalog.retry"].exists)
         capture(app, "Online wallet balance and payment notice")
         let tiers = [(400, "$0.99"), (800, "$1.99"), (2450, "$4.99"),
-                     (5150, "$9.99"), (10800, "$19.99"), (29400, "$49.99"), (63700, "$99.99")]
-        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.package.")).count, 7)
+                     (5150, "$9.99"), (10800, "$19.99"), (16800, "$29.99"), (29400, "$49.99"), (42700, "$69.99"), (63700, "$99.99")]
+        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "wallet.package.")).count, 9)
         for (amount, price) in tiers {
             let package = app.buttons["wallet.package.\(amount)"]
             XCTAssertTrue(package.exists)
@@ -450,6 +450,32 @@ final class NotebookCallsAcceptanceUITests: XCTestCase {
         XCTAssertTrue(app.buttons["My notebook"].waitForExistence(timeout: 10))
     }
 
+    func testEditorialPostSafetyBlockAndSettingsRestore() {
+        let postID = "16F40C60-5DC2-4DB5-BF99-000000000006"
+        let cover = app.buttons["lounge.editorial.cover." + postID]
+        tap("Me"); tap("Saved")
+        reveal(cover); cover.tap()
+        XCTAssertTrue(app.buttons["post.safety.report"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["post.safety.block"].exists)
+        let following = app.buttons["editorial.detail.follow"].label == "Following"
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "Editorial post visible safety actions"
+        screenshot.lifetime = .keepAlways; add(screenshot)
+        tap("post.safety.report")
+        XCTAssertTrue(app.buttons["editorial.report.submit"].waitForExistence(timeout: 10))
+        tap("Close")
+        tap("post.safety.block"); tap("Cancel")
+        tap("Post options")
+        tap("post.options.block"); tap("Block")
+        expectRelationship("Blocked author's saved post is hidden") { !cover.exists && self.app.buttons["Settings"].exists }
+        tap("Settings"); tap("Blocked")
+        tap("editorial.block.remove.sophie-brooks"); tap("Unblock")
+        tap("Close"); tap("Back")
+        reveal(cover); cover.tap()
+        XCTAssertTrue(app.buttons["post.safety.report"].waitForExistence(timeout: 15))
+        if following { tap("editorial.detail.follow") }
+    }
+
     func testEditorialPostAuthorHeaderLayoutReadOnly() {
         tap("Me"); tap("Saved")
         let cover = app.buttons["lounge.editorial.cover.16F40C60-5DC2-4DB5-BF99-000000000006"]
@@ -510,7 +536,7 @@ final class NotebookCallsAcceptanceUITests: XCTestCase {
         expectRelationship("The acknowledged reply clears the unchanged draft") { (editor.value as? String ?? "").isEmpty }
         XCTAssertTrue(app.staticTexts["Retained UI acceptance: listening together."].exists)
         tap("Post options")
-        tap("Report post")
+        tap("post.options.report")
         XCTAssertTrue(app.buttons["editorial.report.submit"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["Spam or misleading content"].exists)
         tap("Close")
@@ -559,6 +585,35 @@ final class NotebookCallsAcceptanceUITests: XCTestCase {
         image.lifetime = .keepAlways; add(image)
     }
 
+    func testMaterialRoomInfoBlockReportAndRestore() {
+        let roomID = "community-artwork:c2e04cc7-7e49-594b-a7f1-aef8007eea95"
+        let cover = app.buttons["voice.room.cover." + roomID]
+        tap("Voice")
+        reveal(cover); cover.tap(); tap("Party details")
+        XCTAssertTrue(app.buttons["voice.info.block"].exists)
+        XCTAssertTrue(app.buttons["voice.info.report"].exists)
+        let info = XCTAttachment(screenshot: app.screenshot())
+        info.name = "Room information safety actions"
+        info.lifetime = .keepAlways
+        add(info)
+        tap("voice.info.block"); tap("Cancel")
+        XCTAssertTrue(app.buttons["voice.info.report"].exists)
+        tap("voice.info.block"); tap("Block")
+        expectRelationship("Blocked room leaves discovery") { !cover.exists && self.app.buttons["Me"].exists }
+        tap("Me"); tap("Settings"); tap("Blocked")
+        tap("voice.block.remove." + roomID); tap("Unblock")
+        tap("Close"); tap("Back"); tap("Voice")
+        reveal(cover); cover.tap(); tap("Party details"); tap("voice.info.report")
+        XCTAssertTrue(app.staticTexts["Reports stay on this device and are not submitted. Remove one from Reported in Settings."].exists)
+        tap("Save report")
+        expectRelationship("Reported artwork leaves discovery") { !cover.exists && self.app.buttons["Me"].exists }
+        tap("Me"); tap("Settings"); tap("Reported")
+        tap("voice.report.remove." + roomID); tap("Remove report")
+        tap("Close"); tap("Back"); tap("Voice")
+        reveal(cover)
+        XCTAssertTrue(cover.isHittable)
+    }
+
     func testVoiceMusicPortraitsOpenMatchingCharacterProfiles() {
         tap("Voice")
         let roomID = "C2E04CC7-7E49-594B-A7F1-AEF8007EEA95"
@@ -582,7 +637,9 @@ final class NotebookCallsAcceptanceUITests: XCTestCase {
             let portrait = app.images["voice.character.portrait.PortraitVoice" + name]
             XCTAssertTrue(portrait.waitForExistence(timeout: 10))
             XCTAssertEqual(portrait.label, "Portrait of " + name)
-            XCTAssertTrue(app.staticTexts["The Pop Lounge"].exists)
+            XCTAssertTrue(app.staticTexts[name].exists)
+            XCTAssertTrue(app.otherElements["profile.identity"].exists)
+            XCTAssertTrue(app.buttons["Works (" + String([2, 1, 0][index]) + ")"].exists)
             let profileImage = XCTAttachment(screenshot: app.screenshot())
             profileImage.name = "Matching Voice character portrait: " + name
             profileImage.lifetime = .keepAlways

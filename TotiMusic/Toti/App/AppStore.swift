@@ -77,12 +77,17 @@ final class AppStore: ObservableObject {
   private var ownerAvatarStamp: Date?
 
   func giftUnavailableReason(_ context: GiftContext) -> String? {
-    if isOnlineMode { return "Gifts are unavailable until server payment verification is configured." }
-    guard isLoaded, sessionActive, !isBusy else { return "Please reopen the wallet before giving a gift." }
+    if isOnlineMode && !wallet.isLocalStoreKitTesting { return "Gifts are unavailable until server payment verification is configured." }
+    if isOnlineMode && !wallet.canSendLocalGifts { return "Opening your local test wallet. If this continues, open Wallet and try again." }
+    guard isLoaded, sessionActive, busyMessage == nil, !onlineMutationInProgress else { return "Please reopen the wallet before giving a gift." }
     guard context.isValid, !context.recipients.contains(where: { isCreatorBlocked($0.id) }) else {
       return "This recipient is unavailable. No diamonds were spent."
     }
     let ids = Set(context.recipients.map(\.id))
+    if let account = TotiBackend.shared.accountID, isOnlineMode,
+       context.recipients.contains(where: { UUID(uuidString: $0.id) == account }) {
+      return "Choose another recipient. No diamonds were spent."
+    }
     switch context.surface {
     case .post:
       guard let id = UUID(uuidString: context.sourceID), let post = loungePost(id),
@@ -90,7 +95,7 @@ final class AppStore: ObservableObject {
         return "This post is unavailable for gifts."
       }
     case .voiceRoom:
-      guard let room = loungeVoiceRooms.first(where: { $0.id == context.sourceID }),
+      guard let room = (loungeVoiceRooms + (isOnlineMode ? onlineCommunityRooms : [])).first(where: { $0.id == context.sourceID }),
             ids.isSubset(of: Set(room.participants.map(\.id))) else {
         return "This room or its selected members are unavailable."
       }

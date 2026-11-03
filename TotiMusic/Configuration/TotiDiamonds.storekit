@@ -8,7 +8,7 @@
       "internalID": "1000",
       "localizations": [
         {
-          "description": "400 diamonds for voice room gifts",
+          "description": "Add 400 diamonds to your Toti wallet.",
           "displayName": "400 Diamonds",
           "locale": "en_US"
         }
@@ -23,7 +23,7 @@
       "internalID": "1001",
       "localizations": [
         {
-          "description": "800 diamonds for voice room gifts",
+          "description": "Add 800 diamonds to your Toti wallet.",
           "displayName": "800 Diamonds",
           "locale": "en_US"
         }
@@ -38,13 +38,13 @@
       "internalID": "1002",
       "localizations": [
         {
-          "description": "2450 diamonds for voice room gifts",
-          "displayName": "2450 Diamonds",
+          "description": "Add 2,450 diamonds to your Toti wallet.",
+          "displayName": "2,450 Diamonds",
           "locale": "en_US"
         }
       ],
       "productID": "oqojxyitbbjeayzj",
-      "referenceName": "2450 Diamonds",
+      "referenceName": "2,450 Diamonds",
       "type": "Consumable"
     },
     {
@@ -53,13 +53,13 @@
       "internalID": "1003",
       "localizations": [
         {
-          "description": "5150 diamonds for voice room gifts",
-          "displayName": "5150 Diamonds",
+          "description": "Add 5,150 diamonds to your Toti wallet.",
+          "displayName": "5,150 Diamonds",
           "locale": "en_US"
         }
       ],
       "productID": "skrseirtauvvrsol",
-      "referenceName": "5150 Diamonds",
+      "referenceName": "5,150 Diamonds",
       "type": "Consumable"
     },
     {
@@ -68,13 +68,28 @@
       "internalID": "1004",
       "localizations": [
         {
-          "description": "10800 diamonds for voice room gifts",
-          "displayName": "10800 Diamonds",
+          "description": "Add 10,800 diamonds to your Toti wallet.",
+          "displayName": "10,800 Diamonds",
           "locale": "en_US"
         }
       ],
       "productID": "bqrdrlkrlfpzjmod",
-      "referenceName": "10800 Diamonds",
+      "referenceName": "10,800 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "29.99",
+      "familyShareable": false,
+      "internalID": "1007",
+      "localizations": [
+        {
+          "description": "Add 16,800 diamonds to your Toti wallet.",
+          "displayName": "16,800 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "qcrxcepelpjfskbi",
+      "referenceName": "16,800 Diamonds",
       "type": "Consumable"
     },
     {
@@ -83,13 +98,28 @@
       "internalID": "1005",
       "localizations": [
         {
-          "description": "29400 diamonds for voice room gifts",
-          "displayName": "29400 Diamonds",
+          "description": "Add 29,400 diamonds to your Toti wallet.",
+          "displayName": "29,400 Diamonds",
           "locale": "en_US"
         }
       ],
       "productID": "psqtqagzmiiyhncr",
-      "referenceName": "29400 Diamonds",
+      "referenceName": "29,400 Diamonds",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "69.99",
+      "familyShareable": false,
+      "internalID": "1008",
+      "localizations": [
+        {
+          "description": "Add 42,700 diamonds to your Toti wallet.",
+          "displayName": "42,700 Diamonds",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "fwcwwzfkbeawlbql",
+      "referenceName": "42,700 Diamonds",
       "type": "Consumable"
     },
     {
@@ -98,13 +128,13 @@
       "internalID": "1006",
       "localizations": [
         {
-          "description": "63700 diamonds for voice room gifts",
-          "displayName": "63700 Diamonds",
+          "description": "Add 63,700 diamonds to your Toti wallet.",
+          "displayName": "63,700 Diamonds",
           "locale": "en_US"
         }
       ],
       "productID": "bzwmucutltusfxpv",
-      "referenceName": "63700 Diamonds",
+      "referenceName": "63,700 Diamonds",
       "type": "Consumable"
     }
   ],

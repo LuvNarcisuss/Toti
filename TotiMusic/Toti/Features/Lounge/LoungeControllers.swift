@@ -277,13 +277,25 @@ final class LoungeDetailController: StackScreen, UITextViewDelegate {
         let available = store.loungePost(postID)
         // Keep typed input intact if another view updates the shared library.
         for view in content.arrangedSubviews where view !== postContent && view !== replyContent { view.isHidden = available == nil }
+        navigationItem.rightBarButtonItem = available?.author.isLocalOwner == false
+            ? barButton(iconButton(.more, "Post options") { [weak self] in self?.showPostOptions() }) : nil
         guard let post = available else {
             postContent.addArrangedSubview(loungePaper([label("This post is unavailable", 24, title: true), label("It may have been removed, hidden or written by someone you've blocked.", 15, TotiTheme.muted)]))
             return
         }
         var views: [UIView] = [loungeAuthor(post, store: store) { [weak self] in
             guard let self, self.entryAccountIsCurrent else { return }; self.push(CreatorController(store: self.store, creator: post.author))
-        }, label(post.topic.rawValue.uppercased(), 12, TotiTheme.muted), label(post.body, 20)]
+        }]
+        if !post.author.isLocalOwner {
+            let report = actionButton("Report post", icon: .flag, compact: true) { [weak self] in self?.reportPost() }
+            report.accessibilityIdentifier = "post.safety.report"
+            let block = actionButton("Block author", icon: .block, compact: true) { [weak self] in self?.blockPostAuthor() }
+            block.accessibilityIdentifier = "post.safety.block"
+            let safety = stack([report, block], axis: traitCollection.preferredContentSizeCategory.isAccessibilityCategory ? .vertical : .horizontal, spacing: 8)
+            safety.distribution = .fillEqually
+            views.append(safety)
+        }
+        views += [label(post.topic.rawValue.uppercased(), 12, TotiTheme.muted), label(post.body, 20)]
         if let image = loungePhoto(post) { views.append(image) }
         if post.isEditorial { views.append(label("Fictional editorial prompt. Photographs are illustrative artwork, not the writer's identity.", 12, TotiTheme.muted)) }
         if let roomID = post.voiceRoomID {
@@ -320,10 +332,6 @@ final class LoungeDetailController: StackScreen, UITextViewDelegate {
                     guard let self, self.entryAccountIsCurrent else { return }; self.save { await self.store.deleteLoungePost(post.id) }
                 }
             })
-        } else {
-            views.append(actionButton("Report or block", icon: .flag) { [weak self] in
-                self?.showSafety(ContentSafetyTarget(id: post.id.uuidString, title: String(post.body.prefix(120)), kind: .post, creator: post.author))
-            })
         }
         postContent.addArrangedSubview(loungePaper(views))
         let comments = store.loungeComments(for: postID)
@@ -349,6 +357,40 @@ final class LoungeDetailController: StackScreen, UITextViewDelegate {
             }
             replyContent.addArrangedSubview(loungePaper(parts, spacing: 10))
         }
+    }
+    private func showPostOptions() {
+        guard entryAccountIsCurrent, let post = store.loungePost(postID), !post.author.isLocalOwner else { return }
+        let report = actionButton("Report post", icon: .flag) { [weak self] in self?.dismissCard { self?.reportPost() } }
+        report.accessibilityIdentifier = "post.options.report"
+        let block = actionButton("Block author", icon: .block, tone: .danger) { [weak self] in self?.dismissCard { self?.blockPostAuthor() } }
+        block.accessibilityIdentifier = "post.options.block"
+        showCard([label("Post options", 22, title: true), report, block,
+            actionButton("Close") { [weak self] in self?.dismissCard() }])
+    }
+    private func reportPost() {
+        guard entryAccountIsCurrent, let post = store.loungePost(postID), !post.author.isLocalOwner else { return }
+        let target = ContentSafetyTarget(id: post.id.uuidString, title: String(post.body.prefix(120)), kind: .post, creator: post.author)
+        let controller = SafetyController(store: store, target: target, reporting: true)
+        controller.onResolved = { [weak self] in self?.closeHiddenPost() }
+        presentScreen(controller)
+    }
+    private func blockPostAuthor() {
+        guard entryAccountIsCurrent, let post = store.loungePost(postID), !post.author.isLocalOwner else { return }
+        confirm("Block " + post.author.name + "?", message: "Their posts, comments and voice rooms will be hidden. You can unblock them from Blocked in Settings.", destructive: true, button: "Block") { [weak self] in
+            guard let self, self.entryAccountIsCurrent else { return }
+            Task {
+                let saved = await self.store.blockCreator(post.author)
+                guard self.entryAccountIsCurrent else { return }
+                if saved { self.closeHiddenPost() }
+                else { self.message(self.store.lastSaveError ?? "This author could not be blocked. Please try again.") }
+            }
+        }
+    }
+    private func closeHiddenPost() {
+        guard entryAccountIsCurrent else { return }
+        if let navigation = navigationController, navigation.viewControllers.first !== self {
+            navigation.popViewController(animated: true)
+        } else { dismiss(animated: true) }
     }
     private func showSafety(_ target: ContentSafetyTarget) {
         guard entryAccountIsCurrent else { return }

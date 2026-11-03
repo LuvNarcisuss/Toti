@@ -845,30 +845,55 @@ final class SettingsController: StackScreen {
     guard isViewLoaded else { return }
     clear()
     title = "Settings"
+    let rows = stack(spacing: 0)
+    let group = UIView()
+    group.backgroundColor = UIColor.white.withAlphaComponent(0.86)
+    group.layer.cornerRadius = 24
+    group.layer.cornerCurve = .continuous
+    group.layer.borderWidth = 1
+    group.layer.borderColor = TotiTheme.line.cgColor
+    group.clipsToBounds = true
+    group.accessibilityIdentifier = "settings.group"
+    group.addSubview(rows)
+    rows.pin(to: group)
+    content.addArrangedSubview(group)
+    content.setCustomSpacing(28, after: group)
+    func appendSetting(_ button: StudioButton) {
+      if !rows.arrangedSubviews.isEmpty {
+        let divider = UIView()
+        divider.backgroundColor = TotiTheme.line
+        divider.height(1)
+        divider.isAccessibilityElement = false
+        divider.isUserInteractionEnabled = false
+        rows.addArrangedSubview(divider)
+      }
+      button.isGroupedRow = true
+      rows.addArrangedSubview(button)
+    }
     if store.isOnlineMode {
-      content.addArrangedSubview(actionButton("Local archive", icon: .notebook) { [weak self] in
+      appendSetting(actionButton("Local archive", icon: .notebook) { [weak self] in
         guard let self else { return }
         self.push(LegacyArchiveController(store: self.store))
       })
     }
-    content.addArrangedSubview(
+    appendSetting(
       actionButton("Edit profile", icon: .me) { [weak self] in
         guard let self else { return }
         self.push(EditProfileController(store: self.store))
       })
     for document in AgreementDocument.allCases {
-      content.addArrangedSubview(
+      appendSetting(
         actionButton(document.title, icon: .info) { [weak self] in
           guard let self else { return }
           self.push(AgreementController(store: self.store, document: document))
         })
     }
-    content.addArrangedSubview(actionButton("Media credits", icon: .music) { [weak self] in
+    appendSetting(actionButton("Media credits", icon: .music) { [weak self] in
       guard let self else { return }
       self.push(MediaCreditsController(store: self.store))
     })
     if store.isOnlineMode {
-      content.addArrangedSubview(actionButton("Editorial preferences", icon: .me) { [weak self] in
+      appendSetting(actionButton("Editorial preferences", icon: .me) { [weak self] in
         guard let self, self.isAccountContextCurrent else { return }
         self.push(TotiEditorialPreferencesController(store: self.store))
       })
@@ -879,15 +904,14 @@ final class SettingsController: StackScreen {
       guard let self else { return }
       self.presentScreen(BlockedCreatorsController(store: self.store))
     }
-    content.addArrangedSubview(blockedButton)
+    appendSetting(blockedButton)
     let reports = store.reportedContent()
     let reportedTitle = reports.isEmpty ? "Reported" : "Reported (\(reports.count))"
     let reportedButton = actionButton(reportedTitle, icon: .flag) { [weak self] in
       guard let self else { return }
       self.presentScreen(ReportedContentController(store: self.store))
     }
-    content.addArrangedSubview(reportedButton)
-    content.setCustomSpacing(44, after: reportedButton)
+    appendSetting(reportedButton)
     let logout = actionButton("Log out", icon: .logout) { [weak self] in
       guard let self else { return }
       self.confirm(
@@ -896,7 +920,7 @@ final class SettingsController: StackScreen {
       ) { self.save { await self.store.logOut() } }
     }
     if store.isOnlineMode {
-      content.addArrangedSubview(actionButton("Retry pending changes", icon: .refresh) { [weak self] in
+      appendSetting(actionButton("Retry pending changes", icon: .refresh) { [weak self] in
         guard let self, self.isAccountContextCurrent else { return }
         self.confirm("Retry pending changes?", message: "Retry changes previously submitted by this account, including messages and deletions. Each confirmed change is applied only once. Account deletion is not retried here.", button: "Retry") {
           self.save { await self.store.retryPendingOnlineChanges() }
@@ -965,8 +989,11 @@ final class BlockedCreatorsController: StackScreen {
     guard isViewLoaded else { return }
     clear()
     title = "Blocked"
+    let materialRooms = appendEditorialRoomSafety(to: content, reporting: false)
+    let editorialAuthors = appendBlockedEditorialAuthors(to: content)
     let blocked = store.library.contentSafety?.blockedCreators ?? [:]
     if blocked.isEmpty {
+      if materialRooms || editorialAuthors { return }
       content.addArrangedSubview(label("No blocked creators.", 15, TotiTheme.muted))
       return
     }
@@ -1094,8 +1121,10 @@ final class ReportedContentController: StackScreen {
     guard isViewLoaded else { return }
     clear()
     title = "Reported"
+    let materialRooms = appendEditorialRoomSafety(to: content, reporting: true)
     let reports = store.reportedContent()
     if reports.isEmpty {
+      if materialRooms { return }
       content.addArrangedSubview(label("No reports yet.", 15, TotiTheme.muted))
       return
     }

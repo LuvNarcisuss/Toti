@@ -4,6 +4,26 @@ Open **TotiMusic/Toti.xcodeproj**, scheme **toti**. UIKit, Swift 5, iOS 16+, iPh
 
 Signing uses the owner-selected team `JPTS6M4T5B` with Toti's Bundle ID `com.toti.music`. The team is now recorded in `TotiMusic/project.yml` as well as the generated project, matching Bibi's configuration pattern. Simulator ad-hoc signing is preserved. Apple agreement and provisioning access remain account-side requirements; see [signing configuration and verification scope](docs/signing-configuration.md).
 
+## Current-source runtime regression — 2026-11-03
+
+The latest signed source was built, installed and tested on Toti UI Acceptance. All 41 selected distinct cases have passing results after one isolated chat rerun: 11 storage/model cases, 22 local payment/gift service cases, six safety/navigation/chat/call UI cases, and two purchase/gift UI cases. The first chat attempt showed an inaccessible-conversation state and failed; the unchanged isolated rerun passed. That intermittent failure remains documented, not represented as a fix. Nine local purchases totaled 172,200 test diamonds; the Voice gift flow retained 340 after cancellation, two debits, insufficient funds, and relaunch. Retained accounts and data remain. See [results, screenshots, diagnostic limits, and untested services](docs/runtime-acceptance-20261103.md).
+
+## Post safety actions — 2026-11-03
+
+Other authors' member and editorial post details now show Report post / Block author directly beneath the author header, with matching actions in Post options. Settings > Blocked also supports unblocking editorial authors. Existing report services and local editorial relationship boundaries are preserved. See [interaction and verification](docs/post-safety-entry-points.md).
+
+## Voice room safety — 2026-11-03
+
+The room information page now includes Block room and Report room for material rooms. Their account-scoped device preferences hide the room and can be reversed from Settings > Blocked / Reported; local reports are explicitly not submitted online. Real member rooms retain online owner blocking and room reporting, with self-block excluded. See [behavior and verification](docs/voice-room-safety.md).
+
+## Voice author profiles and works — 2026-11-03
+
+The eighteen Voice material authors share the Lounge editorial profile screen and author identity mapping. Eighteen music posts are now published in Supabase; thirteen authors have works and five retain empty collections. Profile presentation figures vary and remain labeled illustrative; real member/post interactions are separate. See [content inventory and verification](docs/voice-author-profile-content.md).
+
+## Nine diamond packages — 2026-11-03
+
+Wallet now has nine tiers in its existing three-column grid, adding 16,800 diamonds at $29.99 and 42,700 at $69.99. The original seven IDs remain unchanged. New IDs, English descriptions and reference prices are listed in [the product catalog](docs/diamond-product-catalog.md). Source, local StoreKit configuration and regression expectations are synchronized. The November 3 runtime regression verified all nine local StoreKit credits and the nine-tier purchase UI, including cancellation and relaunch persistence; see [current-source acceptance](docs/runtime-acceptance-20261103.md). The two new products still require App Store Connect registration and Apple-side validation.
+
 ## Cover cards and automatic collections — 2026-11-02
 
 Lounge editorial cards now use two columns at approximately one-quarter of the former card area, with full-card photos, overlay text and equal-width author/plus controls. This latest size adjustment has static verification only. Me refreshes automatically and offers a first-post creation card when Works is empty. The specifically requested retained member post was deleted; its test account and other data remain. See [profile behavior](docs/profile-pages.md). Earlier acceptance results below predate this refinement.
@@ -28,9 +48,13 @@ The six editorial authors now use distinct real music-activity photographs acros
 
 Six Lounge editorial covers now show vinyl, piano, guitar, studio mixing, a concert and a music room. Author avatars remain distinct portraits; author Works and post details share the corresponding music cover. All 13 new resource/credit files are published in the existing Supabase public bucket with anonymous byte/hash verification. See [sources, deployment and verification scope](docs/lounge-music-scene-photos.md).
 
+## Local Voice gift debits — 2026-11-03
+
+The Debug simulator StoreKit wallet now supports confirmed Voice gifts, including material rooms. The Voice gift picker stays half-height with the room visible. It opens the account-scoped wallet, validates recipients, and saves the debit and activity atomically; success closes the picker before playing the effect inside the room. Cancellation, insufficient funds and failed persistence leave the balance unchanged. These are device-local effects and records; no recipient receives funds. Release and non-testing online wallets remain unavailable pending server verification. See [implementation and focused acceptance](docs/payment-verification/local-voice-gifts-20261103.md).
+
 ## Local purchases with online accounts — 2026-10-30
 
-The **toti** Xcode Run scheme now enables a separate Debug simulator test wallet while keeping real Guest authentication and online social features. Use **Toti UI Acceptance**, run from Xcode, then open **Me > Wallet**. Seven StoreKit 1 offers use the existing Toti product identifiers. Test balance and history are stored per account on this device, with explicit local-testing/no-charge notices; they cannot be spent online or promoted to cloud credit. Release builds and **totiAppStore** keep server-dependent purchases unavailable. See [implementation and current verification](docs/payment-verification/local-storekit-online-account.md).
+The **toti** Xcode Run scheme now enables a separate Debug simulator test wallet while keeping real Guest authentication and online social features. Use **Toti UI Acceptance**, run from Xcode, then open **Me > Wallet**. Nine StoreKit 1 offers use Toti product identifiers (expanded on November 3). Test balance and history are stored per account on this device, with explicit local-testing/no-charge notices; they cannot be spent online or promoted to cloud credit. Release builds and **totiAppStore** keep server-dependent purchases unavailable. See [implementation and current verification](docs/payment-verification/local-storekit-online-account.md).
 
 Earlier on November 2, 2026, the signed build passed 19 scoped tests with zero failures or skips on Toti UI Acceptance: two online-account purchase UI cases and 17 local payment service cases. The seven purchases credited exactly 112,700 test diamonds and survived relaunch with seven records. Native-sheet cancellation, persistence recovery, duplicate delivery and wallet-owner isolation passed. These results cover local StoreKit testing only; Apple sandbox and production remain unverified. See the [new signing and purchase verification record](docs/payment-verification/signing-iap-20261102.md), including the XCTest hit-point fixes and earlier failed attempts.
 
