@@ -14,7 +14,14 @@ workflows:
         bundle_identifier: com.toti.music
     scripts:
       - name: Generate the Xcode project
-        script: xcodegen generate --spec TotiMusic/project.yml
+        script: |
+          set -euo pipefail
+          cd "$CM_BUILD_DIR"
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
+          xcodegen --version
+          xcodegen generate --spec TotiMusic/project.yml
       - name: Restore pinned public build resources
         script: |
           set -euo pipefail

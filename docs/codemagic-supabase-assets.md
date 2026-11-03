@@ -2,6 +2,8 @@
 
 The Toti release workflow is defined in `codemagic.yaml`. It pins Xcode 26.5, regenerates the shared UIKit project, restores every object listed by `TotiMusic/Configuration/RemoteAssets.json`, checks the Git media guard, resolves the Codemagic signing profiles and publishes through the App Store Connect integration.
 
+The owner reported that CI stopped during project generation with `xcodegen: command not found` (exit 127). The generation step now switches to `CM_BUILD_DIR`, checks whether XcodeGen is available, installs it with `brew install xcodegen` when missing, and prints its version before generating the project. Installation failure stops the step. YAML parsing and shell syntax were checked locally; installation and the corrected workflow have not been run on Codemagic.
+
 ## App Store Connect configuration — 2026-11-03
 
 The owner supplied application Apple ID `6830066901` and the exact Codemagic integration reference `Toti`. The workflow binds `integrations.app_store_connect: Toti` and retains `publishing.app_store_connect.auth: integration` to upload the exported IPA. It uses the `toti` scheme in Release, Bundle ID `com.toti.music`, and the existing App Store signing configuration. Xcode is explicitly pinned to the string `26.5`.
@@ -12,7 +14,7 @@ Uploading is enabled; automatic TestFlight beta review and App Store review are 
 
 Build success and failure email notifications are configured for the owner-selected recipient `2758057680@qq.com`. Notification delivery has not been verified.
 
-Account-side prerequisites remain: an available integration named exactly `Toti` with App Manager access to this app, the matching Apple Distribution certificate/private key and App Store provisioning profile for `com.toti.music`, and any required Apple agreements. This change has only received local YAML, shell syntax and project-consistency checks. No Codemagic build, account credential check, archive or upload has been executed.
+Account-side prerequisites remain: an available integration named exactly `Toti` with App Manager access to this app, the matching Apple Distribution certificate/private key and App Store provisioning profile for `com.toti.music`, and any required Apple agreements. This change has only received local YAML, shell syntax and project-consistency checks. The owner-reported CI attempt failed before compilation; account credentials, archiving and Apple delivery remain unverified.
 
 References: [Codemagic publishing configuration](https://docs.codemagic.io/yaml-publishing/app-store-connect/), [automatic build versioning](https://docs.codemagic.io/knowledge-codemagic/build-versioning/), and [Xcode 26.5 image](https://docs.codemagic.io/specs-macos/xcode-26-5/).
 
