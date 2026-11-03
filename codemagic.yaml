@@ -3,8 +3,12 @@ workflows:
     name: Toti iOS Release
     max_build_duration: 60
     instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: Toti
     environment:
-      xcode: 26.5
+      xcode: "26.5"
+      vars:
+        APP_STORE_APPLE_ID: "6830066901"
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.toti.music
@@ -22,10 +26,33 @@ workflows:
       - name: Resolve signing profiles
         script: xcode-project use-profiles
       - name: Build the Toti archive and IPA
-        script: xcode-project build-ipa --project TotiMusic/Toti.xcodeproj --scheme toti --config Release
+        script: |
+          set -euo pipefail
+          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID")
+          case "$LATEST_BUILD_NUMBER" in
+            "") LATEST_BUILD_NUMBER=0 ;;
+            *[!0-9]*) echo "Expected an integer TestFlight build number, got: $LATEST_BUILD_NUMBER" >&2; exit 1 ;;
+          esac
+          TOTI_BUILD_NUMBER=$((LATEST_BUILD_NUMBER + 1))
+          if [ "$PROJECT_BUILD_NUMBER" -gt "$TOTI_BUILD_NUMBER" ]; then
+            TOTI_BUILD_NUMBER="$PROJECT_BUILD_NUMBER"
+          fi
+          xcode-project build-ipa \
+            --project TotiMusic/Toti.xcodeproj \
+            --scheme toti \
+            --config Release \
+            --archive-xcargs "CURRENT_PROJECT_VERSION=$TOTI_BUILD_NUMBER"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
     publishing:
+      email:
+        recipients:
+          - 2758057680@qq.com
+        notify:
+          success: true
+          failure: true
       app_store_connect:
         auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false

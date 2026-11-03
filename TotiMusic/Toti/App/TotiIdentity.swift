@@ -10,8 +10,8 @@ enum TotiIdentity {
         "PrivacyPolicy": URL(string: "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-agreements/2026-10-30/PrivacyPolicy.pdf")!
     ]
     static let agreementHashes: [String: String] = [
-        "TermsOfService": "69bc7580388991acaf39d338388ed25a8616eb38b441cc4b29ee5f6520984803",
-        "PrivacyPolicy": "b16c3aaea7283452cada8c4a5456a686442aff0b844fe74af7ecd3dcbf81b57c",
+        "TermsOfService": "3373e79a40eef257b8785ded7ef6534853041d35750a7ffb471118a4fb435d72",
+        "PrivacyPolicy": "287d26f7cd6acb0c435b09caa7e4fddfabeca8ebfcbd89041777fd9ab45b3bcc",
     ]
     /// Diamond amount → consumable product ID; the two additional tiers await App Store Connect registration.
     static let diamondProducts: [Int: String] = [

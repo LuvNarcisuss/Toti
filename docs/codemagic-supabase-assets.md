@@ -2,6 +2,22 @@
 
 The Toti release workflow is defined in `codemagic.yaml`. It pins Xcode 26.5, regenerates the shared UIKit project, restores every object listed by `TotiMusic/Configuration/RemoteAssets.json`, checks the Git media guard, resolves the Codemagic signing profiles and publishes through the App Store Connect integration.
 
+## App Store Connect configuration — 2026-11-03
+
+The owner supplied application Apple ID `6830066901` and the exact Codemagic integration reference `Toti`. The workflow binds `integrations.app_store_connect: Toti` and retains `publishing.app_store_connect.auth: integration` to upload the exported IPA. It uses the `toti` scheme in Release, Bundle ID `com.toti.music`, and the existing App Store signing configuration. Xcode is explicitly pinned to the string `26.5`.
+
+Before archiving, the workflow queries the latest TestFlight build number for `APP_STORE_APPLE_ID` and uses the larger of that number plus one and Codemagic's `PROJECT_BUILD_NUMBER`. It passes this value as `CURRENT_PROJECT_VERSION` to the archive command without editing the committed project or Info.plist. A failed API request or a non-integer build number stops the build. Run release builds sequentially to avoid simultaneous uploads selecting the same build number.
+
+Uploading is enabled; automatic TestFlight beta review and App Store review are both disabled. The build must finish uploading and Apple must process it before it can be selected in App Store Connect. The numeric Apple ID is an application identifier, not an Apple account login or a signing credential; IPA association also depends on its Bundle ID matching the Apple app record.
+
+Build success and failure email notifications are configured for the owner-selected recipient `2758057680@qq.com`. Notification delivery has not been verified.
+
+Account-side prerequisites remain: an available integration named exactly `Toti` with App Manager access to this app, the matching Apple Distribution certificate/private key and App Store provisioning profile for `com.toti.music`, and any required Apple agreements. This change has only received local YAML, shell syntax and project-consistency checks. No Codemagic build, account credential check, archive or upload has been executed.
+
+References: [Codemagic publishing configuration](https://docs.codemagic.io/yaml-publishing/app-store-connect/), [automatic build versioning](https://docs.codemagic.io/knowledge-codemagic/build-versioning/), and [Xcode 26.5 image](https://docs.codemagic.io/specs-macos/xcode-26-5/).
+
+## Public build resources
+
 Build resources belong in the public `toti-build-assets` bucket in the Toti Supabase project `gjodhvpzkdnxdjmorjfw`. Public object URLs use this form:
 
 `https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/<filename>`

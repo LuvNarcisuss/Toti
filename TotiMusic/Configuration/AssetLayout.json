@@ -3,7 +3,7 @@
   "files": {
     "Agreements/TetoRhythm-Display.ttf": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Agreements__TetoRhythm-Display.ttf",
     "Agreements/TetoRhythm-Text.ttf": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Agreements__TetoRhythm-Text.ttf",
-    "Assets.xcassets/AppIcon.appiconset/AppIcon.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/AppIcon.png",
+    "Assets.xcassets/AppIcon.appiconset/AppIcon.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-AppIcon.png",
     "Assets.xcassets/AppIcon.appiconset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-AppIcon.json",
     "Assets.xcassets/ChatAvatar1.imageset/ChatAvatar1.svg": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/ChatAvatar1.svg",
     "Assets.xcassets/ChatAvatar1.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-ChatAvatar1.json",
@@ -414,9 +414,9 @@
     "Assets.xcassets/TotiIcon-voice.imageset/TotiIcon-voice.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiIcon-voice.png",
     "Assets.xcassets/TotiLaunchBackground.colorset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-TotiLaunchBackground.json",
     "Assets.xcassets/TotiMark.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-TotiMark.json",
-    "Assets.xcassets/TotiMark.imageset/TotiMark.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiMark.png",
+    "Assets.xcassets/TotiMark.imageset/TotiMark.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-TotiMark.png",
     "Assets.xcassets/TotiWordmark.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-TotiWordmark.json",
-    "Assets.xcassets/TotiWordmark.imageset/TotiWordmark.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiWordmark.png",
+    "Assets.xcassets/TotiWordmark.imageset/TotiWordmark.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-TotiWordmark.png",
     "Assets.xcassets/VoiceHeadphones.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-VoiceHeadphones.json",
     "Assets.xcassets/VoiceHeadphones.imageset/VoiceHeadphones.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/VoiceHeadphones.png",
     "Design/Brand/Fresh-Rhythm-2026-10-23/manifest.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Design__Brand__Fresh-Rhythm-2026-10-23__manifest.json",
@@ -608,6 +608,8 @@
     "Assets.xcassets/PortraitVoiceFinn.imageset/PortraitVoiceFinn.jpg": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceFinn.jpg",
     "Assets.xcassets/PortraitVoiceFinn.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/Catalog-PortraitVoiceFinn.json",
     "Assets.xcassets/PortraitVoiceOwen.imageset/PortraitVoiceOwen.jpg": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/PortraitVoiceOwen.jpg",
-    "Assets.xcassets/PortraitVoiceOwen.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/Catalog-PortraitVoiceOwen.json"
+    "Assets.xcassets/PortraitVoiceOwen.imageset/Contents.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/Catalog-PortraitVoiceOwen.json",
+    "Design/Brand/User-Logo-2026-11-03/logo.png": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-Original.png",
+    "Design/Brand/User-Logo-2026-11-03/manifest.json": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-Provenance.json"
   }
 }

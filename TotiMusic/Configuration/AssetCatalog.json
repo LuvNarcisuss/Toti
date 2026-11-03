@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "files": [
     {
-      "source": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/AppIcon.png",
+      "source": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-AppIcon.png",
       "path": "AppIcon.appiconset/AppIcon.png"
     },
     {
@@ -1646,7 +1646,7 @@
       "path": "TotiMark.imageset/Contents.json"
     },
     {
-      "source": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiMark.png",
+      "source": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-TotiMark.png",
       "path": "TotiMark.imageset/TotiMark.png"
     },
     {
@@ -1654,7 +1654,7 @@
       "path": "TotiWordmark.imageset/Contents.json"
     },
     {
-      "source": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiWordmark.png",
+      "source": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-TotiWordmark.png",
       "path": "TotiWordmark.imageset/TotiWordmark.png"
     },
     {

@@ -13,6 +13,7 @@ final class NotebookController: StackScreen {
 
   override func build() {
     super.build()
+    navigationItem.leftBarButtonItem = barButton(totiMark())
     let search = iconButton(.search, "Search private notes") { [weak self] in self?.toggleSearch() }
     let create = iconButton(.plus, "New note") { [weak self] in self?.openEditor() }
     searchButton = search

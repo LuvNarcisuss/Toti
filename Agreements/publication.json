@@ -8,9 +8,9 @@
       "name": "TermsOfService",
       "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-agreements/2026-10-30/TermsOfService.pdf",
       "pages": 4,
-      "bytes": 12385,
-      "sha256": "69bc7580388991acaf39d338388ed25a8616eb38b441cc4b29ee5f6520984803",
-      "html_sha256": "31837336cb04d998aaa2bb0c157722b490b4dae3f2914a552e3b91d67e9447a4",
+      "bytes": 12358,
+      "sha256": "3373e79a40eef257b8785ded7ef6534853041d35750a7ffb471118a4fb435d72",
+      "html_sha256": "a93eadb5b9997d8db26845961db0b8e07b2a27a138b8d705dcef0de31ffaaf06",
       "anonymous_http_status": 200,
       "content_type": "application/pdf"
     },
@@ -18,11 +18,15 @@
       "name": "PrivacyPolicy",
       "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-agreements/2026-10-30/PrivacyPolicy.pdf",
       "pages": 5,
-      "bytes": 16422,
-      "sha256": "b16c3aaea7283452cada8c4a5456a686442aff0b844fe74af7ecd3dcbf81b57c",
-      "html_sha256": "7fc00109d01d9e8212abad518ffa57bbc6f1f5d88bb7022e2b33d6b10e569f21",
+      "bytes": 16334,
+      "sha256": "287d26f7cd6acb0c435b09caa7e4fddfabeca8ebfcbd89041777fd9ab45b3bcc",
+      "html_sha256": "1aba0bccd212fc77076993d18720a2976dea4cd3e5356f4d1fd081f20d224e2a",
       "anonymous_http_status": 200,
       "content_type": "application/pdf"
     }
-  ]
+  ],
+  "content_updated_on": "2026-11-03",
+  "contact_email": "roywood5667@icloud.com",
+  "publication_note": "Replaced in place at the user-specified URLs; earlier app builds with old PDF hashes require an update.",
+  "operator_legal_name": "Chengdu Yuehui Xingyu Technology Co., Ltd."
 }

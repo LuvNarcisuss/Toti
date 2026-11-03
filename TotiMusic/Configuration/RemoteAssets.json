@@ -13,9 +13,9 @@
       "size": 27488
     },
     {
-      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/AppIcon.png",
-      "sha256": "dd2307ac858b954f93dc45643b58197df6f8e96fe5ea6b5c7d0a516c6f2cb751",
-      "size": 694027
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-AppIcon.png",
+      "sha256": "283edee367cd42a5ccac14136c23b9444d669630c7e0047abd48a287f7e6470a",
+      "size": 560239
     },
     {
       "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/Catalog-AppIcon.json",
@@ -2667,14 +2667,14 @@
       "size": 26107
     },
     {
-      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiMark.png",
-      "sha256": "dd2307ac858b954f93dc45643b58197df6f8e96fe5ea6b5c7d0a516c6f2cb751",
-      "size": 694027
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-TotiMark.png",
+      "sha256": "32cc63afb0fa37d6942cf409587060a4f186037ca15f7d3278c6b354b58d389e",
+      "size": 704732
     },
     {
-      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/TotiWordmark.png",
-      "sha256": "dd2307ac858b954f93dc45643b58197df6f8e96fe5ea6b5c7d0a516c6f2cb751",
-      "size": 694027
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-TotiWordmark.png",
+      "sha256": "32cc63afb0fa37d6942cf409587060a4f186037ca15f7d3278c6b354b58d389e",
+      "size": 704732
     },
     {
       "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/ci-upload-20261030-guest5430/VoiceHeadphones.png",
@@ -3070,6 +3070,16 @@
       "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/voice-musicians-20261102/Catalog-PortraitVoiceOwen.json",
       "sha256": "4b0e765e8e83498b44822cd4dee552ece451c6cc4e8a93ec41ac17ebf74c3c34",
       "size": 161
+    },
+    {
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-Original.png",
+      "size": 704732,
+      "sha256": "32cc63afb0fa37d6942cf409587060a4f186037ca15f7d3278c6b354b58d389e"
+    },
+    {
+      "url": "https://gjodhvpzkdnxdjmorjfw.supabase.co/storage/v1/object/public/toti-build-assets/Brand20261103-Provenance.json",
+      "size": 1183,
+      "sha256": "7ad8a1be1566a81f7a9b5e4e95aff5aa3ccfff1d8afff1bca4915b6b7049f60a"
     }
   ]
 }

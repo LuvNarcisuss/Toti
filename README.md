@@ -4,7 +4,13 @@ Open **TotiMusic/Toti.xcodeproj**, scheme **toti**. UIKit, Swift 5, iOS 16+, iPh
 
 Signing uses the owner-selected team `JPTS6M4T5B` with Toti's Bundle ID `com.toti.music`. The team is now recorded in `TotiMusic/project.yml` as well as the generated project, matching Bibi's configuration pattern. Simulator ad-hoc signing is preserved. Apple agreement and provisioning access remain account-side requirements; see [signing configuration and verification scope](docs/signing-configuration.md).
 
-## Current-source runtime regression — 2026-11-03
+Codemagic uses Xcode `26.5`, App Store Connect integration `Toti`, and application Apple ID `6830066901`. The release workflow selects an incremented build number and uploads the IPA using `auth: integration`; automatic beta review and App Store review are disabled. This configuration has static verification only; CI signing and Apple delivery have not been verified. See [CI setup and prerequisites](docs/codemagic-supabase-assets.md).
+
+## Logo replacement and Notebook header — 2026-11-03
+
+AppIcon, TotiMark and TotiWordmark use the user's original supplied Toti logo, including its black background. The user canceled background removal; generated cutouts are not referenced. Launch, welcome and login retain their original cream background, artwork, colors and layout. Notebook now uses the same upper-left brand mark as the other home tabs. Public logo files passed anonymous byte/hash checks; catalog preparation and static checks passed. These changes have not been compiled or run. See [resource provenance and verification scope](docs/brand-refresh-20261103.md).
+
+## Runtime regression before the logo refresh — 2026-11-03
 
 The latest signed source was built, installed and tested on Toti UI Acceptance. All 41 selected distinct cases have passing results after one isolated chat rerun: 11 storage/model cases, 22 local payment/gift service cases, six safety/navigation/chat/call UI cases, and two purchase/gift UI cases. The first chat attempt showed an inaccessible-conversation state and failed; the unchanged isolated rerun passed. That intermittent failure remains documented, not represented as a fix. Nine local purchases totaled 172,200 test diamonds; the Voice gift flow retained 340 after cancellation, two debits, insufficient funds, and relaunch. Retained accounts and data remain. See [results, screenshots, diagnostic limits, and untested services](docs/runtime-acceptance-20261103.md).
 
@@ -60,11 +66,11 @@ Earlier on November 2, 2026, the signed build passed 19 scoped tests with zero f
 
 A later manual purchase exposed ID reuse after Xcode test history was cleared while the wallet remained. The Debug simulator wallet now persists composite delivery identities and migrates old record metadata without changing its existing balance or history. Revalidation covers 25 passing cases (22 service plus three UI), including reset/rebuy/relaunch, legacy replay and save-failure recovery. One native-sheet attempt stopped at Guest login timeout; its separate rerun passed. The manual wallet remained byte-for-byte unchanged at 800 diamonds and two records. Previously finished but unrecorded test purchases are not automatically backfilled. See the [collision repair and regression evidence](docs/payment-verification/local-transaction-collision-20261102.md).
 
-## Public agreements — 2026-10-30
+## Public agreements — operator/contact update 2026-11-03
 
-Terms and Privacy have been rewritten for the current Toti online functions using Bibi's numbered content format. They cover guest session/recovery limits, cloud content and Notebook, message visibility, actual image review, archive consent, account deletion and retained technical copies, Supabase hosting, and unavailable RTC/purchases. Contact email remains blank; operator identity and support arrangements still require completion before release.
+Terms and Privacy have been rewritten for the current Toti online functions using Bibi's numbered content format. They cover guest session/recovery limits, cloud content and Notebook, message visibility, actual image review, archive consent, account deletion and retained technical copies, Supabase hosting, and unavailable RTC/purchases. The November 3 contact update adds roywood5667@icloud.com to both documents and removes the email-placeholder wording. The operator is Chengdu Yuehui Xingyu Technology Co., Ltd. Both documents now have completed operator/contact fields, and the metadata draft-status notice has been removed. This operator/contact update does not re-audit subsequent feature changes.
 
-Both PDFs are published in Toti Supabase Storage under toti-agreements/2026-10-30/, publicly readable without a key or login. TotiIdentity pins the new URLs and SHA-256 values used by Login and Settings. All nine PDF pages were rendered and inspected; anonymous downloads returned HTTP 200 and matched the generated files byte for byte. This update has document/HTTP/static verification only and has not been compiled or run. Existing installed apps need an update to adopt the new links. See [agreement sources, public links and verification](Agreements/README.md).
+Both PDFs are published in Toti Supabase Storage under toti-agreements/2026-10-30/, publicly readable without a key or login. The two exact public URLs remain unchanged at the user's request; TotiIdentity pins the updated SHA-256 values used by Login and Settings. All nine PDF pages were rendered and inspected; anonymous downloads returned HTTP 200 and matched the generated files byte for byte. This update has document/HTTP/static verification only and has not been compiled or run. Existing installed apps pinning the previous PDF hashes require an update to read the replaced files. See [agreement sources, public links and verification](Agreements/README.md).
 
 ## Cold-launch entry — 2026-10-28
 
